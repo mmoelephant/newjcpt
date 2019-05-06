@@ -1,0 +1,14 @@
+@import './color.stylus'
+
+html,body,h1,h2,h3,h4,h5,h6,p,ul,li,input 
+    margin 0
+    padding 0
+    font-family MicrosoftYaHei
+
+ul,li 
+    list-style none
+a 
+    text-decoration: none
+    
+.tt 
+    color  main-color
