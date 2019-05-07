@@ -4,7 +4,6 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import about from './views/About.vue'
 import reportIndex from './views/intellReport/reportIndex.vue'
-// import reportList from './views/intellReport/reportList.vue'
 
 Vue.use(Router)
 
@@ -34,11 +33,6 @@ export default new Router({
       path:'/reportIndex',
       name:'reportIndex',
       component:reportIndex
-    },
-    // {
-    //   path:'/reportList',
-    //   name:'reportList',
-    //   component:reportList
-    // }
+    }
   ]
 })

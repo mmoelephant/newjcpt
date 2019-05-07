@@ -84,10 +84,6 @@ export default {
 </script>
 
 <style lang='stylus'>
-<<<<<<< HEAD
-#app 
-	height 100%
-=======
 	@import './style/color.stylus'
 	#app 
 		height 100%
@@ -175,5 +171,4 @@ export default {
 		.arrow
 			font-size 10px
 			color #fff
->>>>>>> origin/master
 </style>
