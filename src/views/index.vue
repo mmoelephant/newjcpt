@@ -1,5 +1,6 @@
 <template>
 	<div class="home">
+        1231312313231231232
 		<div>
 			<div>
 				<img src='../../public/img/logob.png'/>

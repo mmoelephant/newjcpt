@@ -1,16 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '../views/Home.vue'
 import reportIndex from '../views/intellReport/reportIndex.vue'
 import rout from './routerstt'
 
 Vue.use(Router)
 
-const routes = [
+let routes = [
   {
     path: '/',
-    name: 'home',
-    component: Home
+    name: 'index',
+    component: () => import('../views/index.vue')
   },
   {
     path: '/login',
@@ -27,8 +26,7 @@ const routes = [
     component: () => import('../views/setting.vue')
   },
 ]
-
-const final_route = routes.push(...rout)
+routes.push(...rout)
 export default new Router({
-    final_route
+  routes
 })
