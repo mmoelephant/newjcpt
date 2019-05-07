@@ -54,5 +54,5 @@ export default {
             color font-color-light-b
     .title 
         display flex
-        
+        justify-content space-around
 </style>
