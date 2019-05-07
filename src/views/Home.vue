@@ -1,9 +1,7 @@
 <template>
 	<div class="home">
 		<div id="chart1" style='width:100px;height:100px'></div>
-		<router-link to="/reportIndex">查看智能报告</router-link>
 		<el-button type="primary">主要按钮</el-button>
-		<router-view></router-view>>
 	</div>
 </template>
 
