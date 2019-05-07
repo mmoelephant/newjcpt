@@ -8,7 +8,7 @@ module.exports = {
     productionSourceMap: true,
     devServer: {// 环境配置
         host: 'localhost',
-        port: 1234,
+        port: 1235,
         https: false,
         hotOnly: false,
         open: false, //配置自动启动浏览器
