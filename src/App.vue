@@ -74,7 +74,7 @@ export default {
                 }, {
                     name: '账户设置',
                     icon: 'icon-setting',
-                    router: '/my-subscrib'
+                    router: '/setting'
                 }
             ],
             mainHeight: 0
