@@ -7,6 +7,7 @@ import './plugins/element.js'
 import echarts from "echarts";
 import './style/base.stylus'
 import './assets/iconfont/iconfont.css'
+import './assets/font/font.css'
 
 
 Vue.prototype.$echarts = echarts;
