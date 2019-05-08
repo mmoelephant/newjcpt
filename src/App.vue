@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<el-container>
+		<el-container style='height:100%'>
             <el-header class='header'>
                 <div class='left'>
                     <img src='../public/img/loginlogo.png'>
@@ -58,7 +58,7 @@ export default {
                 {
                     name: '数据查询',
                     icon: 'icon-shuju',
-                    router: '/'
+                    router: '/ref'
                 }, {
                     name: '智能报告',
                     icon: 'icon-baogaoshoucang',
@@ -124,6 +124,7 @@ export default {
 				color tag-color
 	.side
 		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+		height 100%
 	.userinfo
 		display flex
 		flex-direction column

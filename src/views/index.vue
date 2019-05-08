@@ -6,7 +6,7 @@
 					<img src='../../public/img/logob.png'/>
 					<p>云南省建筑工程材料及设备价格监测系统</p>
 				</div>
-				<p class='s'>进入工作台 ENTER</p>
+				<p class='s' @click='$router.push("/ref")'>进入工作台 ENTER</p>
 			</div>
 			<div class='bt-line'>
 				<i class='cut'></i>
@@ -14,15 +14,9 @@
 			</div>
 		</div>
 		<div class='content'>
-			<div class='left'>
-				<left></left>
-			</div>
-			<div class='center'>
-				<center></center>
-			</div>
-			<div class='right'>
-
-			</div>
+			<left></left>
+			<center></center>
+			<rigth></rigth>
 		</div>
 	</div>
 </template>
@@ -33,6 +27,7 @@
 //import "echarts/lib/chart/line"
 import left from '../components/big-left'
 import center from '../components/center'
+import rigth from '../components/big-right'
 export default {
 	data() {
 		return {
@@ -41,7 +36,8 @@ export default {
 	},
 	components: {
 		left,
-		center
+		center,
+		rigth
 	},
 	methods:{
 		init() {
@@ -161,6 +157,7 @@ export default {
 			font-size 20px
 			color rgba(85,192,253,1)
 			text-shadow 0px 0px 10px rgba(85,192,253,0.4) 
+			cursor pointer
 	.bt-line
 		position absolute
 		i 

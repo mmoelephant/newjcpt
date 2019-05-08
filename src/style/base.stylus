@@ -13,3 +13,22 @@ ul,li
 a 
     text-decoration: none
     
+.is-current>.el-tree-node__content, .is-current>.el-tree-node__content *
+    background tag-color !important
+    color #fff
+.el-tree-node__content
+    height 28px
+.el-tree-node__content:hover 
+    background-color #B7BFFF !important
+    color #fff
+.el-tree-node__content:hover > *
+    background-color #B7BFFF !important
+    color #fff
+
+.el-icon-caret-right
+    font-family iconfont !important
+
+.el-icon-caret-right:before
+    content: "\e620"
+.el-tree-node__children .el-icon-caret-right:before
+    content: ""
