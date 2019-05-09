@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<el-container>
+		<el-container class="el-container">
             <el-header class='header'>
                 <div class='left'>
                     <img src='../public/img/loginlogo.png'>
@@ -12,7 +12,7 @@
                     <p class='blue'>退出登录</p>
                 </div>
             </el-header>
-            <el-container style='height:100%'>
+            <el-container style='height:100%;'>
                 <el-aside width="200px" class='side'>
 					<div class='userinfo'>
 						<img src='../public/img/default.png'/>
@@ -62,11 +62,11 @@ export default {
                 }, {
                     name: '智能报告',
                     icon: 'icon-baogaoshoucang',
-                    router: '/season-data'
+                    router: '/reportIndex'
                 }, {
                     name: '数据订阅',
                     icon: 'icon-dingyue',
-                    router: '/year-data'
+                    router: '/dataIndex'
                 }, {
                     name: '帮助中心',
                     icon: 'icon-bangzhu',
@@ -87,6 +87,10 @@ export default {
 	@import './style/color.stylus'
 	#app 
 		height 100%
+	.el-container
+		height 100%
+		background-color #F6F7FE
+		padding 0
 	.header 
 		display flex
 		justify-content space-between
@@ -123,6 +127,7 @@ export default {
 			.blue 
 				color tag-color
 	.side
+		background-color #fff
 		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
 	.userinfo
 		display flex
@@ -171,4 +176,7 @@ export default {
 		.arrow
 			font-size 10px
 			color #fff
+	.main
+		padding 0 !important
+		overflow hidden !important
 </style>
