@@ -80,11 +80,43 @@ export default {
                 } else {
                     this.error2 = '请输入正确的密码'
                 }
-            }
+            } 
             this.focusIndex=0
         },
-        login() {
-
+        async login() {
+            if(!this.check()) return 
+            const data = {
+                phone: this.name,
+                password: this.password
+            }
+            const res = await this.$api.login(data)
+            if(res.data.user) {
+                this.$store.commit('login/SET_TOKEN', res.data.user.token)
+                sessionStorage.setItem('token', res.data.user.token)
+                sessionStorage.setItem('user', JSON.stringify(res.data.user))
+                this.$store.commit('login/SET_USER_INFO', res.data.user)
+                this.$router.replace('/ref')
+            } else {
+                if(res.data.message == '此手机号未注册' || res.data.message == '手机号格式不对') {
+                    this.error1 = res.data.message
+                } else if(res.data.message == "密码错误") {
+                    this.error2 = res.data.message
+                }
+            }
+        },
+        check() {
+            if(!this.name || this.name.length==0) {
+                this.error1 = '请输入正确的账户名'
+                return false
+            } else if(!this.password || this.password.length==0) {
+                this.error2 = '请输入正确的密码'
+                return false
+            } else if(!(/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/.test(this.name))) {
+                this.error1 = '手机号格式不正确'
+                return false
+            } else {
+                return true
+            }
         }
     }
 }
@@ -100,6 +132,9 @@ export default {
         display flex
         justify-content center
         align-items center
+        position absolute
+        top 0
+        left 0
     .login-box
         display flex
         .left

@@ -1,14 +1,19 @@
 import axios, { AxiosResponse } from 'axios'
 import qs from 'qs'
-const baseURL = '/api'
+// const baseURL = '/api'
 // const baseURL = '/'
 const service = axios.create({
-	baseURL: baseURL,
+	baseURL: '/api',
+    withCredentials: false,
+    headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+})
+const service1 = axios.create({
+	baseURL: '/lw',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const formser = axios.create({
-	baseURL: baseURL,
+		baseURL: '/api',
     withCredentials: false,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 })
@@ -30,11 +35,30 @@ service.interceptors.response.use(
 )
 
 const api = {
+		get_cate_level1() {
+			return service1.post('/PageMaterialController/getMaterialsInfoByRecent',{})
+		},
+		get_bg_line(data) {
+			return service1.post('/PageMaterialController/getMaterialsInfoByAllCities',data)
+		},
+		get_bg_pie(data) {
+			return service1.post('/PageMaterialController/getMaterialCount',data)
+		},
+		get_cate_num(data) {
+			return service1.post('/PageMaterialController/getMaterialCount',data)
+		},
+		login (data) {
+			return service.post('/PageUserController/login',data)
+		},
+		updata_user(data) {
+			return service.post('/PageUserController/updateUserInfo',data)
+		},
+
     get_area(data) {
 		return service.post('/PageAreaController/getAreaList', {pid:53})
     },
     get_cate(data) {
-		return service.post('/PageMaterialController/getMaterialsClass', {})
+		return service1.post('/PageMaterialController/getMaterialsClass', {})
     },
     get_cate_data(data) {
 		return service.post('/PageMaterialController/getMaterialsInfo',data)
@@ -42,9 +66,7 @@ const api = {
 	get_area_data(data) {
 		return service.post('PageMaterialController/getMaterialsInfoByArea', data)
 	},
-    login (data) {
-		return service.post('/PageUserController/login',data)
-	},
+	
 	get_reports(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
 		return formser.post('/PageReportController/findListByPage', data)
