@@ -14,13 +14,15 @@ module.exports = {
         open: false, //配置自动启动浏览器
         // proxy: {// 配置多个代理(配置一个 proxy: 'http://localhost:4000' )
         //     '/api': {
-        //         target: '<url>',
+        //         target: '',
+        //         pathRewrite: { '^/api': '' },
         //         ws: true,
-        //         changeOrigin: true
+        //         changeOrigin: true,
+        //         secure: false
         //     },
-        //     '/foo': {
-        //         target: '<other_url>'
-        //     }
+        //     // '/foo': {
+        //     //     target: '<other_url>'
+        //     // }
         // }
     },
 }

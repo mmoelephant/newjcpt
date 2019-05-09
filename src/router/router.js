@@ -27,9 +27,13 @@ let routes = [
     name:'dataIndex',
     component:dataIndex
   },
-    {path: '/setting',
+  {path: '/setting',
     name: 'setting',
     component: () => import('../views/setting.vue')
+  },
+  {path: '/ref',
+    name: 'ref',
+    component: () => import('../views/ref.vue')
   },
 ]
 routes.push(...rout)
