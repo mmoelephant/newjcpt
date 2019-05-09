@@ -31,7 +31,7 @@ import rigth from '../components/big-right'
 export default {
 	data() {
 		return {
-			chart1:null
+			
 		}
 	},
 	components: {
@@ -40,89 +40,15 @@ export default {
 		rigth
 	},
 	methods:{
-		init() {
-			const option = {
-				title : {
-					text: '未来一周气温变化',
-					subtext: '纯属虚构'
-				},
-				tooltip : {
-					trigger: 'axis'
-				},
-				legend: {
-					data:['最高气温','最低气温']
-				},
-				toolbox: {
-					show : true,
-					feature : {
-						mark : {show: true},
-						dataView : {show: true, readOnly: false},
-						magicType : {show: true, type: ['line', 'bar']},
-						restore : {show: true},
-						saveAsImage : {show: true}
-					}
-				},
-				calculable : true,
-				xAxis : [
-					{
-						type : 'category',
-						boundaryGap : false,
-						data : ['周一','周二','周三','周四','周五','周六','周日']
-					}
-				],
-				yAxis : [
-					{
-						type : 'value',
-						axisLabel : {
-							formatter: '{value} °C'
-						}
-					}
-				],
-				series : [
-					{
-						name:'最高气温',
-						type:'line',
-						data:[11, 11, 15, 13, 12, 13, 10],
-						markPoint : {
-							data : [
-								{type : 'max', name: '最大值'},
-								{type : 'min', name: '最小值'}
-							]
-						},
-						markLine : {
-							data : [
-								{type : 'average', name: '平均值'}
-							]
-						}
-					},
-					{
-						name:'最低气温',
-						type:'line',
-						data:[1, -2, 2, 5, 3, 2, 0],
-						markPoint : {
-							data : [
-								{name : '周最低', value : -2, xAxis: 1, yAxis: -1.5}
-							]
-						},
-						markLine : {
-							data : [
-								{type : 'average', name : '平均值'}
-							]
-						}
-					}
-				]
-			};
-			this.chart1 = this.$echarts.init(document.getElementById("chart1"));
-			this.chart1.setOption(option);
-		}
+		
 	},
 	mounted() {
-		// this.init()
 	}
 }
 </script>
 
 <style lang="stylus" scoped>
+	@import '../style/px2vh.stylus'
 	.home 
 		position fixed
 		width 100%
@@ -132,12 +58,13 @@ export default {
 		background url('../../public/img/bgb.png') no-repeat
 		background-size 100% 100%
 		font-family "MicrosoftYaHei"
+		// overflow scroll
 	.b-t
 		width 100% 
-		height 120px
+		height px2vh(120)
 		position absolute
 	.bt-content
-		line-height 120px
+		line-height px2vh(120)
 		display flex
 		align-items center
 		justify-content space-between
@@ -151,8 +78,8 @@ export default {
 			align-items center
 			font-size 32px
 		img 
-			width 45px
-			margin-right 10px
+			width px2vw(45)
+			margin-right px2vw(10)
 		.s 
 			font-size 20px
 			color rgba(85,192,253,1)
@@ -170,16 +97,17 @@ export default {
 			background-size 100% 100%
 			bottom 0
 		.light
-			width 277px
-			height 14px
+			width px2vw(277)
+			height px2vh(14)
 			background url('../../public/img/cutlight.png') no-repeat
 			background-size 100% 100%
-			left 40px
+			left px2vw(40)
 			bottom -7px
 	.content 
 		display flex
 		width 100% 
 		height 100% 
 		padding 120px 80px 0 0
+		box-sizing border-box
 </style>
 

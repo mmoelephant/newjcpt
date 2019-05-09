@@ -14,7 +14,7 @@
         <div class='box'>
             <div class='tt'>
                 <i></i>
-                <p>钢材价格环比/同比</p>
+                <p>{{cate.name}}价格环比/同比</p>
             </div>
             <div id='line'>
 
@@ -23,7 +23,7 @@
         <div class='box'>
             <div class='tt'>
                 <i></i>
-                <p>钢材价格指数对比</p>
+                <p>{{cate.name}}价格指数对比</p>
             </div>
             <div id='bar'>
 
@@ -33,6 +33,19 @@
 </template>
 <script>
 export default {
+    computed:{
+        cate() {
+            return this.$store.state.bigscreen.cate_on
+        }
+    },
+    watch:{
+        cate:{
+            handler(val) {
+                
+            },
+            deep: true
+        }
+    },
     methods:{
         init_pie() {
             const chart = this.$echarts.init(document.getElementById('pie'))
@@ -96,7 +109,7 @@ export default {
                     }]
                     },{
                     center: ['75%', '50%'],
-                    name:'钢材',
+                    name:this.cate.name,
                     type:'pie',
                     radius: ['50%', '60%'],
                     avoidLabelOverlap: false,
@@ -119,7 +132,7 @@ export default {
                         }
                     },
                     data:[{ value:100,
-                        name:'钢材',
+                        name:this.cate.name,
                         itemStyle: {
                             normal: {
                                 color: '#ffaf25',
@@ -129,7 +142,7 @@ export default {
                         },
                         label:{
                             formatter: [
-                                '{a|钢材}',
+                                '{a|'+this.cate.name+'}',
                                 '{b|45678}'
                             ].join('\n'),
                             rich: {
@@ -139,7 +152,7 @@ export default {
                                     lineHeight:'34'
                                 },
                                 b: {
-                                    color: '#25ff8c',
+                                    color: '#FFAF25',
                                     fontSize: '14'
                                 },
                             }
@@ -201,10 +214,6 @@ export default {
                     axisLine: {
                         show: false
                     },
-                    //这行代码控制着坐标轴x轴的文字是否显示
-                    axisLabel: {
-                        show: true
-                    },
                     splitLine: {
                         show: false, // 网格线是否显示
                     },
@@ -214,6 +223,7 @@ export default {
                         show:false
                     },
                     axisLabel:{
+                        show: true,
                         color: '#55D7FD', fontSize:10
                     },
                 }],
@@ -223,12 +233,15 @@ export default {
                     symbolSize: 0,   //折线点的大小
                     type:'line',
                     itemStyle: {
-                    normal: {
-                        color: "#02e1a2",//折线点的颜色
-                        lineStyle: {
-                            color: "#02e1a2"//折线的颜色
-                        }
-                    }
+                        normal: {
+                            color: "#2C54FF",//折线点的颜色
+                            lineStyle: {
+                                color: "#2C54FF",//折线的颜色
+                                shadowColor: '#516EFF',
+                                shadowBlur: 10
+                            }
+                        },
+                        
                     },
                     data:[0,10,20,10,5,2,9,2],
 
@@ -240,9 +253,11 @@ export default {
                     data:[0,22,15,20,16,2,8,0],
                     itemStyle: {
                         normal: {
-                            color: "#2b52fa",//折线点的颜色
+                            color: "#00FFB4",//折线点的颜色
                             lineStyle: {
-                                color: "#2b52fa"//折线的颜色
+                                color: "#00FFB4",//折线的颜色
+                                shadowColor: '#51FFC4',
+                                shadowBlur: 10
                             }
                         }
                     },
@@ -295,9 +310,6 @@ export default {
                     show: false
                     },
                     //这行代码控制着坐标轴x轴的文字是否显示
-                    axisLabel: {
-                    show: true
-                    },
                     splitLine: {
                     show: false, // 网格线是否显示
                     /*lineStyle: {
@@ -310,6 +322,7 @@ export default {
                     show:false
                     },
                     axisLabel:{
+                        show: true,
                         color: '#55D7FD', fontSize:10
                     },
                 }
@@ -349,13 +362,14 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+@import '../style/px2vh.stylus'
 .right
-    width 480px
+    width px2vw(480)
     padding-top 93px
     margin-left 100px
     .box
         width 100%
-        height 242px
+        height px2vh(242)
         background url('../../public/img/right.png') no-repeat
         background-size 100% 100%
         margin-bottom 20px
@@ -364,8 +378,8 @@ export default {
     .tt 
         display flex
         align-items center
-        padding 0 26px
-        line-height 66px
+        padding 0 px2vh(26)
+        line-height px2vh(66)
         i 
             display block
             width 8px
@@ -374,26 +388,26 @@ export default {
             border-radius 50%
             margin-right 4px
         p  
-            font-size 18px
+            font-size px2vw(18)
             font-family MicrosoftYaHei-Bold
             font-weight bold
             color #fff
-            line-height 66px
+            line-height px2vh(66)
         .fontb
-            font-size 32px
+            font-size px2vw(32)
             font-weight bold
             color rgba(85,215,253,1)
-            margin-left 76px
+            margin-left px2vw(76)
             span 
                 font-size 16px
                 font-family:MicrosoftYaHei
                 font-weight 400
     #pie
         width 100%
-        height 170px
+        height px2vh(170)
     #line,#bar
-        width 740px
-        height 170px
+        width px2vw(740)
+        height px2vh(170)
         position relative
         // left -50px
 </style>

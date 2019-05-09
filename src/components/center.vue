@@ -1,7 +1,7 @@
 <template>
     <div class='cb'>
         <p class='t'>当前展示</p>
-        <div class='b'>钢材</div>
+        <div class='b'>{{this.$store.state.bigscreen.cate_on.name}}</div>
         <div class='map'>
 
         </div>
@@ -24,7 +24,7 @@ export default {
         arr.forEach(item =>{
             this.CoordMap.push({
                 name: item.properties.name, 
-                coord:item.properties.cp, 
+                coord:item.properties.dot, 
                 //value: item.properties.name.length>4?10:-10,
                 symbol: item.properties.name.length>4?'image://'+this.upsymbol:'image://'+this.downsymbol
                 })
@@ -37,15 +37,14 @@ export default {
         init_map() {
             this.$echarts.registerMap('yn', yn);
             const chart =  this.$echarts.init(document.getElementsByClassName('map')[0]);
-            const that = this
             // const geoCoordMap = this.CoordMap
-            const _this = this
             chart.setOption({
                 series: [{
                     type: 'map',
                     top:0,
                     left:0,
                     right:0,
+                    bottom:50,
                     map: 'yn',
                     markPoint:{
                         data:this.CoordMap,
@@ -74,14 +73,14 @@ export default {
                         },
                         emphasis: {//鼠标移入动态的时候显示的默认样式
                             show:false,
-                            // label: {
-                            //     show: true,//选中状态是否显示省份名称
-                            //     color:'#fff',//修改字体颜色
-                            //     fontSiae:'40px' 
-                            // },
-                            // textStyle:{
-                            //     color:'red',
-                            // },
+                            label: {
+                                show: true,//选中状态是否显示省份名称
+                                color:'#fff',//修改字体颜色
+                                fontSize:'20' 
+                            },
+                            textStyle:{
+                                color:'#fff',
+                            },
                             areaColor:'rgba(0,0,0,0)',
                         },
                     },
@@ -92,10 +91,11 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+@import '../style/px2vh.stylus'
     .cb
-        width 880px
+        width px2vw(880)
         height 100% 
-        padding-top 42px
+        padding-top px2vh(42)
         box-sizing border-box
         display flex
         flex-direction column
@@ -107,12 +107,12 @@ export default {
             font-weight bold
             color rgba(85,253,253,1)
         .b 
-            width 320px
-            height 52px
-            line-height 52px
+            width px2vw(320)
+            height px2vh(52)
+            line-height px2vh(52)
             text-align center
             margin-top 17px
-            font-size 22px
+            font-size px2vh(22)
             font-family MicrosoftYaHei-Bold
             font-weight bold
             color rgba(85,253,253,1)
@@ -129,5 +129,5 @@ export default {
         width 180px
         position absolute
         right 10px
-        top 820px
+        top px2vh(820)
 </style>

@@ -111,6 +111,9 @@ export default {
             animate:false,
         }
     },
+    created() {
+        this.$store.commit('bigscreen/SET_CATE_ON', this.list[0])
+    },
     methods:{
         t() {
             this.animate=true;    // 因为在消息向上滚动的时候需要添加css3过渡动画，所以这里需要设置true
@@ -118,6 +121,7 @@ export default {
                     this.list.push(this.list[0]);  // 将数组的第一个元素添加到数组的
                     this.list.shift();               //删除数组的第一个元素
                     this.animate=false;  // margin-top 为0 的时候取消过渡动画，实现无缝滚动
+                    this.$store.commit('bigscreen/SET_CATE_ON', this.list[0])
             },1000)
         }
     },
@@ -131,14 +135,16 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
+@import '../style/px2vh.stylus'
     .anim
         transition all 0.6s
         margin-top -92px
     
     .left
         height 100%
-        width 380px
-        padding-top 88px
+        width px2vw(380)
+        flex-shrink 0
+        padding-top px2vh(88)
         box-sizing border-box
         display flex
         flex-direction column
@@ -150,11 +156,11 @@ export default {
             margin-bottom 20px
             margin-left -20px
         .num-box
-            width 150px
-            height 50px
+            width px2vw(150)
+            height px2vh(50)
             display flex
             justify-content space-between
-            line-height 50px
+            line-height px2vh(50)
             i 
                 display block
                 height 100%
