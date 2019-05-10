@@ -14,12 +14,14 @@ a
     text-decoration: none
 
 
-.reportBtns 
-	margin-top 30px
+.reportBtns
 	display flex
 	flex-direction row
 	flex-wrap nowrap
 	justify-content flex-start
+	position fixed
+	z-index 10
+	top 90px
 
 .btnClass 
 	width 140px

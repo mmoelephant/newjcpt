@@ -179,5 +179,5 @@ export default {
 			color #fff
 	.main
 		padding 0 !important
-		overflow hidden !important
+		overflow-x hidden !important
 </style>

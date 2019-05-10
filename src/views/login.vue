@@ -113,7 +113,7 @@ export default {
             margin-right 10px
             background url('../../public/img/loginq.png') no-repeat
             background-size 100% 100%
-            box-shadow:0px 13px 29px 0px rgba(5,16,65,0.5);
+            box-shadow 0px 13px 29px 0px rgba(5,16,65,0.5) 
             img 
                 width 116px
                 margin-bottom 24px

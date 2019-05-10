@@ -7,12 +7,6 @@
 		</div>
 		<div class="reportContent">
 			<ul class="reportContentUl">
-				<!-- <li class="reportListClass" @click="" v-for="(item,index) in reportList" v-bind:key="index">
-					<div class="markClass {{item.mark == 1?'':'markDisplay'}}">已备注</div>
-					<div class="item.type == 1?'reporType':'reporType1'">{{item.type == 1?'平台':'我的'}}</div>
-					<p class="reporTitle">{{item.title}}</p>
-					<p class="reporTime">{{item.time}}</p>
-                </li> -->
 				<li :class="type==2?'reportListClass newReport newReport1':'reportListClass newReport newReport2'" @click="dialogFormVisible = true">
 					<p class="newReporTitle">新建智能报告</p>
 				</li>
@@ -23,18 +17,15 @@
   						</el-form-item>
   						<el-form-item label="报告类型" prop="type">
   							<el-select v-model="ruleForm.type" placeholder="请选择报告类型">
-  								<el-option label="月度报告" value="月度报告"></el-option>
-  								<el-option label="季度报告" value="季度报告"></el-option>
-  								<el-option label="年度报告" value="年度报告"></el-option>
+  								<el-option label="月度数据报告" value="1"></el-option>
+  								<el-option label="季度数据报告" value="2"></el-option>
+  								<el-option label="年度数据报告" value="3"></el-option>
   							</el-select>
   						</el-form-item>
-  						<el-form-item label="时间节点" prop="timePoint">
-  							<el-select v-model="ruleForm.timePoint" placeholder="请选择时间节点">
-  								<el-option label="第一季度" value="第一季度"></el-option>
-  								<el-option label="第二季度" value="第二季度"></el-option>
-  								<el-option label="第三季度" value="第三季度"></el-option>
-  								<el-option label="第四季度" value="第四季度"></el-option>
-  							</el-select>
+  						<el-form-item label="时间节点" prop="timeInterval">
+							<el-date-picker v-model="ruleForm.timeInterval" type="monthrange" range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份">
+
+							</el-date-picker>
   						</el-form-item>
   						<el-form-item label="材料类型" prop="materialType">
   							<el-select v-model="ruleForm.materialType" multiple="true" collapse-tags="true" placeholder="请选择材料类型">
@@ -62,19 +53,16 @@
   						</el-form-item>
 					</el-form>
 				</el-dialog>
-				<li class="reportListClass" @click="toReportDetail(item.id)">
-					<div class="markClass"><i class="iconfont icon-beizhu"></i>已备注</div>
-					<div class="reporType">平台</div>
-					<p class="reporTitle">关于电线电缆及光纤光缆材...</p>
-					<p class="reporTime">2019-01-23</p>	
-				</li>
-				<li class="reportListClass">
-					<div class="reporType">平台</div>
-					<p class="reporTitle">关于电线电缆及光纤光缆材...</p>
-					<p class="reporTime">2019-01-23</p>	
+				<li class="reportListClass" v-for="(item,index) in reportList" v-bind:key="index">
+					<img src="reportIconn" class="reportIcon">
+					<div :class="item.mark == 1?'markClass':'markClass markDisplay'">{{}}</div>
+					<div :class="item.type == 1?'reporType':'reporType reporType1'">{{item.type == 1?'平台':'我的'}}</div>
+					<p class="reporTitle">{{item.title}}</p>
+					<p class="reporTime">{{item.createTime.split('T')[0]}}</p>
 				</li>
 			</ul>
-			<el-pagination :page-size="20" :pager-count="11" layout="prev, pager, next" :total="1000" class="reportPage" current-chang="get_data()" prev-click="get_data()" next-click="get_data()">
+			<el-pagination :page-size="pageSize" :total="elPageNum" :pager-count="5" :current-page="pageNum" :hide-on-single-page="true" layout="prev, pager, next"  class="reportPage" @current-change="get_data()" 
+			prev-click="get_data()" next-click="get_data()">
             </el-pagination>
 		</div>
 
@@ -85,15 +73,23 @@ export default {
 	data() {
 		return {
 			reportList:[],
+			reportIconn:'',
 			// type的值为是全部报告还是平台报告或者其他
 			type:0,
 			pageNum:1,
-			pageSize:21,
+			pageSize:13,
+			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1NzQ1NjQ0NiwibmJmIjoxNTU3MzcwMDQ2fQ.gSpbQHxU7-vJ4mqZFSFG8N5TfK6KXXgjilSJldqe1mo',
+			// listData:{
+			// 	pageNum:1,
+			// 	pageSize:13,
+			// 	type:0
+			// },
+			elPageNum:100,
 			dialogFormVisible: false,
 			ruleForm: {
 				name: '',
 				type:'',
-				timePoint: '',
+				timeInterval: '',
 				materialType:'',
 				compareRegion:'',
 				desc: ''
@@ -105,8 +101,8 @@ export default {
 				type: [
 					{ required: true, message: '请选择报告类型', trigger: 'change'}
 				],
-				timePoint: [
-					{ required: true, message: '请选择报告类型', trigger: 'change'}
+				timeInterval: [
+					{ required: true, message: '请选择时间节点', trigger: 'change'}
 				],
 				materialType: [
 					{ required: true, message: '请选择材料类型', trigger: 'change'}
@@ -120,29 +116,100 @@ export default {
 			}
 		}
 	},
+	created(){
+		var data1 = {
+			pageNum:this.pageNum,
+			pageSize:this.pageSize,
+			token:this.token
+		}
+		this.$api.get_reports(data1).then(value => {
+			this.reportList = value.data.list
+			this.elPageNum = value.data.list.length
+			for(var i = 0;i < value.data.list.length;i++){
+				if(value.data.list[i].materialClassID.length = 1){
+					this.reportIconn = '../../../public/img/report/bg_' + value.data.list[i].materialClassID + '.png'
+				}else{
+					this.reportIconn = 	'../../../public/img/report/bg_1.png'
+				}
+			}
+		})
+	},
 	methods:{
 		choose:function(status){
 			if(status == 0) {
 				//先重置pageNum 再获取全部的报告列表
-				//this.reportList = value
+				this.pageNum = 1
 				this.type = 0
-
+				var data2 = {
+					pageNum:this.pageNum,
+					pageSize:this.pageSize,
+					token:this.token
+				}
+				this.$api.get_reports(data2).then(v => {
+					this.reportList = v.data.list
+					this.elPageNum = v.data.list.length
+				})
 			} else if(status == 1) {
 				// 获取平台报告
+				this.pageNum = 1
 				this.type = 1
+				var data3 = {
+					pageNum:this.pageNum,
+					pageSize:this.pageSize,
+					type:this.type
+				}
+				this.$api.get_reports(data3).then(v => {
+					this.reportList = v.data.list
+					this.elPageNum = v.data.list.length
+				})
 
 			} else {
 				//获取我的报告
+				this.pageNum = 1
 				this.type = 2
+				var data4 = {
+					pageNum:this.pageNum,
+					pageSize:this.pageSize,
+					token:this.token,
+					type:this.type
+				}
+				this.$api.get_reports(data4).then(v => {
+					this.reportList = v.data.list
+					this.elPageNum = v.data.list.length
+				})
 			}
 		},
 		get_data() {
-			const data = {
+			var data5 = {
 				pageNum:this.pageNum,
 				pageSize: this.pageSize,
+				token:this.token
+			}
+			var data6 = {
+				pageNum:this.pageNum,
+				pageSize:this.pageSize,
+				type:this.type
+			}
+			var data7 = {
+				pageNum:this.pageNum,
+				pageSize:this.pageSize,
+				token:this.token,
 				type:this.type
 			}
 			//请求, 赋值reportList，因为需要有默认列表
+			if(this.type == 0){
+				this.$api.get_reports(data5).then(v => {
+					this.reportList = v.data.list
+				})
+			}else if(this.type == 1){
+				this.$api.get_reports(data6).then(v => {
+					this.reportList = v.data.list
+				})
+			}else{
+				this.$api.get_reports(data6).then(v => {
+					this.reportList = v.data.list
+				})
+			}
 		},
 		toReportDetail(reportId){
 			// window.location.href='reportDetail.vue'
@@ -175,12 +242,13 @@ export default {
 <style lang="stylus">
 .intellReport
 	width 100%
-	height 100%
+	position relative
 
 .reportContent
 	width 100%
+	height 100%
 	padding 20px 40px
-	margin-top 10px
+	margin-top 88px
 	font-size 14px
 	color rgba(51,51,51,1)
 	line-height 14px
@@ -188,7 +256,7 @@ export default {
 .reportContentUl
 	display flex
 	flex-direction row
-	flex-wrap nowrap
+	flex-wrap wrap
 	justify-content flex-start
 
 .reportListClass
@@ -197,7 +265,14 @@ export default {
 	background-color #ffffff
 	border-radius 8px
 	margin-right 20px
+	margin-bottom 20px
 	position relative
+
+.reportIcon
+	position absolute
+	top 44px
+	left 60px
+	display block
 
 .newReporTitle
 	position absolute
@@ -212,6 +287,9 @@ export default {
  
 .newReport
 	background-color #8B78FE
+	background-image url('../../../public/img/newReport.png')
+	background-repeat no-repeat
+	background-position center 56px
 
 .newReport1
 	display block
@@ -266,18 +344,7 @@ export default {
 	text-align center
 
 .reporType1
-	position absolute
-	left 10px
-	bottom 65px
-	width 34px
-	height 16px
-	background-color #F8374E
-	border-radius 4px
-	font-size 12px
-	color #ffffff
-	line-height 16px
-	text-align center
-
+	background-color #F8374E!important
 
 .reporTitle
 	position absolute
