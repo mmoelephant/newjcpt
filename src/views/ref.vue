@@ -1,11 +1,11 @@
 <template>
-    <div style='height:100%;overflow-y:scroll'>
+    <div style='height:100%'>
         <div class="reportBtns">
-			<div :class="timetype == 0?'btnClass btnActive':'btnClass'" @click="choose(0)"><span :class="timetype == 0?'dotClass dotActive':'dotClass'"></span>月度数据</div>
-			<div :class="timetype == 1?'btnClass btnActive':'btnClass'" @click="choose(1)"><span :class="timetype == 1?'dotClass dotActive':'dotClass'"></span>季度数据</div>
-			<div :class="timetype == 2?'btnClass btnActive':'btnClass'" @click="choose(2)"><span :class="timetype == 2?'dotClass dotActive':'dotClass'"></span>年度数据</div>
+			<div :class="timetype == 0?'btnClass btnActive':'btnClass'" @click="timetype = 0"><span :class="timetype == 0?'dotClass dotActive':'dotClass'"></span>月度数据</div>
+			<div :class="timetype == 1?'btnClass btnActive':'btnClass'" @click="timetype = 1"><span :class="timetype == 1?'dotClass dotActive':'dotClass'"></span>季度数据</div>
+			<div :class="timetype == 2?'btnClass btnActive':'btnClass'" @click="timetype = 2"><span :class="timetype == 2?'dotClass dotActive':'dotClass'"></span>年度数据</div>
 		</div>
-        <el-container style='height:100%;background:#F6F7FE;margin-top:20px;padding:0 20px;box-sizing:border-box'>
+        <el-container style='height:100%;background:#F6F7FE;padding:88px 20px 40px 20px;box-sizing:border-box'>
             <el-aside width="320px" style='border-radius:4px;background:#fff;margin-right:20px' class='cate'>
                 <div class='title'>
                     <i></i>
@@ -40,9 +40,25 @@
                         </div>
                         <div class='timer'>
                             <span>时间</span>
-                            <el-select v-model="time" placeholder="请选择">
+                            <el-select v-model="time" placeholder="请选择" v-show='timetype==0'>
                                 <el-option
-                                v-for="item in options"
+                                v-for="item in monthoptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                            <el-select v-model="time" placeholder="请选择" v-show='timetype==1'>
+                                <el-option
+                                v-for="item in seasonoptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                            <el-select v-model="time" placeholder="请选择" v-show='timetype==2'>
+                                <el-option
+                                v-for="item in yearoptions"
                                 :key="item.value"
                                 :label="item.label"
                                 :value="item.value">
@@ -52,7 +68,12 @@
                     </div>  
                     <div class='table-box'>
                         <div class='t'>
-                            <p>云南省材料价格对比</p>
+                            <p v-if='chosed_tab==0'>{{chosed_cate.name}}地区数据表
+                                <span v-if='isnext' @click='back'>返回 ></span>
+                            </p>
+                            <p v-if='chosed_tab==1'>云南省材料价格对比
+                                <span v-if='isnext' @click='back'>返回 ></span>
+                            </p>
                             <ul>
                                 <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"'>价格</li>
                                 <li :class='chosed_type=="zs"? "ac" :""' @click='chosed_type="zs"'>指数</li>
@@ -60,25 +81,31 @@
                                 <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
                             </ul>
                         </div>
-                        <reftable :tabledata='tabledata'></reftable>
+                        <reftable :tabledata='tabledata' 
+                            :type='chosed_tab' 
+                            :t_type='chosed_type'
+                            @checkList='checkList' 
+                            @choseitem='choseitem'
+                            :isnext='isnext'></reftable>
+                        <page-btn :disabled="disablepage" @pagechange='pagechange'></page-btn>
                     </div>
                 </div>
-                <div class='ch'>
+                <div class='ch' v-show ='showcharts'>
                     <h1>云南省材料价格对比柱状图</h1>
                     <div class='tool'>
                         <ul>
-                            <li>
+                            <li @click='init'>
                                 <i class='iconfont icon-zhuzhuangtu'></i>
                             </li>
-                            <li>
+                            <li @click='init_line'>
                                 <i class='iconfont icon-zhexian'></i>
                             </li>
-                            <li>
+                            <li @click='init_barline'>
                                 <i class='iconfont icon-zhuzhuangzhexian'></i>
                             </li>
                         </ul>
                         <ul>
-                            <li>
+                            <li @click='showcharts=false'>
                                 收起图表
                             </li>
                             <li @click='saveImg'>
@@ -99,281 +126,243 @@
 <script>
 import $ from 'jquery'
 import reftable from '../components/ref-table'
+import pageBtn from '../components/page-btn'
 export default {
     data() {
         return {
-            cateList: [{
-                    id: "1",
-                    name: "钢材",
-                    pid: "0",
-                    sort: "1",
-                    childrenList: [{
-                            id: "11",
-                            name: "钢筋",
-                            pid: "1",
-                            sort: "1"
-                        },
-                        {
-                            id: "12",
-                            name: "钢板",
-                            pid: "1",
-                            sort: "2"
-                        },
-                        {
-                            id: "13",
-                            name: "钢管",
-                            pid: "1",
-                            sort: "3"
-                        },
-                        {
-                            id: "14",
-                            name: "型钢",
-                            pid: "1",
-                            sort: "3"
-                        },
-                        {
-                            id: "15",
-                            name: "钢绞线",
-                            pid: "1",
-                            sort: "3"
-                        },
-                        {
-                            id: "16",
-                            name: "钢丝绳",
-                            pid: "1",
-                            sort: "3"
-                        },
-                    ]
-                },
-                {
-                    id: "3",
-                    name: "地区材料",
-                    pid: "0",
-                    sort: "2",
-                    childrenList: [{
-                            id: "31",
-                            name: "钢筋水泥",
-                            pid: "3",
-                            sort: "1"
-                        },
-                        {
-                            id: "32",
-                            name: "砌体材料",
-                            pid: "3",
-                            sort: "2"
-                        },
-                        {
-                            id: "33",
-                            name: "建筑用砂",
-                            pid: "3",
-                            sort: "3"
-                        },
-                            {
-                            id: "34",
-                            name: "建筑用石",
-                            pid: "3",
-                            sort: "3"
-                        },
-                            {
-                            id: "35",
-                            name: "轻骨料",
-                            pid: "3",
-                            sort: "3"
-                        },
-                            {
-                            id: "36",
-                            name: "地基用材",
-                            pid: "3",
-                            sort: "3"
-                        },
-                            {
-                            id: "37",
-                            name: "混凝土",
-                            pid: "3",
-                            sort: "3"
-                        },
-                            {
-                            id: "38",
-                            name: "建筑砂浆",
-                            pid: "3",
-                            sort: "3"
-                        },
-                    ]
-                },
-                {
-                    id: "4",
-                    name: "电线电缆及光纤光缆",
-                    pid: "0",
-                    sort: "3",
-                    childrenList: [{
-                            id: "41",
-                            name: "电力电缆",
-                            pid: "4",
-                            sort: "1"
-                        },
-                        {
-                            id: "42",
-                            name: "电气装备用电",
-                            pid: "4",
-                            sort: "2"
-                        },
-                        {
-                            id: "43",
-                            name: "其他电气材料",
-                            pid: "4",
-                            sort: "3"
-                        },
-                    ]
-                },
-                {
-                    id: "5",
-                    name: "管材",
-                    pid: "0",
-                    sort: "4",
-                    childrenList: [{
-                            id: "51",
-                            name: "非金属管",
-                            pid: "5",
-                            sort: "1"
-                        },
-                        {
-                            id: "52",
-                            name: "复合管",
-                            pid: "5",
-                            sort: "2"
-                        },
-                        {
-                            id: "53",
-                            name: "金属管",
-                            pid: "5",
-                            sort: "3"
-                        },
-                    ]
-                },
-                {
-                    id: "6",
-                    name: "防水材料",
-                    pid: "0",
-                    sort: "5",
-                    childrenList: [{
-                            id: "61",
-                            name: "防水卷材",
-                            pid: "6",
-                            sort: "1"
-                        },
-                        {
-                            id: "62",
-                            name: "防水涂料",
-                            pid: "6",
-                            sort: "2"
-                        },
-                        {
-                            id: "63",
-                            name: "防水砂浆",
-                            pid: "6",
-                            sort: "3"
-                        },
-                    ]
-                },
-                {
-                    id: "7",
-                    name: "建筑玻璃",
-                    pid: "0",
-                    sort: "6",
-                    childrenList: [{
-                            id: "71",
-                            name: "特种琉璃",
-                            pid: "7",
-                            sort: "1"
-                    },
-                    ]
-                },
-                {
-                    id: "31",
-                    name: "混凝土预制件",
-                    pid: "0",
-                    sort: "7",
-                    childrenList: [{
-                        id: "81",
-                        name: "混凝土管",
-                        pid: "31",
-                        sort: "1"
-                    },
-                    {
-                        id: "82",
-                        name: "混凝土预制桩",
-                        pid: "31",
-                        sort: "2"
-                    },
-                ]}
-            ],
+            cateList: [],//分类列表 左侧树状图
             defaultProps: {
                 children: 'childrenList',
                 label: 'name'
             },
-            chosed_id:1,
-            showcharts:false,
-            chosed_tab:0,
-            options:[{
+            chosed_cate:{
+                // id:1,
+                // name:'钢材'
+            },//选中的分类
+            showcharts:false,//是否展示图
+            chosed_tab:0,//选择表格展示类型 0：区域比较 1：材料比较
+            monthoptions:[{ //月度时间控件
                 value:13,
                 label: '近13个月'
             }],
-            time:'',
-            chosed_type:'price',
-            timetype:0,
-            tabledata:[]
+            seasonoptions:[{//季度时间控件
+                value:9,
+                label: '近3个季度'
+            },
+            {
+                value:18,
+                label: '近6个季度'
+            }],
+            yearoptions:[{//年度时间控件
+                value:2018,
+                label: '2018年'
+            },
+            {
+                value:2019,
+                label: '2019年'
+            }],
+            time:'',//选取的时间
+            chosed_type:'price',//表格内容展示筛选 price:价格 zs：指数 tb：同比 hb：环比
+            timetype:0,//时间类型 0：月度 1：季度 2：年度
+            tabledata:[],//表格数据 
+            chosed_area:{
+                area:53
+            }, // 选择的区域code 默认云南省
+            disablepage:-1, //传给分页组件的判定哪个按钮禁用 -1:左按钮 1：右按钮 0：不禁用 2:都禁用
+            isnext:false,//是否是子表格
+            checked:[],//选中作为图渲染的数据
         }
     },
-    created() {
-        this.time = this.options[0].value
+    created() {       
         this.get_cate()
     },
     components:{
-        reftable
+        reftable,
+        pageBtn
     },
     watch:{
-        chosed_id(val) {
-            // console.log(val)
-        }
-    },  
-    mounted() {
-        this.init()
-    },
-    methods:{
-        async get_cate() {
-            const res = await this.$api.get_cate({})
-            this.cateList = res.data
-            this.chosed_id = this.cateList[0].id
-            this.get_area_data()
-        },
-        async get_area_data() {
-            const data = {
-                id:this.chosed_id,
-				monthNumber:this.time,
+        timetype(type) {
+            console.log(123132)
+            if(type==0) {
+                this.time = this.monthoptions[0].value
+                
+            } else if(type==1) {
+                this.time = this.seasonoptions[0].value
+                
+            } else {
+                this.time = this.yearoptions[0].value
+                
             }
-            const res = await this.$api.get_bg_line(data)
-            if(this.chosed_type == 'price') {
-                let arr = res.data.data
-                let list = []
-                arr.map(item => {
-                    
+            this.chosed_tab =0
+        },
+        time(val) {
+            if(this.chosed_tab == 0) {
+                this.get_area_data()
+            } else {
+                this.get_cate_data()
+            }
+        },
+        showcharts(val){
+            if(val) {
+                this.$nextTick(() =>{
+                    this.init()
                 })
             }
-            this.tabledata = res.data.data
+            
+        } 
+    },  
+    methods:{
+        back() {
+            this.isnext = false
+            if(this.chosed_tab ==0) {
+                this.chosed_area = {
+                    area:53
+                }
+                this.get_area_data()
+            } else {
+                this.get_cate_data()
+            }
         },
-        choose(type) {
-            this.timetype = type
+        formateTime() {
+            const now =  new Date()
+            let month = now.getMonth()
+            let exmonth,exyear
+            const y= now.getFullYear()
+            switch (this.time) {
+                case 13:
+                    exmonth = month+12-13+1
+                    exmonth = exmonth>9?exmonth:'0'+exmonth
+                    month = month>9?month:'0'+month
+                    return [(y-1)+'-'+exmonth,y+'-'+month]
+                    break;
+                case 9:
+                    if(month>=9) {
+                        exmonth= month-9+1
+                        exyear=y
+                    } else {
+                        exmonth = month+12-9+1
+                        exyear=y-1
+                    }                     
+                    exmonth = exmonth>9?exmonth:'0'+exmonth
+                    month = month>9?month:'0'+month
+                    return [exyear+'-'+exmonth,y+'-'+month]
+                    break;
+                case 18:
+                    if(month>=6) {
+                        exmonth= month+12-18+1
+                        exyear=y-1
+                    } else {
+                        exmonth = month+24-18+1
+                        exyear=y-2
+                    }                     
+                    exmonth = exmonth>9?exmonth:'0'+exmonth
+                    month = month>9?month:'0'+month
+                    return [exyear+'-'+exmonth,y+'-'+month]
+                    break;
+                case 2018:
+                    return['2018-01','2018-12']
+                    break;
+                case 2019:
+                    return['2019-01','2019-12']
+                    break;
+            }
         },
-        handleNodeClick(data) {
-            console.log(data)
+        async get_cate() { //获取分类列表 左侧树渲染
+            const res = await this.$api.get_cate({})
+            this.cateList = res.data
+            this.chosed_cate = this.cateList[0]
+            this.time = this.monthoptions[0].value
         },
-        init() {
+        async get_area_data() {// 获取区域的数据
+            this.tabledata =[]
+            const t_arr=this.formateTime()
+            const data = {
+                id:this.chosed_cate.id,//选择的材料
+				startDate:t_arr[0],//时间区间
+                endDate:t_arr[1],
+                area:this.chosed_area.area
+            }
+            const res = await this.$api.get_area_time_list(data)
+            let keys = Object.keys(res.data.data)
+            keys.forEach(key => {
+                this.tabledata.push(res.data.data[key])
+            })
+            if(this.showcharts) { //如果展示图表  渲染
+                this.init()
+            }
+        },
+        async get_cate_data() { //获取材料的数据 目前只获取全省的材料的数据
+            this.tabledata = []
+            const t_arr=this.formateTime()
+            const data = {
+                // area:53,//this.chosed_area,//选择的地区,目前只有全省
+                pid:this.isnext?this.chosed_cate.mid:0,//选中的材料id
+                startDate:t_arr[0],//时间区间
+                endDate:t_arr[1]
+            }
+            const res = await this.$api.get_cate_time_list(data)
+            let keys = Object.keys(res.data.data)
+            keys.forEach(key => {
+                this.tabledata.push(res.data.data[key])
+            })
+            if(this.showcharts) {
+                this.init()
+            }
+        },
+        handleNodeClick(data) { //选择材料
+            if(this.chosed_tab ==0) { //获取区域
+                this.chosed_cate = data
+                this.chosed_name = data.name
+                this.get_area_data()
+            } else {
+                this.chosed_cate = data
+                this.get_cate_data()
+            }
+        },
+        async init() {
+            let x=[],y=[],arr=[],legend=[]
+            if(this.checked && this.checked.length >0) {
+                this.checked.map(item => {
+                    let data =[]
+                    if(x.length<item.length) {
+                        x=[]
+                        item.map(t => {                       
+                            x.push(t.mdate.substr(0,7))
+                        })
+                        
+                    }
+                    item.map(t=> {
+                        data.push(t.price) 
+                    })
+                    legend.push(item[0].area_name)
+                    y.push({data:data,type:'bar',name:item[0].area_name})
+                })
+            } else {// 获取全省的材料数据 用于初始化图表
+                const t_arr=this.formateTime()
+                const data = {
+                    id:this.chosed_cate.id,//选中的材料id
+                    startDate:t_arr[0],//时间区间
+                    endDate:t_arr[1]
+                }
+                const res = await this.$api.get_yn_time_list(data)
+                let keys = Object.keys(res.data.data)
+                arr = res.data.data[keys[0]]
+                y.push({
+                    data:[],
+                    type:'bar'
+                })
+                arr.forEach(item => {
+                    x.push(item.mdate.substr(0,7))
+                    y[0].data.push(item.price)
+                })
+                legend=['全省']
+            }          
             const option = {
                 tooltip : {
                     trigger: 'axis'
                 },
                 legend: {
-                    data:['蒸发量','降水量'],
+                    data:legend,
                     bottom:0
                 },
                 toolbox: {
@@ -396,7 +385,7 @@ export default {
                 xAxis : [
                     {
                         type : 'category',
-                        data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+                        data : x
                     }
                 ],
                 yAxis : [
@@ -404,53 +393,43 @@ export default {
                         type : 'value'
                     }
                 ],
-                series : [
-                    {
-                        name:'蒸发量',
-                        type:'bar',
-                        data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
-                        markPoint : {
-                            data : [
-                                {type : 'max', name: '最大值'},
-                                {type : 'min', name: '最小值'}
-                            ]
-                        },
-                        markLine : {
-                            data : [
-                                {type : 'average', name: '平均值'}
-                            ]
-                        }
-                    },
-                    {
-                        name:'降水量',
-                        type:'bar',
-                        data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
-                        markPoint : {
-                            data : [
-                                {name : '年最高', value : 182.2, xAxis: 7, yAxis: 183, symbolSize:18},
-                                {name : '年最低', value : 2.3, xAxis: 11, yAxis: 3}
-                            ]
-                        },
-                        markLine : {
-                            data : [
-                                {type : 'average', name : '平均值'}
-                            ]
-                        }
-                    }
-                ]
+                series :y
             }
             const mycharts = this.$echarts.init(document.getElementById('main'))
             mycharts.setOption(option)
         },
-        saveImg() {
-            var canvasData = $('#main').children('div').children('canvas');
-            console.log($('#main').children())
-            var a = document.createElement("a");
-            a.href = canvasData[0].toDataURL();;
-            a.download = "图表";
-            a.click();
+        init_line() {
+
         },
-        chose_area(item) {
+        init_barline() {
+
+        },
+        saveImg() {
+            var canvasData = $('#main').children('div').children('canvas')
+            var a = document.createElement("a")
+            a.href = canvasData[0].toDataURL()
+            a.download = "图表"
+            a.click()
+        },
+        checkList(val) {
+            this.checked = val
+            if(this.showcharts) {
+                this.init()
+            }
+            //根据获取到的list重新渲染图表
+        },
+        choseitem(item) {
+            //根据选择的item展示下一级表及图
+            this.isnext = true
+            if(this.chosed_tab ==0) { //获取区域
+                this.chosed_area = item// 把选取的区域赋值
+                this.get_area_data()
+            } else {
+                this.chosed_cate =item //把选取的材料赋值
+                this.get_cate_data()
+            }
+        },
+        pagechange(type) {
 
         }
     }
@@ -458,6 +437,9 @@ export default {
 </script>
 <style lang="stylus" scoped>
 @import '../style/color.stylus'
+#main
+    div
+        width 100%
 .title 
     display flex
     font-size 16px
@@ -514,9 +496,9 @@ export default {
     min-height 100%
     width 100%
     margin-left 20px
-    
-    border-radius 8px    
-    
+    height 100%
+    overflow-y scroll
+    border-radius 8px       
     flex-direction column
     .table-box
         width 100%
@@ -535,6 +517,13 @@ export default {
                 font-size 20px
                 font-family MicrosoftYaHei-Bold
                 font-weight bold
+                span 
+                    font-size 16px
+                    color #fff
+                    text-decoration underline
+                    margin-left 26px
+                    font-weight 400
+                    cursor pointer
             ul
                 display flex
                 font-size 14px

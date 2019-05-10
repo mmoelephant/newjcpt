@@ -35,6 +35,7 @@ service.interceptors.response.use(
 )
 
 const api = {
+		//大屏接口
 		get_cate_level1() {
 			return service1.post('/PageMaterialController/getMaterialsInfoByRecent',{})
 		},
@@ -47,19 +48,38 @@ const api = {
 		get_cate_num(data) {
 			return service1.post('/PageMaterialController/getMaterialCount',data)
 		},
+		//登录
 		login (data) {
 			return service.post('/PageUserController/login',data)
 		},
 		updata_user(data) {
 			return service.post('/PageUserController/updateUserInfo',data)
 		},
-
+		// 数据查询
+		get_cate_time_list(data) {
+			return service1.post('/PageMaterialController/getMaterialsInfoEncapsulation',data)
+		},
+		get_area_time_list(data) {
+			return service1.post('/PageMaterialController/getMaterialsInfoByAreaEncapsulation',data)
+		},
+		get_yn_time_list(data) {
+			return service1.post('/PageMaterialController/getMaterialsInfoByProvinceAreaEncapsulation',data)
+		},
     get_area(data) {
 		return service.post('/PageAreaController/getAreaList', {pid:53})
     },
     get_cate(data) {
 		return service1.post('/PageMaterialController/getMaterialsClass', {})
-    },
+		},
+		//帮助
+		get_help(data) {
+			if(data) data = qs.stringify(data, { allowDots: true })
+			return formser.post('/pageHelperController/findHelperByPage', data)
+		},
+		get_help_detail(data) {
+			if(data) data = qs.stringify(data, { allowDots: true })
+			return formser.post('/pageHelperController/getArtInfo', data)
+		},
     get_cate_data(data) {
 		return service.post('/PageMaterialController/getMaterialsInfo',data)
 	},
@@ -95,10 +115,7 @@ const api = {
 		if(data) data = qs.stringify(data, { allowDots: true })
 		return formser.post('/PageSubscriptionController/add',data)
 	},
-	get_help(data) {
-		if(data) data = qs.stringify(data, { allowDots: true })
-		return formser.post('/pageHelperController/findHelperByPage', data)
-	},
+	
 	get_help_detail(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
 		return formser.post('/pageHelperController/getArtInfo', data)

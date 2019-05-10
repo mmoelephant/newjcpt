@@ -31,9 +31,15 @@ let routes = [
     name: 'setting',
     component: () => import('../views/setting.vue')
   },
-  {path: '/ref',
+  {
+    path: '/ref',
     name: 'ref',
     component: () => import('../views/ref.vue')
+  },
+  {
+    path: '/help',
+    name: 'help',
+    component: () => import('../views/help/help.vue')
   },
 ]
 routes.push(...rout)

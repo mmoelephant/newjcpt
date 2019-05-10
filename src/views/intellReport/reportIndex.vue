@@ -54,7 +54,7 @@
 					</el-form>
 				</el-dialog>
 				<li class="reportListClass" v-for="(item,index) in reportList" v-bind:key="index">
-					<img src="reportIconn" class="reportIcon">
+					<img :src="get_img(item.materialClassID)" class="reportIcon">
 					<div :class="item.mark == 1?'markClass':'markClass markDisplay'">{{}}</div>
 					<div :class="item.type == 1?'reporType':'reporType reporType1'">{{item.type == 1?'平台':'我的'}}</div>
 					<p class="reporTitle">{{item.title}}</p>
@@ -125,16 +125,12 @@ export default {
 		this.$api.get_reports(data1).then(value => {
 			this.reportList = value.data.list
 			this.elPageNum = value.data.list.length
-			for(var i = 0;i < value.data.list.length;i++){
-				if(value.data.list[i].materialClassID.length = 1){
-					this.reportIconn = '../../../public/img/report/bg_' + value.data.list[i].materialClassID + '.png'
-				}else{
-					this.reportIconn = 	'../../../public/img/report/bg_1.png'
-				}
-			}
 		})
 	},
 	methods:{
+		get_img(type) {
+			return '/img/report/bg_'+type+'.png'
+		},
 		choose:function(status){
 			if(status == 0) {
 				//先重置pageNum 再获取全部的报告列表

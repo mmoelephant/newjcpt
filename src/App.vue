@@ -15,7 +15,7 @@
             <el-container style='height:100%;'>
                 <el-aside width="200px" class='side'>
 					<div class='userinfo'>
-						<img :src='user?user.headPortrait:""' :onerror='defaultimg'/>
+						<img :src='user&&user.headPortrait?user.headPortrait:""' :onerror='defaultimg'/>
 						<h1>{{user?user.name:""}}</h1>
 						<p>{{user?user.unit:""}}</p>
 					</div>
@@ -70,7 +70,7 @@ export default {
                 }, {
                     name: '帮助中心',
                     icon: 'icon-bangzhu',
-                    router: '/analysis-report'
+                    router: '/help'
                 }, {
                     name: '账户设置',
                     icon: 'icon-setting',

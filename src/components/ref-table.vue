@@ -1,109 +1,123 @@
 <template>
   <ul>
     <li class="th">
-      <p>材料</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
-      <p>2019.01</p>
+      <p>{{type==0?'区域':'材料'}}</p>
+      <p v-for="(i,index) in time" :key="index">{{i.mdate?i.mdate.toString().substr(0,7):i.asmdate.substr(0,7)}}</p>
     </li>
-    <li v-for="(i,index) in [1,1,1,1,1,1,1]" :key="index">
-      <p>
-        <span>钢材</span>
-        <i class="iconfont icon-shang-copy" @click="chose_area(i)"></i>
-      </p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-      <p>543.03</p>
-    </li>
+    <el-checkbox-group v-model="checked">    
+      <li v-for="(i,index) in tabledata" :key="index">
+        <p>
+          <el-checkbox :label='i' v-if='type==0' class='label'>{{i[0].area_name.substr(0,2)}}</el-checkbox>
+          <el-checkbox :label='i' v-if='type==1' class='label'>{{i[0].name.substr(0,6)}}</el-checkbox>
+          <i class="iconfont icon-shang-copy" @click="chose_area(i[0])" v-if='!isnext'></i>
+        </p>
+        <p v-for='(num) in i' :key='num.id' >
+          <span v-if='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}</span>  
+          <span v-if='t_type=="zs"'>{{num.exponent?Number(num.exponent).toFixed(2):'-'}}</span>  
+          <span v-if='t_type=="tb"'>{{num.tongbi?Number(num.tongbi).toFixed(2):'-'}}</span>  
+          <span v-if='t_type=="hb"'>{{num.huanbi?Number(num.huanbi).toFixed(2):'-'}}</span>  
+        </p>
+      </li>
+    </el-checkbox-group>
   </ul>
 </template>
 <script>
 export default {
+    data() {
+      return {
+        checked:[],
+        time:[],
+      }
+    },
     props:{
         tabledata:{
-            type:Array
+          type:Array
+        },
+        type:{
+          type:Number
+        },
+        t_type:{
+          type:String
+        },
+        isnext:{
+          type:Boolean
         }
+    },
+    watch:{
+      checked:{
+        handler(val) {
+          this.$emit('checkList',val)
+        }
+      },
+      tabledata:{
+        handler(val) {
+          let t = []
+          val.map(item => {
+            if(item.length>t.length) {
+              t = item
+            }
+          })
+          this.time = t
+        },
+        deep:true
+      }
+    },
+    methods:{
+      chose_area(item) {
+        this.$emit('choseitem',item)
+      }
     }
 };
 </script>
 <style lang="stylus" scoped>
 @import '../style/color.stylus'
-ul {
-  li {
-    display: flex;
-    align-items: center;
-    height: 32px;
-    box-sizing: border-box;
-    padding: 6px;
+ul 
+  li 
+    display flex
+    align-items center
+    height 32px
+    box-sizing border-box
+    padding 6px
+    p 
+      width 190px
+      color #fff
+      font-size 14px
+      display flex
+      justify-content center
+      align-items center
+      border-right 1px solid #fff
+      box-sizing border-box
+      flex-shrink 0
+    p+p 
+      width 76px
+    
+  .th
+    background #B0BDFF
+  i 
+    cursor: pointer
+    flex-shrink 0
+  .el-checkbox-group
+    li
+      p 
+        justify-content space-between
+        color font-color-black
+        flex-shrink 0
+        .iconfont 
+          font-size 10px
+          color: #637CFB
+        
 
-    p {
-      width: 190px;
-      color: #fff;
-      font-size: 14px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-right: 1px solid #fff;
-      box-sizing: border-box;
-    }
+        border none
+      
 
-    p+p {
-      width: 76px;
-    }
-  }
+      p+p 
+        justify-content center
+    li:nth-child(even) 
+      background #F3F4FE
+    
 
-  li+li {
-    p {
-      justify-content: space-around;
-      color: font-color-black;
-
-      .iconfont {
-        font-size: 10px;
-        color: #637CFB;
-      }
-
-      border: none;
-    }
-
-    p+p {
-      justify-content: center;
-    }
-  }
-
-  li:nth-child(even) {
-    background: #F3F4FE;
-  }
-
-  li:nth-child(odd) {
-    background: #DFE1F4;
-  }
-
-  li:nth-child(1) {
-    background: #B0BDFF;
-  }
-
-  i {
-    cursor: pointer;
-  }
-}
+    li:nth-child(odd) 
+      background #DFE1F4
+.label
+    width 100%
 </style>

@@ -21,15 +21,12 @@ module.exports = {
                 secure: false
             },
             '/lw': {
-                target: 'http://192.168.8.121:9102',
+                target: 'http://192.168.8.104:9102',
                 pathRewrite: { '^/lw': '' },
                 ws: true,
                 changeOrigin: true,
                 secure: false
             }
-            // '/foo': {
-            //     target: '<other_url>'
-            // }
         }
     },
 }
