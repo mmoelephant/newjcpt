@@ -9,27 +9,27 @@
                 基本资料
             </div>
             <div class='headicon'>
-                <img src="../../public/img/default.png" alt="">
+                <img :src='dataURL?dataURL:user?user.headPortrait:""' :onerror='defaultimg'/>
                 <div class='shadow'>
                     点击上传
                 </div>
-                <input type="file" accept="image/*">
+                <input type="file" accept="image/*" @change='upimg'>
             </div>
             <el-form label-position="right" label-width="80px" :model="formLabel" class='form'>
                 <el-form-item label="用户名">
                     <el-input v-model="formLabel.name"></el-input>
                 </el-form-item>
                 <el-form-item label="所在地">
-                    <el-input v-model="formLabel.local"></el-input>
+                    <el-input v-model="formLabel.location"></el-input>
                 </el-form-item>
                 <el-form-item label="单位">
-                    <el-input v-model="formLabel.company"></el-input>
+                    <el-input v-model="formLabel.unit"></el-input>
                 </el-form-item>
                 <el-form-item label="个人简介">
-                    <el-input v-model="formLabel.intro" type="textarea" resize='none' :rows='5'></el-input>
+                    <el-input v-model="formLabel.individualResume" type="textarea" resize='none' :rows='5'></el-input>
                 </el-form-item>
             </el-form>
-            <div class='btn'>
+            <div class='btn' @click='updata'>
                 更新资料
             </div>
         </div>
@@ -40,15 +40,43 @@ export default {
     data() {
         return {
             formLabel:{},
-            imageUrl:'../../public/img/default.png'
+            defaultimg:'this.src="'+ require('../../public/img/default.png') +'"',
+            user:this.$store.state.login.userInfo,
+            dataURL:''
+        }
+    },
+    created() {
+        this.formLabel = {
+            name: this.user.name,
+            location: this.user.location,
+            unit: this.user.unit,
+            individualResume: this.user.individualResume
         }
     },
     methods:{
-        handleAvatarSuccess() {
-
+        upimg(e) {
+            console.log(e)
+            const file = e.target.files[0]
+            const reader = new FileReader();
+            const _this = this
+            reader.readAsDataURL(file); // 读出 base64
+            reader.onloadend = function () {
+                _this.dataURL = reader.result
+                
+            }
         },
-        beforeAvatarUpload() {
-
+        async updata() {
+            this.dataURL&&this.dataURL.length>0?this.formLabel.headPortrait = this.dataURL:''
+            this.formLabel.token = this.$store.state.login.token
+            const res = await this.$api.updata_user(this.formLabel)
+            if(res.data.result == 0) {
+                this.$store.commit('login/SET_USER_INFO', res.data.data)
+                sessionStorage.setItem('user', JSON.stringify(res.data.data))
+                this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                });
+            }
         }
     }
 }

@@ -1,11 +1,11 @@
 <template>
-    <div style='height:100%'>
-        <ul>
-            <li>月度数据</li>
-            <li>季度数据</li>
-            <li>年度数据</li>
-        </ul>
-        <el-container style='height:100%;background:#F6F7FE'>
+    <div style='height:100%;overflow-y:scroll'>
+        <div class="reportBtns">
+			<div :class="timetype == 0?'btnClass btnActive':'btnClass'" @click="choose(0)"><span :class="timetype == 0?'dotClass dotActive':'dotClass'"></span>月度数据</div>
+			<div :class="timetype == 1?'btnClass btnActive':'btnClass'" @click="choose(1)"><span :class="timetype == 1?'dotClass dotActive':'dotClass'"></span>季度数据</div>
+			<div :class="timetype == 2?'btnClass btnActive':'btnClass'" @click="choose(2)"><span :class="timetype == 2?'dotClass dotActive':'dotClass'"></span>年度数据</div>
+		</div>
+        <el-container style='height:100%;background:#F6F7FE;margin-top:20px;padding:0 20px;box-sizing:border-box'>
             <el-aside width="320px" style='border-radius:4px;background:#fff;margin-right:20px' class='cate'>
                 <div class='title'>
                     <i></i>
@@ -60,43 +60,7 @@
                                 <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
                             </ul>
                         </div>
-                        <ul>
-                            <li class='th'>
-                                <p>材料</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                                <p>2019.01</p>
-                            </li>
-                            <li v-for='(i,index) in [1,1,1,1,1,1,1]' :key='index'>
-                                <p>
-                                    <span>钢材</span>
-                                    <i class='iconfont icon-shang-copy' @click='chose_area(i)'></i>
-                                </p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                                <p>543.03</p>
-                            </li>
-                        </ul>
+                        <reftable :tabledata='tabledata'></reftable>
                     </div>
                 </div>
                 <div class='ch'>
@@ -134,6 +98,7 @@
 </template>
 <script>
 import $ from 'jquery'
+import reftable from '../components/ref-table'
 export default {
     data() {
         return {
@@ -354,8 +319,17 @@ export default {
                 label: '近13个月'
             }],
             time:'',
-            chosed_type:'price'
+            chosed_type:'price',
+            timetype:0,
+            tabledata:[]
         }
+    },
+    created() {
+        this.time = this.options[0].value
+        this.get_cate()
+    },
+    components:{
+        reftable
     },
     watch:{
         chosed_id(val) {
@@ -366,6 +340,30 @@ export default {
         this.init()
     },
     methods:{
+        async get_cate() {
+            const res = await this.$api.get_cate({})
+            this.cateList = res.data
+            this.chosed_id = this.cateList[0].id
+            this.get_area_data()
+        },
+        async get_area_data() {
+            const data = {
+                id:this.chosed_id,
+				monthNumber:this.time,
+            }
+            const res = await this.$api.get_bg_line(data)
+            if(this.chosed_type == 'price') {
+                let arr = res.data.data
+                let list = []
+                arr.map(item => {
+                    
+                })
+            }
+            this.tabledata = res.data.data
+        },
+        choose(type) {
+            this.timetype = type
+        },
         handleNodeClick(data) {
             console.log(data)
         },
@@ -548,43 +546,6 @@ export default {
                 .ac 
                     font-size 18px
                     color #fff
-        >ul
-            li
-                display flex
-                align-items center
-                height 32px
-                box-sizing border-box
-                padding 6px
-                p
-                    width 190px
-                    color #fff
-                    font-size 14px
-                    display flex
-                    justify-content center 
-                    align-items center
-                    border-right 1px solid #fff
-                    box-sizing border-box
-                p+p 
-                    width 76px
-            li+li
-                p
-                   justify-content space-around 
-                   color font-color-black
-                   .iconfont
-                       font-size 10px
-                       color #637CFB
-                    border none
-                p+p
-                    justify-content center
-
-            li:nth-child(even)
-                background #F3F4FE
-            li:nth-child(odd)
-                background #DFE1F4
-            li:nth-child(1)
-                background #B0BDFF
-            i
-                cursor pointer
                 
                     
 
@@ -598,6 +559,7 @@ export default {
         max-height auto
         height auto
         margin-bottom 20px
+        border-radius 8px
     .tooltip 
         display flex
         justify-content space-between

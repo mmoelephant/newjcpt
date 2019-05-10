@@ -7,17 +7,17 @@
                     <p>云南省建设工程材料及设备价格监测系统</p>
                 </div>
                 <div class='right'>
-                    <p>回到首页</p>
+                    <p @click='$router.push("/")'>回到首页</p>
                     <i></i>
-                    <p class='blue'>退出登录</p>
+                    <p class='blue' @click='logout'>退出登录</p>
                 </div>
             </el-header>
             <el-container style='height:100%;'>
                 <el-aside width="200px" class='side'>
 					<div class='userinfo'>
-						<img src='../public/img/default.png'/>
-						<h1>userName</h1>
-						<p>userCompany</p>
+						<img :src='user?user.headPortrait:""' :onerror='defaultimg'/>
+						<h1>{{user?user.name:""}}</h1>
+						<p>{{user?user.unit:""}}</p>
 					</div>
                     <el-menu
                         :default-active="$route.path"
@@ -77,9 +77,38 @@ export default {
                     router: '/setting'
                 }
             ],
-            mainHeight: 0
+			mainHeight: 0,
+			defaultimg:'this.src="'+ require('../public/img/default.png') +'"'
         };
-    },
+	},
+	computed:{
+		user() {
+			return this.$store.state.login.userInfo
+		}
+	},
+	created() {
+		const token = sessionStorage.getItem('token')
+		const user = JSON.parse(sessionStorage.getItem('user'))
+        if(token && token.length>0 && user && user.name) {
+            this.$store.commit('login/SET_TOKEN', token)
+            this.$store.commit('login/SET_USER_INFO', user)
+        } else {
+            this.$store.commit('login/SET_TOKEN', '')
+            this.$store.commit('login/SET_USER_INFO', '')
+            sessionStorage.removeItem('token')
+			sessionStorage.removeItem('user')
+			this.$router.push('login')
+        }
+	},
+	methods:{
+		logout() {
+			this.$store.commit('login/SET_TOKEN', '')
+            this.$store.commit('login/SET_USER_INFO', '')
+            sessionStorage.removeItem('token')
+			sessionStorage.removeItem('user')
+			this.$router.push('login')
+		}
+	}
 }
 </script>
 

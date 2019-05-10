@@ -3,7 +3,7 @@
         <p>监测地区总量</p>
         <div class='num-box'>
             <i class='l'></i>
-            <p class='fontb'>580</p>
+            <p class='fontb'>146</p>
             <i class='r'></i>
         </div>
         <p style='margin-top:46px'>
@@ -15,13 +15,13 @@
                 <li v-for='(item,index) in list' :key='index'>
                     <div style='justify-content:space-between'>
                         <p>{{item.name}}</p>
-                        <p>{{item.num}}</p>
+                        <p>{{item.price?Number(item.price).toFixed(2):''}}</p>
                     </div>
-                    <el-progress :percentage="Math.abs(item.zs)" :color="Number(item.zs)>0?'#FD3A0D':'#0DFDA0'" :text-inside="true" :stroke-width="4"
+                    <el-progress :percentage="item.huanbi?Math.abs(item.huanbi*100):0" :color="Number(item.huanbi)>0?'#FD3A0D':'#0DFDA0'" :text-inside="true" :stroke-width="4"
                         style='margin:10px auto'></el-progress>
                     <div>
-                        <p class='p'>{{item.zs}}%</p>
-                        <img src='../../public/img/上.png' v-if='item.zs>0'/>
+                        <p class='p'>{{(item.huanbi*100).toFixed(4)}}%</p>
+                        <img src='../../public/img/上.png' v-if='item.huanbi>0'/>
                         <img src='../../public/img/下.png' v-else/>
                     </div>
                 </li>
@@ -111,8 +111,8 @@ export default {
             animate:false,
         }
     },
-    created() {
-        this.$store.commit('bigscreen/SET_CATE_ON', this.list[0])
+    created() {       
+        this.get_cate()
     },
     methods:{
         t() {
@@ -123,10 +123,19 @@ export default {
                     this.animate=false;  // margin-top 为0 的时候取消过渡动画，实现无缝滚动
                     this.$store.commit('bigscreen/SET_CATE_ON', this.list[0])
             },1000)
+        },
+        async get_cate() {
+            const res = await this.$api.get_cate_level1()
+            this.list = res.data
+            this.$store.commit('bigscreen/SET_CATE_ON', this.list[0])
+            this.$store.commit('bigscreen/SET_CATE_LIST', this.list)
+            this.$nextTick(() => {
+                this.timer = setInterval(this.t,10000)
+            })
         }
     },
     mounted() {
-        this.timer = setInterval(this.t,10000)
+        
     },
     beforeRouteLeave(to,from,next) {
         this.timer = null

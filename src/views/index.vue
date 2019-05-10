@@ -29,11 +29,6 @@ import left from '../components/big-left'
 import center from '../components/center'
 import rigth from '../components/big-right'
 export default {
-	data() {
-		return {
-			
-		}
-	},
 	components: {
 		left,
 		center,
@@ -43,6 +38,7 @@ export default {
 		
 	},
 	mounted() {
+
 	}
 }
 </script>
