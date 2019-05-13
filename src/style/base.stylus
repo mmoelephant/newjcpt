@@ -1,0 +1,186 @@
+@import './color.stylus'
+@import '../assets/font/font.css'
+
+html,body,h1,h2,h3,h4,h5,h6,p,ul,li,input 
+    margin 0
+    padding 0
+    font-family MicrosoftYaHei
+
+html,body 
+    height 100%
+ul,li 
+    list-style none
+a 
+    text-decoration: none
+
+
+.reportBtns
+	display flex
+	flex-direction row
+	flex-wrap nowrap
+	justify-content flex-start
+	position fixed
+	z-index 10
+	top 90px
+
+.btnClass 
+	width 140px
+	height 38px
+	background-color #ffffff
+	padding-left 44px
+	border-radius 8px
+	box-sizing border-box
+	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+	margin-left 20px
+	font-size 16px
+	font-family MicrosoftYaHei
+	font-weight 400
+	color rgba(44,45,51,1)
+	line-height 38px
+	position relative
+
+.btnClass1
+	width 218px
+
+.btnActive
+	background-color rgba(127,148,255,1)
+	border 1px solid rgba(108,125,255,1)
+	color rgba(255,255,255,1)
+
+.dotClass 
+	width 6px
+	height 6px
+	border-radius 8px
+	background-color #7F94FF
+	position: absolute
+	left 22%
+	top 16px
+
+.dotClass1
+	left 30px
+
+.dotActive
+	background-color: #ffffff
+
+.navigiOn
+	color #454EFF !important
+
+.goBackBtn
+	margin-left 20px
+	font-size 16px
+	color rgba(69,78,255,1)
+	text-decoration underline
+	line-height 38px
+
+.filterSection
+	width 100%
+	padding 0 20px
+	box-sizing border-box
+	margin-top 88px
+	display flex
+	flex-direction row
+	flex-wrap nowrap
+	justify-content flex-start
+.dataList
+	width 184px
+	height 48px
+	background rgba(255,255,255,1)
+	padding-left 32px
+	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+	border-radius 8px
+	box-sizing border-box
+	margin-right 10px
+	font-size 16px
+	color rgba(127,148,255,1)
+	line-height 48px
+	position relative
+.verticalBar
+	width 4px
+	height 22px
+	background-color rgba(127,148,255,1)
+	position absolute
+	left 20px
+	top 12px
+
+.adData
+	width 48px
+	height 48px
+	background rgba(254,155,120,1)
+	border 1px solid rgba(245,131,86,1)
+	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+	border-radius 8px
+	margin-right 20px
+	color white
+	line-height 48px
+	text-align center
+
+.adData1
+	background #8B78FE
+	border 1px solid rgba(108,86,245,1)
+
+.adData i 
+	font-size 20px
+.xzBtn
+	margin-left 10px
+	margin-right 0 !important
+.dyBtn
+	background #78A4FE
+	border 1px solid rgba(79,115,247,1)
+	margin-left 10px
+	margin-right 0 !important	
+.filterPart
+	width calc(100% - 262px)
+	height 48px
+	background-color #ffffff
+	padding-left 32px
+	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+	border-radius 8px
+	font-size 16px
+	color rgba(127,148,255,1)
+	line-height 48px
+	position relative
+
+.decoText
+	position absolute
+	right 20px
+	top 0
+	font-size 12px
+	color #C6C9D6
+
+.filterList
+	position absolute
+	left 146px
+	top 4px
+	display flex
+	flex-direction row
+	flex-wrap nowrap
+	justify-content flex-start
+
+.filterListItem
+	margin-right 20px
+	// padding 0!important
+
+// .filterBtn
+// 	background-color #8B78FE!important
+// 	margin-left -40px
+
+
+.is-current>.el-tree-node__content, .is-current>.el-tree-node__content *
+    background tag-color !important
+    color #fff
+.el-tree-node__content
+    height 28px
+.el-tree-node__content:hover 
+    background-color #B7BFFF !important
+    color #fff
+.el-tree-node__content:hover > *
+    background-color #B7BFFF !important
+    color #fff
+
+.el-icon-caret-right
+    font-family iconfont !important
+
+.el-icon-caret-right:before
+    content: "\e620"
+.el-tree-node__children .el-icon-caret-right:before
+    content: ""

@@ -1,0 +1,14 @@
+.pop-btn
+    background-color #9A7CFF !important
+    border-color #9A7CFF!important
+
+.pop-btn:hover
+    background-color rgba(199,183,255,1)!important
+    border-color rgba(199,183,255,1)!important
+
+.fn-btn-bule 
+    background-color #7F94FF!important
+    border-color #7F94FF!important
+.fn-btn-bule:hover 
+    background-color rgba(127,148,255,1)!important
+    border-color rgba(127,148,255,1)!important
