@@ -30,24 +30,24 @@
                     <p class="timeTip">最新提交时间</p>
                     <p class="time">2019-4-28</p>
                     <div class="markBox">爱好干哈百花谷比较宝贵哈哈给货币啊好好干和黄海波GV</div>
-                    <i class="el-icon-error closeMark" @click="deleteMark"></i>
+                    <i class="el-icon-error closeMark" @click="deleteMark(item.id)"></i>
                     <div class="doBtns">
                         <button class="btn">修改</button>
                         <button class="btn">保存</button>
                         <button class="btn">取消</button>
                     </div>
                 </div>
-                <div class="markItem" v-for="item in markList">
+				<!-- <div class="markItem" v-for="item in markList">
                     <p class="timeTip">最新提交时间</p>
                     <p class="time">{{item.updateTime}}</p>
                     <div class="markBox">{{item.mark}}</div>
-                    <i class="el-icon-error closeMark" @click="deleteMark"></i>
+                    <i class="el-icon-error closeMark" @click="deleteMark(item.id)"></i>
                     <div class="doBtns">
                         <button class="btn">修改</button>
                         <button class="btn">保存</button>
                         <button class="btn">取消</button>
                     </div>
-                </div>
+                </div> -->
 				<div class="noData" :style="imgVis">
 					<img src="../../../public/img/subscribe/noMark.png" class="noDataImg">
 					<p class="noDatap1">还没有添加备注哦~</p>
@@ -96,12 +96,6 @@ export default {
 		this.addTime = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
 	},
     methods:{
-		openMark(){
-			this.openNewMark = true
-		},
-        deleteMark(){
-
-		},
 		getMarkList(){
 			var data3 = {
 				token:this.token,
@@ -113,7 +107,40 @@ export default {
 				}else{
 					this.imgVis.display = 'block'
 				}
-		})
+			})
+		},
+		openMark(){
+			this.openNewMark = true
+		},
+		deteleTip(){
+			this.$message({
+				showClose:true,
+				message:'删除成功',
+				type:'success',
+				duration:2000
+			})
+		},
+		deteleTip1(){
+			this.$message({
+				showClose:true,
+				message:'删除失败',
+				type:'error',
+				duration:2000
+			})
+		},
+        deleteMark(id){
+			var data4 = {
+				token:this.token,
+				id:id
+			}
+			this.$api.delete_mark(data4).then(v => {
+				if(v.data.msg == 'success'){
+					this.deteleTip()
+					this.getMarkList()
+				}else{
+					this.deteleTip1()
+				}
+			})
 		},
 		openTip(){
 			this.$message({
