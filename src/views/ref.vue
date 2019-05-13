@@ -81,7 +81,9 @@
                                 <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
                             </ul>
                         </div>
-                        <reftable :tabledata='tabledata' 
+                        <reftable 
+                            style='padding-top:56px'
+                            :tabledata='tabledata' 
                             :type='chosed_tab' 
                             :t_type='chosed_type'
                             @checkList='checkList' 
@@ -94,13 +96,13 @@
                     <h1>云南省材料价格对比柱状图</h1>
                     <div class='tool'>
                         <ul>
-                            <li @click='init'>
+                            <li @click='change_charts="bar"'>
                                 <i class='iconfont icon-zhuzhuangtu'></i>
                             </li>
-                            <li @click='init_line'>
+                            <li @click='change_charts="line"'>
                                 <i class='iconfont icon-zhexian'></i>
                             </li>
-                            <li @click='init_barline'>
+                            <li @click='change_charts="mixin"'>
                                 <i class='iconfont icon-zhuzhuangzhexian'></i>
                             </li>
                         </ul>
@@ -170,7 +172,10 @@ export default {
             }, // 选择的区域code 默认云南省
             disablepage:-1, //传给分页组件的判定哪个按钮禁用 -1:左按钮 1：右按钮 0：不禁用 2:都禁用
             isnext:false,//是否是子表格
-            checked:[],//选中作为图渲染的数据
+            checked:[],//选中作为图渲染的数据,
+            mycharts:null,
+            change_charts:'bar',//展示图表的类型
+            color:['#ff406b','#09d8ca','#ffa966','#2bbdef','#5f81ff','#ff7e68','#18db98','#d06cff','#77a1ff','#ffc047']
         }
     },
     created() {       
@@ -182,7 +187,6 @@ export default {
     },
     watch:{
         timetype(type) {
-            console.log(123132)
             if(type==0) {
                 this.time = this.monthoptions[0].value
                 
@@ -205,11 +209,36 @@ export default {
         showcharts(val){
             if(val) {
                 this.$nextTick(() =>{
-                    this.init()
+                    if(this.change_charts=='bar') {
+                        this.init()
+                    } else if(this.change_charts=='line') {
+                        this.init_line()
+                    } else {
+                        this.init_barline()
+                    }
                 })
             }
-            
-        } 
+        },
+        chosed_tab(val) {
+            this.isnext = false
+            this.chosed_area.area='53'
+            this.chosed_cate=this.cateList[0]
+            this.showcharts=false
+            if(val ==0) {
+                this.get_area_data()
+            } else {
+                this.get_cate_data()
+            }
+        },
+        change_charts(type){
+            if(type=='bar') {
+                this.init()
+            } else if(type=='line') {
+                this.init_line()
+            } else {
+                this.init_barline()
+            }
+        }
     },  
     methods:{
         back() {
@@ -275,6 +304,7 @@ export default {
         },
         async get_area_data() {// 获取区域的数据
             this.tabledata =[]
+            this.checked = []
             const t_arr=this.formateTime()
             const data = {
                 id:this.chosed_cate.id,//选择的材料
@@ -288,11 +318,18 @@ export default {
                 this.tabledata.push(res.data.data[key])
             })
             if(this.showcharts) { //如果展示图表  渲染
-                this.init()
+                if(this.change_charts=='bar') {
+                    this.init()
+                } else if(this.change_charts=='line') {
+                    this.init_line()
+                } else {
+                    this.init_barline()
+                }
             }
         },
         async get_cate_data() { //获取材料的数据 目前只获取全省的材料的数据
             this.tabledata = []
+            this.checked = []
             const t_arr=this.formateTime()
             const data = {
                 // area:53,//this.chosed_area,//选择的地区,目前只有全省
@@ -306,10 +343,17 @@ export default {
                 this.tabledata.push(res.data.data[key])
             })
             if(this.showcharts) {
-                this.init()
+                if(this.change_charts=='bar') {
+                    this.init()
+                } else if(this.change_charts=='line') {
+                    this.init_line()
+                } else {
+                    this.init_barline()
+                }
             }
         },
         handleNodeClick(data) { //选择材料
+            this.checked = []
             if(this.chosed_tab ==0) { //获取区域
                 this.chosed_cate = data
                 this.chosed_name = data.name
@@ -322,40 +366,146 @@ export default {
         async init() {
             let x=[],y=[],arr=[],legend=[]
             if(this.checked && this.checked.length >0) {
-                this.checked.map(item => {
+                this.checked.forEach((item,index) => {
                     let data =[]
                     if(x.length<item.length) {
                         x=[]
                         item.map(t => {                       
-                            x.push(t.mdate.substr(0,7))
+                            x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
                         })
                         
                     }
                     item.map(t=> {
                         data.push(t.price) 
                     })
-                    legend.push(item[0].area_name)
-                    y.push({data:data,type:'bar',name:item[0].area_name})
+                    if(this.chosed_tab==0) {
+                        legend.push(item[0].area_name)
+                        y.push({data:data,type:'bar',name:item[0].area_name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.checked.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                    } else {
+                        legend.push(item[0].name)
+                        y.push({data:data,type:'bar',name:item[0].name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.checked.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                    }                    
                 })
             } else {// 获取全省的材料数据 用于初始化图表
-                const t_arr=this.formateTime()
-                const data = {
-                    id:this.chosed_cate.id,//选中的材料id
-                    startDate:t_arr[0],//时间区间
-                    endDate:t_arr[1]
+                if(this.chosed_tab ==0&&!this.isnext) { //第一级空选中 显示全省数据
+                    const t_arr=this.formateTime()
+                    const data = {
+                        id:this.chosed_cate.id,//选中的材料id
+                        startDate:t_arr[0],//时间区间
+                        endDate:t_arr[1]
+                    }
+                    const res = await this.$api.get_yn_time_list(data)
+                    let keys = Object.keys(res.data.data)
+                    arr = res.data.data[keys[0]]
+                    y.push({
+                        data:[],
+                        type:'bar',
+                        name:'全省',
+                        itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }
+                    })
+                    arr.forEach(item => {
+                        x.push(item.mdate.substr(0,7))
+                        y[0].data.push(item.price)
+                    })
+                    legend=['全省']
+                } else {
+                    let data=[]
+                    try {
+                        const defaultcate = this.tabledata[0]
+                        if(x.length<defaultcate.length) {
+                            x=[]
+                            defaultcate.map(t => {                       
+                                x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
+                            })
+                            
+                        }
+                        defaultcate.map(t=> {
+                            data.push(t.price) 
+                        })
+                        if(this.chosed_tab==0) {
+                            legend.push(defaultcate[0].area_name)
+                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                        } else {
+                            legend.push(defaultcate[0].name)
+                            y.push({data:data,type:'bar',name:defaultcate[0].name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                        }  
+                    } catch(e) {
+                        // console.error(e)
+                    }
+                    
+                    
                 }
-                const res = await this.$api.get_yn_time_list(data)
-                let keys = Object.keys(res.data.data)
-                arr = res.data.data[keys[0]]
-                y.push({
-                    data:[],
-                    type:'bar'
-                })
-                arr.forEach(item => {
-                    x.push(item.mdate.substr(0,7))
-                    y[0].data.push(item.price)
-                })
-                legend=['全省']
+                
             }          
             const option = {
                 tooltip : {
@@ -395,14 +545,494 @@ export default {
                 ],
                 series :y
             }
-            const mycharts = this.$echarts.init(document.getElementById('main'))
-            mycharts.setOption(option)
+            this.mycharts = this.$echarts.init(document.getElementById('main'))
+            this.mycharts.setOption(option,true)
         },
-        init_line() {
-
+        async init_line() {
+            let x=[],y=[],arr=[],legend=[]
+            if(this.checked && this.checked.length >0) {
+                this.checked.forEach((item,index) => {
+                    let data =[]
+                    if(x.length<item.length) {
+                        x=[]
+                        item.map(t => {                       
+                            x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
+                        })
+                        
+                    }
+                    item.map(t=> {
+                        data.push(t.price) 
+                    })
+                    if(this.chosed_tab==0) {
+                        legend.push(item[0].area_name)
+                        y.push({data:data,type:'line',name:item[0].area_name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                    } else {
+                        legend.push(item[0].name)
+                        y.push({data:data,type:'line',name:item[0].name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                    }                    
+                })
+            } else {// 获取全省的材料数据 用于初始化图表
+                if(this.chosed_tab ==0&&!this.isnext) {
+                    const t_arr=this.formateTime()
+                    const data = {
+                        id:this.chosed_cate.id,//选中的材料id
+                        startDate:t_arr[0],//时间区间
+                        endDate:t_arr[1]
+                    }
+                    const res = await this.$api.get_yn_time_list(data)
+                    let keys = Object.keys(res.data.data)
+                    arr = res.data.data[keys[0]]
+                    y.push({
+                        data:[],
+                        type:'line',
+                        name:'全省',
+                        itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }
+                    })
+                    arr.forEach(item => {
+                        x.push(item.mdate.substr(0,7))
+                        y[0].data.push(item.price)
+                    })
+                    legend=['全省']
+                } else {
+                    let data=[]
+                    try {
+                        const defaultcate = this.tabledata[0]
+                        if(x.length<defaultcate.length) {
+                            x=[]
+                            defaultcate.map(t => {                       
+                                x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
+                            })
+                            
+                        }
+                        defaultcate.map(t=> {
+                            data.push(t.price) 
+                        })
+                        if(this.chosed_tab==0) {
+                            legend.push(defaultcate[0].area_name)
+                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                        } else {
+                            legend.push(defaultcate[0].name)
+                            y.push({data:data,type:'bar',name:defaultcate[0].name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                        }  
+                    } catch(e) {
+                        
+                    }
+                    
+                }
+                
+            }          
+            const option = {
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:legend,
+                    bottom:0
+                },
+                toolbox: {
+                    show : false,
+                    feature : {
+                        mark : {
+                            show: true,
+                            icon: ''
+                        },
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {
+                            show: true,
+                            icon: ''
+                        }
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : x
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series :y
+            }
+            this.mycharts = this.$echarts.init(document.getElementById('main'))
+            this.mycharts.setOption(option,true)
         },
-        init_barline() {
-
+        async init_barline() {
+            let x=[],y=[],arr=[],legend=[]
+            if(this.checked && this.checked.length >0) {
+                this.checked.forEach((item,index) => {
+                    let data =[],tb=[],hb=[]
+                    if(x.length<item.length) {
+                        x=[]
+                        item.map(t => {                       
+                            x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
+                        })
+                        
+                    }
+                    item.map(t=> {
+                        data.push(t.price) 
+                        tb.push(t.tongbi)
+                        hb.push(t.huanbi)
+                    })
+                    if(this.chosed_tab==0) {
+                        legend.push(item[0].area_name)
+                        y.push({data:data,type:'bar',name:item[0].area_name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }},
+                            {data:tb,type:'line',name:item[0].area_name,yAxisIndex:1,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }},
+                            {data:hb,type:'line',name:item[0].area_name,yAxisIndex:1,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                    } else {
+                        legend.push(item[0].name)
+                        y.push({data:data,type:'bar',name:item[0].name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }},
+                            {data:tb,type:'line',name:item[0].name,yAxisIndex:1,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }},{
+                            data:hb,type:'line',name:item[0].name,yAxisIndex:1,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[index] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }}
+                        )
+                    }                    
+                })
+            } else {// 获取全省的材料数据 用于初始化图表
+                if(this.chosed_tab ==0&&!this.isnext) {
+                    const t_arr=this.formateTime()
+                    const data = {
+                        id:this.chosed_cate.id,//选中的材料id
+                        startDate:t_arr[0],//时间区间
+                        endDate:t_arr[1]
+                    }
+                    const res = await this.$api.get_yn_time_list(data)
+                    let keys = Object.keys(res.data.data)
+                    arr = res.data.data[keys[0]]
+                    y.push({
+                        data:[],
+                        type:'bar',
+                        name:'全省',
+                        itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }
+                    })
+                    y.push({//同比
+                        data:[],
+                        type:'line',
+                        name:'全省',
+                        yAxisIndex:1,
+                        emphasis:{
+                            label:{
+                                formatter:'{b}同比: {c}'
+                            }
+                        },itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }
+                    })
+                     y.push({//环比
+                        data:[],
+                        type:'line',
+                        name:'全省',
+                        yAxisIndex:1,
+                        emphasis:{
+                            label:{
+                                formatter:'{b}环比: {c}'
+                            }
+                        },itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }
+                    })
+                    arr.forEach(item => {
+                        x.push(item.mdate.substr(0,7))
+                        y[0].data.push(item.price)
+                        y[1].data.push(item.tongbi)
+                        y[2].data.push(item.huanbi)
+                    })
+                    legend=['全省']
+                } else {
+                    let data=[]
+                    try {
+                        const defaultcate = this.tabledata[0]
+                        if(x.length<defaultcate.length) {
+                            x=[]
+                            defaultcate.map(t => {                       
+                                x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
+                            })
+                            
+                        }
+                        defaultcate.map(t=> {
+                            data.push(t.price) 
+                        })
+                        if(this.chosed_tab==0) {
+                            legend.push(defaultcate[0].area_name)
+                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                        } else {
+                            legend.push(defaultcate[0].name)
+                            y.push({data:data,type:'bar',name:defaultcate[0].name,itemStyle:{
+                            color:{
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: this.color[0] // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: this.color[1] // 100% 处的颜色
+                                }],
+                                globalCoord: false
+                            }
+                        }})
+                        }  
+                    } catch(e) {
+                        
+                    }
+                    
+                }
+                
+            }          
+            const option = {
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:legend,
+                    bottom:0
+                },
+                toolbox: {
+                    show : false,
+                    feature : {
+                        mark : {
+                            show: true,
+                            icon: ''
+                        },
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {
+                            show: true,
+                            icon: ''
+                        }
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : x
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    },
+                    {
+                        type:'value'
+                    }
+                ],
+                series :y
+            }
+            this.mycharts = this.$echarts.init(document.getElementById('main'))
+            this.mycharts.setOption(option,true)
         },
         saveImg() {
             var canvasData = $('#main').children('div').children('canvas')
@@ -414,7 +1044,13 @@ export default {
         checkList(val) {
             this.checked = val
             if(this.showcharts) {
-                this.init()
+                if(this.change_charts=='bar') {
+                    this.init()
+                } else if(this.change_charts=='line') {
+                    this.init_line()
+                } else {
+                    this.init_barline()
+                }
             }
             //根据获取到的list重新渲染图表
         },
@@ -428,9 +1064,10 @@ export default {
                 this.chosed_cate =item //把选取的材料赋值
                 this.get_cate_data()
             }
+
         },
         pagechange(type) {
-
+            console.log(type)
         }
     }
 }
@@ -502,8 +1139,8 @@ export default {
     flex-direction column
     .table-box
         width 100%
-        overflow-x scroll
         margin-top 20px
+        position relative
         .t
             display flex
             justify-content space-between 
@@ -513,6 +1150,11 @@ export default {
             background #6064FD
             border-radius 4px 4px 0px 0px
             color #fff
+            position absolute
+            width 100%
+            box-sizing border-box
+            top 0
+            left 0
             p
                 font-size 20px
                 font-family MicrosoftYaHei-Bold

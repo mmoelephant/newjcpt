@@ -17,7 +17,7 @@ export default {
     },
     methods:{
         page(type) {
-            if(disablepage ==2 || disablepage == type) {
+            if(this.disablepage ==2 || this.disablepage == type) {
                 return
             } else {
                 this.$emit('pagechange',type)

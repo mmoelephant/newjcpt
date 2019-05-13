@@ -235,7 +235,7 @@ export default {
 // }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .intellReport
 	width 100%
 	position relative

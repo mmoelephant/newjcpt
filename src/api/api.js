@@ -2,17 +2,22 @@ import axios, { AxiosResponse } from 'axios'
 import qs from 'qs'
 // const baseURL = '/api'
 // const baseURL = '/'
-const service = axios.create({
+const service = axios.create({ //hg
 	baseURL: '/api',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
-const service1 = axios.create({
+const service1 = axios.create({ //lw
 	baseURL: '/lw',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
-const formser = axios.create({
+const service2 = axios.create({ //xb
+	baseURL: '/xb',
+    withCredentials: false,
+    headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+})
+const formser = axios.create({ //hg
 		baseURL: '/api',
     withCredentials: false,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -50,10 +55,10 @@ const api = {
 		},
 		//登录
 		login (data) {
-			return service.post('/PageUserController/login',data)
+			return service2.post('/PageUserController/login',data)
 		},
 		updata_user(data) {
-			return service.post('/PageUserController/updateUserInfo',data)
+			return service2.post('/PageUserController/updateUserInfo',data)
 		},
 		// 数据查询
 		get_cate_time_list(data) {
@@ -66,7 +71,7 @@ const api = {
 			return service1.post('/PageMaterialController/getMaterialsInfoByProvinceAreaEncapsulation',data)
 		},
     get_area(data) {
-		return service.post('/PageAreaController/getAreaList', {pid:53})
+		return service1.post('/PageAreaController/getAreaList', {pid:53})
     },
     get_cate(data) {
 		return service1.post('/PageMaterialController/getMaterialsClass', {})

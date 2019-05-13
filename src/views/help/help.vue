@@ -1,5 +1,5 @@
 <template>
-<div class="dataSubscribe">
+<div class="help-box">
 	<div class="reportBtns">
 		<div class="btnClass"><span class="dotClass"></span>帮助中心</div>
 	</div>
@@ -28,7 +28,7 @@
 		title="文章详情"
 		:visible.sync="dialogVisible"
 		width="60%">
-		<div class=''>
+		<div class='content'>
 			<h1>
 				{{detail.title}}
 			</h1>
@@ -49,7 +49,7 @@ export default {
 			dataList:[],
 			// type的值为是全部报告还是平台报告或者其他
 			pageNum:1,
-            pageSize:10,
+            pageSize:8,
 			total:0,
 			detail:{},
 			dialogVisible:false
@@ -75,50 +75,101 @@ export default {
 		async get_detail(id) {
 			const res = await this.$api.get_help_detail({id:id})
 			this.detail = res.data
+			this.detail.content = this.detail.content.replace(/&amp;/g,'&').
+			replace(/&lt;/g,'<').
+			replace(/&gt;/g,'>')
 			this.dialogVisible = true
-		} 
+		},
     }
 }
 </script>
-<style lang="stylus">
-.dataSubscribe
-    width 100%
-	height 100%
-	border 1px red solid
+<style lang="stylus" scoped>
+	.help-box
+		padding-top 88px
+		width 100%
+		height 100%	
+		box-sizing border-box
 
-.mySubscribe
-	padding-top 88px
-.dataListClass:hover
-    background #D3D8F4
-.dataList
-	width 184px
-	height 48px
-	background rgba(255,255,255,1)
-	padding-left 32px
-	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
-	border-radius 8px
-	box-sizing border-box
-	margin-right 10px
-	font-size 16px
-	color rgba(127,148,255,1)
-	line-height 48px
-	position relative
-.listItem
-	padding 0 20px
-	box-sizing border-box
-    width 25% 
-    box-sizing border-box
-.list_num
-	color #8E9099
-.list_time
-	color #8E9099
-.seeBtn
-	display inline-block
-	width 60px
-	color #2691FF
-.deleBtn
-	display inline-block
-	width 60px
-	color #454EFF
+	.dataListClass:hover
+		background #D3D8F4
+	.dataList
+		width 184px
+		height 48px
+		background rgba(255,255,255,1)
+		padding-left 32px
+		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+		border-radius 8px
+		box-sizing border-box
+		margin-right 10px
+		font-size 16px
+		color rgba(127,148,255,1)
+		line-height 48px
+		position relative
+	.dataContentUl
+		width 100%
+		padding 0 20px
+		box-sizing border-box
+	.dataListClass
+		width 100%
+		height 48px
+		background rgba(255,255,255,1)
+		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+		border-radius 8px
+		margin-bottom 20px
+		display flex
+		flex-direction row
+		flex-wrap nowrap
+		justify-content space-around
+		font-size 14px
+		color rgba(44,45,51,1)
+		text-align center
+		line-height 48px
+
+	.dataListTitle
+		width 100%
+		height 36px
+		background rgba(255,255,255,1)
+		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+		border-radius 8px
+		margin 20px 0 10px
+		display flex
+		flex-direction row
+		flex-wrap nowrap
+		justify-content space-around
+		font-size 14px
+		color #5C5D62
+		text-align center
+		line-height 36px
+	.listItem
+		width 25% 
+		padding 0 20px
+		box-sizing border-box
+		
+	.list_num
+		color #8E9099
+	.list_time
+		color #8E9099
+	.seeBtn
+		display inline-block
+		width 60px
+		color #2691FF
+		cursor pointer
+	.deleBtn
+		display inline-block
+		width 60px
+		color #454EFF
+	.content 
+		width 80%
+		max-height 820px
+		overflow-y auto
+		margin 0 auto
+		border 1px solid #D8DBDF
+		h1  
+			font-size 20px
+			color #2C2D33
+			text-align center
+			margin-top 30px
+		div 
+			padding 30px
 </style>
 

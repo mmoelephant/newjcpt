@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div>
-            账户设置
+        <div class="reportBtns">
+            <div class="btnClass"><span class="dotClass"></span>帮助中心</div>
         </div>
         <div class='user-box'>
             <div class='title'>
@@ -90,6 +90,7 @@ export default {
         box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
         border-radius 8px
         padding 20px 
+        margin-top 68px
         box-sizing border-box
     .form
         label
