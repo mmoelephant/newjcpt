@@ -16,11 +16,11 @@
                 <el-aside width="200px" class='side'>
 					<div class='userinfo'>
 						<img :src='user&&user.headPortrait?user.headPortrait:""' :onerror='defaultimg'/>
-						<h1>{{user?user.name:""}}</h1>
-						<p>{{user?user.unit:""}}</p>
+						<h1>{{user&&user.name?user.name:"暂未设置"}}</h1>
+						<p>{{user&&user.unit?user.unit:"暂未设置"}}</p>
 					</div>
                     <el-menu
-                        :default-active="$route.path"
+                        :default-active="$route.matched&&$route.matched[0]?$route.matched[0].path:''"
                         class="el-menu-vertical-demo"
                         background-color="#fff"
                         text-color="#8E9099"
@@ -89,7 +89,7 @@ export default {
 	created() {
 		const token = sessionStorage.getItem('token')
 		const user = JSON.parse(sessionStorage.getItem('user'))
-        if(token && token.length>0 && user && user.name) {
+        if(token && token.length>0 && user && user.phone) {
             this.$store.commit('login/SET_TOKEN', token)
             this.$store.commit('login/SET_USER_INFO', user)
         } else {
@@ -97,7 +97,7 @@ export default {
             this.$store.commit('login/SET_USER_INFO', '')
             sessionStorage.removeItem('token')
 			sessionStorage.removeItem('user')
-			console.log(this.$route.path)
+			
 			if(this.$route.path == '/') {
 			} else {
 				this.$router.push('/login')
@@ -159,7 +159,7 @@ export default {
 				background rgba(102,102,102,1)
 				margin 0 16px
 			.blue 
-				color tag-color
+				color #7F94FF
 	.side
 		background-color #fff
 		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
@@ -192,20 +192,20 @@ export default {
 			font-size 16px !important
 		.el-menu-item.is-active 
 			color #fff
-			background -webkit-linear-gradient(left,#61e0ff,#6439f8) /* Safari 5.1-6.0 */
-			background -o-linear-gradient(right,#61e0ff,#6439f8) /* Opera 11.1-12.0 */ 
-			background -moz-linear-gradient(right,#61e0ff,#6439f8) /* Firefox 3.6-15 */
-			background linear-gradient(to right,#61e0ff,#6439f8) /* 标准语法 */
+			background -webkit-linear-gradient(right,#61e0ff,#6439f8) /* Safari 5.1-6.0 */
+			background -o-linear-gradient(left,#61e0ff,#6439f8) /* Opera 11.1-12.0 */ 
+			background -moz-linear-gradient(left,#61e0ff,#6439f8) /* Firefox 3.6-15 */
+			background linear-gradient(to left,#61e0ff,#6439f8) /* 标准语法 */
 		.el-menu-item:hover 
 			background #B7BFFF !important
 			color #fff!important
 			.iconfont 
 				color #fff
 		.el-menu-item.is-active:hover 
-			background -webkit-linear-gradient(left,#61e0ff,#6439f8) !important/* Safari 5.1-6.0 */
-			background -o-linear-gradient(right,#61e0ff,#6439f8)!important /* Opera 11.1-12.0 */ 
-			background -moz-linear-gradient(right,#61e0ff,#6439f8)!important /* Firefox 3.6-15 */
-			background linear-gradient(to right,#61e0ff,#6439f8)!important /* 标准语法 */
+			background -webkit-linear-gradient(right,#61e0ff,#6439f8) !important/* Safari 5.1-6.0 */
+			background -o-linear-gradient(left,#61e0ff,#6439f8)!important /* Opera 11.1-12.0 */ 
+			background -moz-linear-gradient(left,#61e0ff,#6439f8)!important /* Firefox 3.6-15 */
+			background linear-gradient(to left,#61e0ff,#6439f8)!important /* 标准语法 */
 			.iconfont 
 				color #fff
 		.arrow

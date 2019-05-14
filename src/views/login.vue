@@ -71,7 +71,7 @@ export default {
                 if(this.name.length>0) {
                     return
                 } else {
-                    this.error1 = '请输入正确的账户名'
+                    this.error1 = '请输入正确的手机号'
                 }
                 
             } else {

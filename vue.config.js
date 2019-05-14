@@ -36,6 +36,7 @@ module.exports = {
             // },
             '/lw': { //老王
                 target: 'http://192.168.8.104:9102',
+                // target: 'http://192.168.8.20:9220',
                 pathRewrite: { '^/lw': '' },
                 ws: true,
                 changeOrigin: true,

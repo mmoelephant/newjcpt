@@ -89,7 +89,7 @@
                             @checkList='checkList' 
                             @choseitem='choseitem'
                             :isnext='isnext'></reftable>
-                        <page-btn :disablepage="disablepage" @pagechange='pagechange'></page-btn>
+                        <page-btn :disablepage="disablepage" @pagechange='pagechange' style='padding-top:20px;float:right'></page-btn>
                     </div>
                 </div>
                 <div class='ch' v-show ='showcharts'>
@@ -182,14 +182,10 @@ export default {
     },
     created() {       
         this.get_cate()
+        console.log(this.$route)
     },
     mounted() {
-        this.boxwidth = $('#table').width()
-        this.tablewidth = $('.th').width()
-        if(this.boxwidth>this.tablewidth) {
-        } else {
-            this.disablepage = 2
-        }
+        
     },
     components:{
         reftable,
@@ -275,25 +271,45 @@ export default {
                     return [(y-1)+'-'+exmonth,y+'-'+month]
                     break;
                 case 9:
-                    if(month>=9) {
-                        exmonth= month-9+1
+                    if(m<4) {
+                        month = 3
+                        exmonth = 7
+                        exyear=y-1
+                    } else if(m<7) {
+                        month = 6
+                        exmonth = 10
+                        exyear=y-1
+                    } else if(m<10) {
+                        month = 9
+                        exmonth = 1
                         exyear=y
                     } else {
-                        exmonth = month+12-9+1
-                        exyear=y-1
-                    }                     
+                        month = 12
+                        exmonth = 4
+                        exyear=y
+                    }                   
                     exmonth = exmonth>9?exmonth:'0'+exmonth
                     month = month>9?month:'0'+month
                     return [exyear+'-'+exmonth,y+'-'+month]
                     break;
                 case 18:
-                    if(month>=6) {
-                        exmonth= month+12-18+1
+                    if(m<4) {
+                        month = 3
+                        exmonth = 9
+                        exyear=y-2
+                    } else if(m<7) {
+                        month = 6
+                        exmonth = 1
+                        exyear=y-1
+                    } else if(m<10) {
+                        month = 9
+                        exmonth = 4
                         exyear=y-1
                     } else {
-                        exmonth = month+24-18+1
-                        exyear=y-2
-                    }                     
+                        month = 12
+                        exmonth = 7
+                        exyear=y-1
+                    }                   
                     exmonth = exmonth>9?exmonth:'0'+exmonth
                     month = month>9?month:'0'+month
                     return [exyear+'-'+exmonth,y+'-'+month]
@@ -336,6 +352,9 @@ export default {
                     this.init_barline()
                 }
             }
+            this.$nextTick(() =>{
+                this.show_page()
+            })
         },
         async get_cate_data() { //获取材料的数据 目前只获取全省的材料的数据
             this.tabledata = []
@@ -453,7 +472,8 @@ export default {
                                 }],
                                 globalCoord: false
                             }
-                        }
+                        },
+                        barMaxWidth:20
                     })
                     arr.forEach(item => {
                         x.push(item.mdate.substr(0,7))
@@ -476,7 +496,9 @@ export default {
                         })
                         if(this.chosed_tab==0) {
                             legend.push(defaultcate[0].area_name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,itemStyle:{
+                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,
+                            barMaxWidth:20,
+                            itemStyle:{
                             color:{
                                 type: 'linear',
                                 x: 0,
@@ -488,12 +510,14 @@ export default {
                                 }, {
                                     offset: 1, color: this.color[1] // 100% 处的颜色
                                 }],
-                                globalCoord: false
+                                globalCoord: false,
                             }
                         }})
                         } else {
                             legend.push(defaultcate[0].name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].name,itemStyle:{
+                            y.push({data:data,type:'bar',name:defaultcate[0].name,
+                            barMaxWidth:20,
+                            itemStyle:{
                             color:{
                                 type: 'linear',
                                 x: 0,
@@ -505,7 +529,8 @@ export default {
                                 }, {
                                     offset: 1, color: this.color[1] // 100% 处的颜色
                                 }],
-                                globalCoord: false
+                                globalCoord: false,
+                                barMaxWidth:20
                             }
                         }})
                         }  
@@ -661,7 +686,9 @@ export default {
                         })
                         if(this.chosed_tab==0) {
                             legend.push(defaultcate[0].area_name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,itemStyle:{
+                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,
+                            barMaxWidth:20,
+                            itemStyle:{
                             color:{
                                 type: 'linear',
                                 x: 0,
@@ -678,7 +705,9 @@ export default {
                         }})
                         } else {
                             legend.push(defaultcate[0].name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].name,itemStyle:{
+                            y.push({data:data,type:'bar',name:defaultcate[0].name,
+                            barMaxWidth:20,
+                            itemStyle:{
                             color:{
                                 type: 'linear',
                                 x: 0,
@@ -1076,20 +1105,54 @@ export default {
             }
 
         },
+        show_page() {
+            this.boxwidth = $('#table').outerWidth()
+            this.tablewidth = 190+($('.th p').length-1)*76
+            let scroll = $('.ul').scrollLeft()
+            let left = this.tablewidth-this.boxwidth-scroll
+            if(scroll ==0 && left>0) {
+                this.disablepage = -1
+            } else if(this.boxwidth >= this.tablewidth || left<0 ){
+                this.disablepage = 2
+            } else if(left == 0){
+                this.disablepage =1
+            } else {
+                this.disablepage = 0
+            }
+
+            console.log(this.disablepage)
+        },
         pagechange(type) {
-            let scroll = $('#table').scrollLeft()
-            console.log(scroll,this.tablewidth,this.boxwidt)
+            let scroll = $('.ul').scrollLeft()
+            let left = this.tablewidth - this.boxwidth -scroll
+            const that = this
             if(type == -1) {
-                if(scroll>this.tablewidth-this.boxwidth) {
-                    $('#table').scrollLeft(srcoll-this.boxwidth)
+                if(scroll>this.boxwidth) {
+                    $('.ul').animate({
+                        scrollLeft:scroll-this.boxwidth
+                    },500,() =>{
+                        that.show_page()
+                    })
                 } else {
-                    $('#table').scrollLeft(0)
+                    $('.ul').animate({
+                        scrollLeft:0
+                    },500,() =>{
+                        that.show_page()
+                    })
                 }
             } else {
-                if(this.tablewidth-scroll>this.boxwidth) {
-                    $('#table').scrollLeft(srcoll+this.boxwidth)
+                if(left>this.boxwidth) {
+                    $('.ul').animate({
+                        scrollLeft:scroll+this.boxwidth
+                    },500,() =>{
+                        that.show_page()
+                    })
                 } else {
-                    $('#table').scrollLeft(this.tablewidth)
+                    $('.ul').animate({
+                        scrollLeft:this.tablewidth
+                    },500,() =>{
+                        that.show_page()
+                    })
                 }
             }
         }
@@ -1098,9 +1161,6 @@ export default {
 </script>
 <style lang="stylus" scoped>
 @import '../style/color.stylus'
-#main
-    div
-        width 100%
 .title 
     display flex
     font-size 16px
@@ -1266,7 +1326,7 @@ export default {
             text-align center
         #main 
             width 100%
-            height 750px
+            height 550px
         .tool
             display flex
             justify-content space-between
