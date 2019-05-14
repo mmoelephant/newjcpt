@@ -1,7 +1,12 @@
 <template>
     <div>
+<<<<<<< HEAD
         <div>
             账户设置
+=======
+        <div class="reportBtns">
+            <div class="btnClass"><span class="dotClass"></span>帮助中心</div>
+>>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
         </div>
         <div class='user-box'>
             <div class='title'>
@@ -90,6 +95,10 @@ export default {
         box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
         border-radius 8px
         padding 20px 
+<<<<<<< HEAD
+=======
+        margin-top 68px
+>>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
         box-sizing border-box
     .form
         label

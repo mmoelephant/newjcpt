@@ -39,7 +39,11 @@
                     :class='!name || name.length ==0 || !password || password.length==0?"loginbtn disabled":"loginbtn abled"'>登录</el-button>
                 <div class='tool'>
                     <p @click='$router.replace("/")'>&lt;返回首页</p>
+<<<<<<< HEAD
                     <p @click='$router.push("/helping-center")'>帮助中心</p>
+=======
+                    <p @click='$router.push("/help")'>帮助中心</p>
+>>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
                 </div>
             </div>
         </div>

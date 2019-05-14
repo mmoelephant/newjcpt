@@ -1,9 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import reportIndex from '../views/intellReport/reportIndex.vue'
+<<<<<<< HEAD
 import reportDetail from '../views/intellReport/reportDetail.vue'
 import dataIndex from '../views/dataSubscribe/index.vue'
 import dataDetail from '../views/dataSubscribe/subDetail.vue'
+=======
+import dataIndex from '../views/dataSubscribe/index.vue'
+>>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 import rout from './routerstt'
 
 Vue.use(Router)
@@ -22,6 +26,7 @@ let routes = [
   {
     path:'/reportIndex',
     name:'reportIndex',
+<<<<<<< HEAD
     component:reportIndex,
     children:[
       {
@@ -53,6 +58,15 @@ let routes = [
 //     name:'dataDetail',
 //     component:dataDetail
 //   },
+=======
+    component:reportIndex
+  },
+  {
+    path:'/dataIndex',
+    name:'dataIndex',
+    component:dataIndex
+  },
+>>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
   {path: '/setting',
     name: 'setting',
     component: () => import('../views/setting.vue')
@@ -69,6 +83,26 @@ let routes = [
   },
 ]
 routes.push(...rout)
+<<<<<<< HEAD
 export default new Router({
   routes
 })
+=======
+let router = new Router({
+  routes
+})
+router.beforeEach((to, from, next) => {
+  if(to.name != 'index' && to.name != 'login'&& to.name != 'help') {
+    const token = sessionStorage.getItem('token')
+		const user = JSON.parse(sessionStorage.getItem('user'))
+        if(token && token.length>0 && user && user.name) {
+          next()
+        } else {
+          next('/login')
+        }
+  } else {
+    next()
+  }
+})
+export default router
+>>>>>>> b1cae310e0ec25101301a74dec51513412a76d10

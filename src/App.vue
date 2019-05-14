@@ -97,7 +97,16 @@ export default {
             this.$store.commit('login/SET_USER_INFO', '')
             sessionStorage.removeItem('token')
 			sessionStorage.removeItem('user')
+<<<<<<< HEAD
 			this.$router.push('login')
+=======
+			console.log(this.$route.path)
+			if(this.$route.path == '/') {
+			} else {
+				this.$router.push('/login')
+			}
+			
+>>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
         }
 	},
 	methods:{
