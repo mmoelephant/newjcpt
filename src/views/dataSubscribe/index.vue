@@ -1,5 +1,7 @@
 <template>
-<div class="dataSubscribe">
+<div>
+<router-view v-if='$route.name == "dataDetail"'></router-view>
+<div class="dataSubscribe" v-else>
 	<div class="reportBtns">
 		<div :class="type == 0?'btnClass btnActive':'btnClass'" @click="choose(0)"><span :class="type == 0?'dotClass dotActive':'dotClass'"></span>数据订阅</div>
 		<div :class="type == 1?'btnClass btnActive':'btnClass'" @click="choose(1)"><span :class="type == 1?'dotClass dotActive':'dotClass'"></span>消息接收</div>
@@ -46,13 +48,13 @@
 				<div class="titleItem title_time">发布时间</div>
 				<div class="titleItem title_do">操作</div>
 			</li>
-			<li class="dataListClass" v-for="(item,index) in dataList" v-bind:key="index" @click="">
+			<li class="dataListClass" v-for="item in dataList" v-bind:key="item.id">
 				<div class="listItem list_num">DY{{item.number}}</div>
 				<div class="listItem list_region">{{item.area?item.area.slice(0,11):''}}...</div>
 				<div class="listItem list_materi">{{item.maName?item.maName.slice(0,15):''}}...</div>
 				<div class="listItem list_name">{{item.title?item.title.slice(0,10):''}}</div>
 				<div class="listItem list_time">{{item.createTime?item.createTime.split('T')[0]:''}}</div>
-				<div class="listItem list_do"><span class="seeBtn">查看详情</span><span class="deleBtn" @click="deleteItem(item.title)">删除</span></div>
+				<div class="listItem list_do"><span class="seeBtn" @click="toDetail(item.id)">查看详情</span><span class="deleBtn" @click="deleteItem(item.id)">删除</span></div>
 			</li>
 		</ul>
 		<div class="noData" :style="imgVis">
@@ -85,13 +87,13 @@
 				<div class="titleItem title_time">发送时间</div>
 				<div class="titleItem title_do">操作</div>
 			</li>
-			<li class="dataListClass" v-for="(item,index) in dataList" v-bind:key="index" >
+			<li class="dataListClass" v-for="item in dataList" v-bind:key="item.id" >
 				<div class="listItem list_num">DY{{item.number}}</div>
 				<div class="listItem list_region">{{item.areaName?item.areaName.slice(0,11):''}}...</div>
 				<div class="listItem list_materi">{{item.maName?item.maName.slice(0,15):''}}...</div>
 				<div class="listItem list_name">{{item.title?item.title.slice(0,10):''}}</div>
 				<div class="listItem list_time">{{item.updateTime?item.updateTime.split('T')[0]:''}}</div>
-				<div class="listItem list_do"><span class="seeBtn" @click="itemDetail(item.id)">查看详情</span><span class="deleBtn" @click="deleteItem(item.id)">删除</span></div>
+				<div class="listItem list_do"><span class="seeBtn" @click="toDetail(item.id)">查看详情</span><span class="deleBtn" @click="deleteItem1(item.id)">删除</span></div>
 			</li>
 		</ul>
 		<div class="noData" :style="imgVis2">
@@ -110,7 +112,7 @@
 				<el-input v-model="newSubForm.name" placeholder="请先填写您的订阅名称"></el-input>
 			</el-form-item>
 			<el-form-item label="时间区间" prop="time" class="">
-				    <el-date-picker v-model="newSubForm.time" type="monthrange" value-format='yyyy.MM' range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份">
+				    <el-date-picker v-model="newSubForm.time" type="monthrange" value-format='yyyy-MM-dd' range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份">
 
 					</el-date-picker>
 			</el-form-item>
@@ -138,6 +140,7 @@
 		</el-form>
 	</el-dialog>
 </div>
+</div>
 </template>
 <script>
 export default {
@@ -148,8 +151,7 @@ export default {
 			type:0,
 			pageNum:1,
 			pageSize:8,
-			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1NzUzNzQyOCwibmJmIjoxNTU3NDUxMDI4fQ.7lNeffel5wdnwMOWzhYlVY0buV3Ko0-nUChwBp7kchk',
-			token1:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1NzU2NzkzOCwibmJmIjoxNTU3NDgxNTM4fQ.AIK4mt8km9c2f2UofWx9VT8TqM8l5Ox7hHDq4znUABQ',
+			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1Nzg4NjMyNywibmJmIjoxNTU3Nzk5OTI3fQ.4BO9dVg1EflfTjjhkyaove_lngXE4OCHhgNVdCVfW3Y',
 			totalPage:8,
 			openNewSub: false,
 			imgVis:{
@@ -201,11 +203,14 @@ export default {
 			month:this.filterForm.time,
 		}
 		this.$api.get_subscrib(data1).then(value => {
-			if(value.data.msg == 'success' && value.data.count != 0){
+			if(value.data.count != null){
+				this.imgVis.display = 'none'
 				this.dataList = value.data.list
 				this.totalPage = value.data.count
 			}else{
+				this.dataList = []
 				this.imgVis.display = 'block'
+				this.totalPage = 0
 			}
 		})
 		this.$api.get_area().then(res => {
@@ -240,11 +245,18 @@ export default {
 					month:this.filterForm.time
 				}
 				this.$api.get_subscrib(data2).then(v => {
-					if(v.data.msg == 'success' && v.data.count != 0){
+					if(v.data.count != null){
+						this.imgVis.display = 'none'
+						this.imgVis1.display = 'none'
+						this.imgVis2.display = 'none'
 						this.dataList = v.data.list
 						this.totalPage = v.data.count
 					}else{
 						this.imgVis.display = 'block'
+						this.imgVis1.display = 'none'
+						this.imgVis2.display = 'none'
+						this.dataList = []
+						this.totalPage = 0
 					}
 				})
 			}else {
@@ -253,16 +265,23 @@ export default {
 				this.type = 1
 				this.dataList = []
 				var data3 = {
-					token:this.token,
+					// token:this.token,
 					pageNum:this.pageNum,
 					pageSize:this.pageSize
 				} 
 				this.$api.get_msg(data3).then(v => {
-					if(v.data.msg == 'success' && v.data.total != 0){
+					if(v.data.total != 0){
+						this.imgVis2.display = 'none'
+						this.imgVis.display = 'none'
+						this.imgVis1.display = 'none'
 						this.dataList = v.data.data
 						this.totalPage = v.data.total
 					}else{
 						this.imgVis2.display = 'block'
+						this.imgVis.display = 'none'
+						this.imgVis1.display = 'none'
+						this.dataList = []
+						this.totalPage = 0
 					}
 				})
 			}
@@ -278,11 +297,18 @@ export default {
 					month:this.filterForm.time
 				}
 				this.$api.get_subscrib(data4).then(v => {
-					if(v.data.msg == 'success' && v.data.count != 0){
+					if(v.data.count != null){
+						this.imgVis.display = 'none'
+						this.imgVis1.display = 'none'
+						this.imgVis2.display = 'none'
 						this.dataList = v.data.list
 						this.totalPage = v.data.count
 					}else{
 						this.imgVis.display = 'block'
+						this.imgVis1.display = 'none'
+						this.imgVis2.display = 'none'
+						this.dataList = []
+						this.totalPage = 0
 					}
 				})
 			}else{
@@ -292,15 +318,25 @@ export default {
 					pageSize:this.pageSize
 				}
 				this.$api.get_msg(data5).then(v => {
-					if(v.data.msg == 'success' && v.data.total != 0){
+					if(v.data != null){
+						this.imgVis.display = 'none'
+						this.imgVis1.display = 'none'
+						this.imgVis2.display = 'none'
 						this.dataList = v.data.data
 						this.totalPage = v.data.total
 					}else{
 						this.imgVis2.display = 'block'
+						this.imgVis.display = 'none'
+						this.imgVis1.display = 'none'
+						this.dataList = []
+						this.totalPage = 0
 					}
 
 				})
 			}
+		},
+		toDetail(aa){
+			this.$router.push({name:'dataDetail',query:{id:aa}})
 		},
 		openErr1(){
 			this.$message({
@@ -308,19 +344,6 @@ export default {
 				message:'操作失败，请稍后重试！',
 				type:'error',
 				duration:2000
-			})
-		},
-		itemDetail(dd){
-			var data8 = {
-				id:aa,
-				token:this.token
-			}
-			this.$api.getInfoById(data8).then(v => {
-				if(v.data.msg == 'success'){
-					this.openErr1()
-				}else{
-					this.openErr1()
-				}
 			})
 		},
 		openSuccess(){
@@ -354,8 +377,25 @@ export default {
 				}
 			})
 		},
+		deleteItem1(dd){
+			var data10 = {
+				ids:dd,
+				token:this.token
+			}
+			this.$api.delete_msg(data10).then(v => {
+				console.log(v)
+				if(v.msg = '操作成功'){
+					this.openSuccess()
+					this.get_data()
+				}else{
+					this.openErr()
+				}
+			})
+		},
 		submitForm(formName) {
 			this.$refs[formName].validate((valid) => {
+				console.log(this.pageNum)
+				console.log(this.pageSize)
 				if (valid) {
 					var data6 = {
 						token:this.token,
@@ -366,13 +406,20 @@ export default {
 						month:this.filterForm.time
 					}
 					this.$api.get_subscrib(data6).then(v => {
-						if(v.data.msg == 'success' && v.data.count != 0){
+						if(v.data.count != null){
+							this.imgVis.display = 'none'
+							this.imgVis1.display = 'none'
+							this.imgVis2.display = 'none'
 							this.$refs[formName].resetFields()
 							this.dataList = v.data.list
 							this.totalPage = v.data.count
 						}else{
+							this.dataList = []
 							this.$refs[formName].resetFields()
+							this.imgVis.display = 'none'
 							this.imgVis1.display = 'block'
+							this.imgVis2.display = 'none'
+							this.totalPage = 0
 						}
 					})
 				} else {
@@ -446,7 +493,7 @@ export default {
     }
 }
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
 .dataSubscribe
 	width 100%
 	height 100%

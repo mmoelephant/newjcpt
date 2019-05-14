@@ -1,6 +1,8 @@
 <template>
-    <div class="intellReport">
-		<div class="reportBtns">
+	<div>
+	<router-view v-if='$route.name == "reportDetail"'></router-view>
+    <div class="intellReport" v-else>
+		<div class="reportBtns" >
 			<div :class="type == 0?'btnClass btnActive':'btnClass'" @click="choose(0)"><span :class="type == 0?'dotClass dotActive':'dotClass'"></span>全部报告</div>
 			<div :class="type == 1?'btnClass btnActive':'btnClass'" @click="choose(1)"><span :class="type == 1?'dotClass dotActive':'dotClass'"></span>平台发布</div>
 			<div :class="type == 2?'btnClass btnActive':'btnClass'" @click="choose(2)"><span :class="type == 2?'dotClass dotActive':'dotClass'"></span>我的报告</div>
@@ -21,10 +23,10 @@
   							</el-select>
   						</el-form-item>
   						<el-form-item label="时间节点" prop="timeInterval">
-  							<el-select v-model="ruleForm.timeInterval" :placeholder="word" :style="season">
+  							<el-select v-model="ruleForm.timeInterval" :placeholder="word" :style="season" @change="changeTime">
   								<el-option v-for="item in seasons" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
   							</el-select>
-							<el-date-picker :style="timePicker" v-model="ruleForm.timeInterval" @change="changeTime" :type="timeRange" value-format='yyyy-MM' range-separator="至" 
+							<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy-MM' range-separator="至" 
 							:placeholder="word" :start-placeholder="startWord" :end-placeholder="endWord">
 							</el-date-picker>
   						</el-form-item>
@@ -34,7 +36,7 @@
   							</el-select>
   						</el-form-item>
   						<el-form-item label="对比地区" prop="compareRegion">
-  							<el-select v-model="ruleForm.compareRegion" multiple collapse-tags placeholder="请选择对比地区" :style="ruleFormClass">
+  							<el-select v-model="ruleForm.compareRegion" multiple collapse-tags placeholder="请选择对比地区" @change="changeRegion" :style="ruleFormClass">
   								<el-option v-for="item in regions" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
   							</el-select>
   						</el-form-item>
@@ -47,12 +49,12 @@
   						</el-form-item>
 					</el-form>
 				</el-dialog>
-				<li class="reportListClass" v-for="(item,index) in reportList" :key="index" style="border:1px red solid">
+				<li class="reportListClass" v-for="item in reportList" :key="item.id" @click="toDetail(item.id)">
 					<img src="reportIconn" class="reportIcon">
 					<div :class="item.mark == 1?'markClass':'markClass markDisplay'">{{}}</div>
 					<div :class="item.type == 1?'reporType':'reporType reporType1'">{{item.type == 1?'平台':'我的'}}</div>
 					<p class="reporTitle">{{item.title}}</p>
-					<p class="reporTime">{{item.createTime.split('T')[0]}}</p>
+					<p class="reporTime">{{item.createTime?item.createTime.split('T')[0]:''}}</p>
 				</li>
 			</ul>
 			<div class="noData" :style="imgVis">
@@ -64,8 +66,8 @@
 			@prev-click="get_data()" @next-click="get_data()">
             </el-pagination>
 		</div>
-
     </div>
+	</div>
 </template>
 <script>
 export default {
@@ -77,7 +79,7 @@ export default {
 			type:0,
 			pageNum:1,
 			pageSize:13,
-			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1NzQ1NjQ0NiwibmJmIjoxNTU3MzcwMDQ2fQ.gSpbQHxU7-vJ4mqZFSFG8N5TfK6KXXgjilSJldqe1mo',
+			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1Nzg4NjMyNywibmJmIjoxNTU3Nzk5OTI3fQ.4BO9dVg1EflfTjjhkyaove_lngXE4OCHhgNVdCVfW3Y',
 			elPageNum:13,
 			imgVis:{
 				display:'none'
@@ -132,10 +134,10 @@ export default {
 					{required: true, message: '请选择时间节点', trigger: 'change'}
 				],
 				materialType: [
-					{required: true, message: '请选择材料类型', trigger: 'change'}
+					{required: true, message: '请选择材料类型', trigger: 'focus'}
 				],
 				compareRegion: [
-					{required: true, message: '请选择对比地区', trigger: 'change'}
+					{required: true, message: '请选择对比地区', trigger: 'focus'}
 				],
 				desc: [
 					{required: false, message: '请填写备注', trigger: 'blur'}
@@ -151,11 +153,14 @@ export default {
 			token:this.token
 		}
 		this.$api.get_reports(data1).then(v => {
-			if(v.data.msg == 'success' && v.data.count != 0){
+			if(v.data.count != null){
+				this.imgVis.display = 'none'
 				this.reportList = v.data.list
 				this.elPageNum = v.data.count
 			}else{
 				this.imgVis.display = 'block'
+				this.reportList = []
+				this.elPageNum = 0
 			}
 		})
 		this.$api.get_area().then(res => {
@@ -180,28 +185,35 @@ export default {
 					token:this.token
 				}
 				this.$api.get_reports(data2).then(v => {
-					if(v.data.msg == 'success' && v.data.count != 0){
-						this.reportList = value.data.list
-						this.elPageNum = value.data.count				
+					if(v.data.count != null){
+						this.imgVis.display = 'none'
+						this.reportList = v.data.list
+						this.elPageNum = v.data.count				
 					}else{
 						this.imgVis.display = 'block'
+						this.reportList = []
+						this.elPageNum = 0
 					}
 				})
 			} else if(status == 1) {
 				// 获取平台报告
 				this.pageNum = 1
 				this.type = 1
+				this.reportList = []
 				var data3 = {
 					pageNum:this.pageNum,
 					pageSize:this.pageSize,
 					type:this.type
 				}
 				this.$api.get_reports(data3).then(v => {
-					if(v.data.msg == 'success' && v.data.count != 0){
-						this.reportList = value.data.list
-						this.elPageNum = value.data.count						
+					if(v.data.count != null){
+						this.imgVis.display = 'none'
+						this.reportList = v.data.list
+						this.elPageNum = v.data.count						
 					}else{
 						this.imgVis.display = 'block'
+						this.reportList = []
+						this.elPageNum = 0
 					}
 				})
 
@@ -209,6 +221,7 @@ export default {
 				//获取我的报告
 				this.pageNum = 1
 				this.type = 2
+				this.reportList = []
 				var data4 = {
 					pageNum:this.pageNum,
 					pageSize:this.pageSize,
@@ -216,11 +229,14 @@ export default {
 					type:this.type
 				}
 				this.$api.get_reports(data4).then(v => {
-					if(v.data.msg == 'success' && v.data.count != 0){
-						this.reportList = value.data.list
-						this.elPageNum = value.data.count		
-					}else{
+					if(v.data.count != null){
 						this.imgVis.display = 'none'
+						this.reportList = v.data.list
+						this.elPageNum = v.data.count		
+					}else{
+						this.imgVis.display = 'block'
+						this.reportList = []
+						this.elPageNum = 0
 					}
 				})
 			}
@@ -245,43 +261,79 @@ export default {
 			//请求, 赋值reportList，因为需要有默认列表
 			if(this.type == 0){
 				this.$api.get_reports(data5).then(v => {
-					if(v.data.msg == 'success' && v.data.count != 0){
+					if(v.data.count != null){
+						this.imgVis.display = 'none'
 						this.reportList = v.data.list
 						this.elPageNum = v.data.count
 					}else{
 						this.imgVis.display = 'block'
+						this.reportList = []
+						this.elPageNum = 0
 					}
 				})
 			}else if(this.type == 1){
 				this.$api.get_reports(data6).then(v => {
-					if(v.data.msg == 'success' && v.data.count != 0){
+					if(v.data.count != null){
+						this.imgVis.display = 'none'
 						this.reportList = v.data.list
 						this.elPageNum = v.data.count
 					}else{
 						this.imgVis.display = 'block'
+						this.reportList = []
+						this.elPageNum = 0
 					}
 				})
 			}else{
 				this.$api.get_reports(data7).then(v => {
-					if(v.data.msg == 'success' && v.data.count != 0){
+					if(v.data.count != null){
+						this.imgVis.display = 'none'
 						this.reportList = v.data.list
 						this.elPageNum = v.data.count
 					}else{
-						this.imgVis.display = 'none'
+						this.imgVis.display = 'block'
+						this.reportList = []
+						this.elPageNum = 0
 					}
 				})
 			}
+		},
+		toDetail(aa){
+			this.$router.push({name:'reportDetail',query:{id:aa}})
 		},
 		dialogForm(){
 			this.dialogFormVisible = true
 		},
 		ruleFormName(){
+			let cate_list =[]
+			this.ruleForm.materialType.map( item=> {
+				this.material.map(cate => {
+					if(item == cate.id) {
+						cate_list.push(cate.name)
+					}
+				})
+			})
+			let area_list = []
+			this.ruleForm.compareRegion.map(item => {
+				this.regions.map(area => {
+					if(item == area.id) {
+						area_list.push(area.name)
+					}
+				})
+			})
+			
 			if(this.timeType == 1){
-				this.ruleForm.name = this.ruleForm.timeInterval.split('-')[0] + '年' + this.ruleForm.timeInterval.split('-')[1] + '月' + this.ruleForm.materialType.toString() + '月度数据报告'
+				this.ruleForm.name = this.ruleForm.timeInterval + area_list.toString() + cate_list.toString() + '月度数据报告'
 			}else if(this.timeType == 2){
-				this.ruleForm.name = this.ruleForm.timeInterval + this.ruleForm.materialType.toString() + '季度数据报告'
+				// console.log(this.ruleForm.timeInterval)
+				this.seasons.map(ji => {
+					if(this.ruleForm.timeInterval == ji.id){
+						this.ruleForm.timeInterval = ji.name
+						}
+				})
+				console.log(this.ruleForm.timeInterval)
+				this.ruleForm.name = '2019年' + this.ruleForm.timeInterval + area_list.toString() + cate_list.toString() + '季度数据报告'
 			}else{
-				this.ruleForm.name = this.ruleForm.timeInterval + '年' + this.ruleForm.materialType.toString() + '年度数据报告'
+				this.ruleForm.name = this.ruleForm.timeInterval.substr(0,4) + '年' + area_list.toString() + cate_list.toString() + '年度数据报告'
 			}
 		},
 		changeType(vv){
@@ -289,25 +341,32 @@ export default {
 				this.season.display = 'none'
 				this.timePicker.display = ''
 				this.timeRange = 'month'
+				this.word = '请选择月份'
+				this.ruleForm.timeInterval = ''
 				this.timeType = 1	
 			}else if(vv == 2){
-				this.season.display = 'none'
-				this.timePicker.display = ''
+				this.season.display = ''
+				this.timePicker.display = 'none'
 				this.timeRange = 'monthrange'
-				this.word = '请选择季度'	
+				this.word = '请选择季度'
+				this.ruleForm.timeInterval = ''
 				this.timeType = 2
 			}else{
 				this.season.display = 'none'
 				this.timePicker.display = ''
 				this.timeRange = 'year'
 				this.word = '请选择年份'
+				this.ruleForm.timeInterval = ''
 				this.timeType = 3
 			}
 		},
-		changeTime(){
+		changeTime(ss){
 			this.ruleFormName()
 		},
 		changeMateri(vv){
+			this.ruleFormName()
+		},
+		changeRegion(cc){
 			this.ruleFormName()
 		},
 		toReportDetail(reportId){
@@ -350,7 +409,7 @@ export default {
 						name:this.ruleForm.name
 					}
 					this.$api.add_report(data8).then(v =>{
-						console.log(v)
+						// console.log(v)
 						if(v.data.msg == 'success'){
 							this.dialogFormVisible = false
 							this.$refs[formName].resetFields()
@@ -377,7 +436,7 @@ export default {
 // }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .intellReport
 	width 100%
 	position relative
@@ -386,7 +445,7 @@ export default {
 	width 100%
 	height 100%
 	padding 20px 40px
-	margin-top 88px
+	margin-top 20px
 	font-size 14px
 	color rgba(51,51,51,1)
 	line-height 14px

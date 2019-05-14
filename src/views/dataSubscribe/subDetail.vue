@@ -1,61 +1,40 @@
 <template>
 <div class="dataDetail">
     <div class="reportBtns navigi">
-        <div class="btnClass1 btnClass"><span class="dotClass dotClass1"></span>智能报告  > <span class="navigiOn">报告详情</span></div>
-        <a href="" class="goBackBtn">返回</a>
+        <div class="btnClass1 btnClass"><span class="dotClass dotClass1"></span>数据订阅  > <span class="navigiOn">订阅详情</span></div>
+        <a href="javascript:void(0)" class="goBackBtn">返回</a>
     </div>
     <div class="dataBox">
         <div class="filterSection">
-            <div class="dataList" style="width:242px"><div class="verticalBar"></div>我的备注</div>
-            <div class="adData adData1" @click="openMark"><i class="iconfont icon-xinzeng1"></i></div>
-            <div class="filterPart" style="width:calc(100% - 456px)"><div class="verticalBar"></div>报告内容<p class="decoText">Contents of the report</p></div>
-            <div class="xzBtn adData" @click=""><i class="iconfont icon-xiazai"></i></div>
-            <div class="dyBtn adData" @click=""><i class="iconfont icon-dayin"></i></div>
+            <div class="dataList" style="width:300px"><div class="verticalBar"></div>订阅内容</div>
+            <div class="filterPart" style="width:calc(100% - 456px)"><div class="verticalBar"></div>数据详情<p class="decoText">Contents of the report</p></div>
+            <div class="xzBtn adData"><i class="iconfont icon-xiazai"></i></div>
+            <div class="dyBtn adData"><i class="iconfont icon-dayin"></i></div>
         </div>
-		<el-dialog title="新增备注" :visible.sync="openNewMark" width="620px">
-			<p class="newTime">时间<span class="timeSpan">{{addTime}}</span></p>
-			<el-form :model="markForm" :rules="rules" ref="markForm" class="">
-				<el-form-item prop="mark">
-				<el-input type="textarea" :autosize="{ minRows: 4, maxRows: 10}" clearable v-model="markForm.mark" placeholder="请输入备注" minlength="50"  maxlength="2000" show-word-limit></el-input>
-				</el-form-item>
-				<el-form-item>
-					<el-button type="primary" @click="submitForm('markForm')" style="background-color:#8B78FE">立即创建</el-button>
-					<el-button @click="cancelMark('markForm')">取消</el-button>
-				</el-form-item>
-			</el-form>
-		</el-dialog>
-        <div class="dataContent">
-            <div class="dataLeft">
-                <div class="markItem">
-                    <p class="timeTip">最新提交时间</p>
-                    <p class="time">2019-4-28</p>
-                    <div class="markBox">爱好干哈百花谷比较宝贵哈哈给货币啊好好干和黄海波GV</div>
-                    <i class="el-icon-error closeMark" @click="deleteMark(item.id)"></i>
-                    <div class="doBtns">
-                        <button class="btn">修改</button>
-                        <button class="btn">保存</button>
-                        <button class="btn">取消</button>
-                    </div>
-                </div>
-				<!-- <div class="markItem" v-for="item in markList">
-                    <p class="timeTip">最新提交时间</p>
-                    <p class="time">{{item.updateTime}}</p>
-                    <div class="markBox">{{item.mark}}</div>
-                    <i class="el-icon-error closeMark" @click="deleteMark(item.id)"></i>
-                    <div class="doBtns">
-                        <button class="btn">修改</button>
-                        <button class="btn">保存</button>
-                        <button class="btn">取消</button>
-                    </div>
-                </div> -->
-				<div class="noData" :style="imgVis">
-					<img src="../../../public/img/subscribe/noMark.png" class="noDataImg">
-					<p class="noDatap1">还没有添加备注哦~</p>
-					<p class="noDatap2">点击上方<span style="color:#8B78FE">创建按钮</span>，立即新建一个吧</p>
+		<div class="dataContent">
+			<div class="dataLeft">
+				<div class="subInfo">
+					<!-- v-for="subDetail" -->
+					<p class="deTitle"><span class="dot1"></span>订阅名称</p>
+					<p class="deContent">{{subInfoName}}</p>
+					<p class="deTitle"><span class="dot1"></span>时间区间</p>
+					<p class="deContent">{{subInfoTime}}</p>
+					<p class="deTitle"><span class="dot1"></span>对比地区</p>
+					<p class="deContent">{{subInforegion}}</p>
+					<p class="deTitle"><span class="dot1"></span>对比材料</p>
+					<p class="deContent">{{subInfomateri}}</p>
 				</div>
-            </div>
-            <div class="dataRight"></div>
-        </div>
+				
+			</div>
+			<div class="dataRight">
+				<div class="rightBox">
+					<div class="table-box">
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<router-view></router-view>
     </div>
 </div>
 </template>
@@ -63,134 +42,36 @@
 export default {
 	data() {
 		return {
-			openNewMark:false,
-			token:'',
-			markList:[],
-			imgVis:{
-				display:'none'
-			},
-			markForm:{
-				mark:''
-			},
-			addTime:'',
-			text:'',
-			textarea:'',
-			rules:{
-				mark:[{required:true,message:'请输入备注',trigger:'blur'}]
-			},
+			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1Nzg4NjMyNywibmJmIjoxNTU3Nzk5OTI3fQ.4BO9dVg1EflfTjjhkyaove_lngXE4OCHhgNVdCVfW3Y',
+			subDetail:[],
+			subInfoName:'',
+			subInfoTime:'',
+			subInforegion:'',
+			subInfomateri:'',
         }
     },
 	created(){
-		this.markList = []
 		var data1 = {
-			token:this.token,
-			reportId:''
+			id:this.id,
+			token:this.token
 		}
-		this.$api.get_markList(data1).then(v => {
-			if(v.data.msg == '查询成功' && v.data.count != 0){
-				this.markList = v.data.list
-			}else{
-				this.imgVis.display = 'block'
-			}
+		this.$api.sub_detail(data1).then(v => {
+			this.subInfoName = v.data.title
+			this.subInfoTime = v.data.stTimeStr.substr(0,7) + ' 至 ' + v.data.enTimeStr.substr(0,7)
+			this.subInforegion = v.data.areaNameList.toString()
+			this.subInfomateri = v.data.maName
 		})
-		this.addTime = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
 	},
+	computed: {
+		id: function () {
+			return this.$route.query.id
+    	}
+  	},
     methods:{
-		getMarkList(){
-			var data3 = {
-				token:this.token,
-				reportId:''
-			}
-			this.$api.get_markList(data3).then(v => {
-				if(v.data.msg == '查询成功' && v.data.count != 0){
-					this.markList = v.data.list
-				}else{
-					this.imgVis.display = 'block'
-				}
-			})
-		},
-		openMark(){
-			this.openNewMark = true
-		},
-		deteleTip(){
-			this.$message({
-				showClose:true,
-				message:'删除成功',
-				type:'success',
-				duration:2000
-			})
-		},
-		deteleTip1(){
-			this.$message({
-				showClose:true,
-				message:'删除失败',
-				type:'error',
-				duration:2000
-			})
-		},
-        deleteMark(id){
-			var data4 = {
-				token:this.token,
-				id:id
-			}
-			this.$api.delete_mark(data4).then(v => {
-				if(v.data.msg == 'success'){
-					this.deteleTip()
-					this.getMarkList()
-				}else{
-					this.deteleTip1()
-				}
-			})
-		},
-		openTip(){
-			this.$message({
-				showClose:true,
-				message:'创建成功！',
-				type:'success',
-				duration:2000				
-			})
-		},
-		openTip1(){
-			this.$message({
-				showClose:true,
-				message:'创建失败！',
-				type:'error',
-				duration:2000				
-			})
-		},
-		submitForm(formName){
-			this.$refs[formName].validate((valid) => {
-				if (valid) {
-					var data2 = {
-						token:this.token,
-						reportId:'',
-						mark:this.markForm.mark
-					}
-					this.$api.add_mark(data2).then(v => {
-						if(v.data.msg == 'success'){
-							this.openNewMark = false
-							this.$refs['markForm'].resetFields()
-							this.openTip()
-							getMarkList()
-						}else{
-							this.openNewMark = false
-							this.$refs[formName].resetFields()
-							this.openTip1()
-						}
-					})
-				}else{
-
-				}
-			})
-		},
-		cancelMark(formName){
-			this.openNewMark = false
-			this.$refs[formName].resetFields()
-		}
     }
 }
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
 .dataDetail
     width 100%
     height 100%
@@ -202,87 +83,61 @@ export default {
 .dataContent
 	width 100%
 	height 100%
-	padding 0 20px
+	padding 0 20px 20px 20px
 	box-sizing border-box
 	margin-top 10px
+	display flex
+	flex-direction row
+	flex-wrap nowrap
+	justify-content flex-start
+
 .dataLeft
     width 300px
-    height 300px
-    display flex
-    flex-direction column
-    flex-wrap nowwrap
-    justify-content flex-start
 
-.markItem
+.subInfo
 	width 300px
-	height 300px
+	height 340px
 	background #fff
 	padding 20px
+	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
 	border-radius 8px
 	box-sizing border-box
 	font-size 14px
 	line-height 14px
-	position relative
-
-.timeTip
-    color #8E9099
-    margin-bottom 12px
-.time
-    color #2C2D33
-    margin-bottom 20px
-
-.closeMark
-    position absolute
-    right 18px
-    top 15px
-    font-size 24px
-    color #8E9099
-
-.markBox
+	
+.deTitle
 	width 100%
-	height 116px
-	padding 10px
-	border 1px solid rgba(216,219,223,1)
+	padding-left 14px
 	box-sizing border-box
-	color #5C5D62
-	line-height 24px
-.doBtns
-	margin-top 10px
-	text-align right
-.btn
-	width 60px
-	height 28px
-	background #fff
-	border 1px solid rgba(108,125,255,1)
-	border-radius 14px
-	font-size 14px
-	color #7F94FF
-	line-height 28px
-	text-align center
-
-.noData
-	font-size 18px
-	line-height 18px
-	text-align center
-
-.noDatap2
-	margin-top 10px
-	font-size 14px
-	color #ccc
-	line-height 14px
-.noDataImg
-	display block
-	margin 0 auto
-	margin-top 100px
-	margin-bottom 10px
-
-.newTime
-	position relative
-	top -34px
 	font-size 14px
 	color #8E9099
 	line-height 14px
+	position relative
 
-.timeSpan
-	margin-left 8px
+.dot1
+	width 6px
+	height 6px
+	display inline-block
+	background #7F94FF
+	border-radius 50%
+	position absolute
+	left 0
+	top 4px
+
+.deContent
+	width 100%
+	margin-top 7px
+	margin-bottom 25px
+	font-size 14px
+	color #2C2D33
+	line-height 20px
+
+.dataRight
+    width calc(100% - 310px)
+
+.rightBox
+	width 100%
+	height 300px
+	margin-left 10px
+	background-color #fff
 </style>

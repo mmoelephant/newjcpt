@@ -12,6 +12,11 @@ const service1 = axios.create({
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
+const service3 = axios.create({
+	baseURL: '/api',
+    withCredentials: false,
+    headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+})
 // const service2 = axios.create({
 // 	baseURL: '/hui',
 //     withCredentials: false,
@@ -94,16 +99,19 @@ const api = {
 	},
 	// 报告备注
 	get_markList(data) {
-		if(data) data = qs.stringify(data, { allowDots:true })
-		return formser.post('/PageReportRemarkController/findList', data)
+		// if(data) data = qs.stringify(data, { allowDots:true })
+		return service3.post('/PageReportRemarkController/findList', data)
 	},
 	add_mark(data){
-		if(data) data = qs.stringify(data, { allowDots:true })
-		return formser.post('/PageReportRemarkController/add', data)
+		// if(data) data = qs.stringify(data, { allowDots:true })
+		return service3.post('/PageReportRemarkController/add', data)
 	},
 	delete_mark(data) {
-		if(data) data = qs.stringify(data, { allowDots:true})
-		return formser.post('/PageReportRemarkController/deleteRemark', data)
+		// if(data) data = qs.stringify(data, { allowDots:true})
+		return service3.post('/PageReportRemarkController/deleteRemark', data)
+	},
+	modify_mark(data) {
+		return service3.post('/PageReportRemarkController/updateRemark', data)
 	},
 	get_reports(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
@@ -111,7 +119,7 @@ const api = {
 	},
 	get_reports_detail(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
-		return formser.post('/PageReportController/getReportById', data)
+		return formser.post('/PageReportController/getReportInfoById', data)
 	},
 	updata_report(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
@@ -138,17 +146,16 @@ const api = {
 		if(data) data = qs.stringify(data, { allowDots: true })
 		return formser.post('/PageSubscriptionController/add',data)
 	},
-	
 	get_help_detail(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
 		return formser.post('/pageHelperController/getArtInfo', data)
 	},
 	get_msg(data) {
 		// if(data) data = qs.stringify(data, { allowDots: true })
-		return service1.post('/PageMessageController/getMessage', data)
+		return service3.post('/PageMessageController/getMessage', data)
 	},
 	delete_msg(data) {
-		return service1.post('/PageMessageController/delMessage', data)
+		return service3.post('/PageMessageController/delMessage', data)
 	}
 }
 

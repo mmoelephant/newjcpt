@@ -62,11 +62,11 @@ export default {
                 }, {
                     name: '智能报告',
                     icon: 'icon-baogaoshoucang',
-                    router: '/reportDetail'
+                    router: '/reportIndex'
                 }, {
                     name: '数据订阅',
                     icon: 'icon-dingyue',
-                    router: '/dataDetail'
+                    router: '/dataIndex'
                 }, {
                     name: '帮助中心',
                     icon: 'icon-bangzhu',

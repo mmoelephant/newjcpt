@@ -22,23 +22,37 @@ let routes = [
   {
     path:'/reportIndex',
     name:'reportIndex',
-    component:reportIndex
+    component:reportIndex,
+    children:[
+      {
+        path:'reportDetail',
+        name:'reportDetail',
+        component:reportDetail
+      },
+    ]
   },
-  {
-    path:'/reportDetail',
-    name:'reportDetail',
-    component:reportDetail
-  },
+//   {
+//     path:'/reportDetail',
+//     name:'reportDetail',
+//     component:reportDetail
+//   },
   {
     path:'/dataIndex',
     name:'dataIndex',
-    component:dataIndex
+	component:dataIndex,
+    children:[
+		{
+			path:'dataDetail',
+			name:'dataDetail',
+			component:dataDetail
+		},
+	]
   },
-  {
-    path:'/dataDetail',
-    name:'dataDetail',
-    component:dataDetail
-  },
+//   {
+//     path:'/dataDetail',
+//     name:'dataDetail',
+//     component:dataDetail
+//   },
   {path: '/setting',
     name: 'setting',
     component: () => import('../views/setting.vue')
