@@ -1,5 +1,6 @@
 <template>
-<div class="dataDetail">
+<div class="dataDetail" v-loading.fullscreen="loading">
+	 <!-- style="border:1px red solid" -->
     <div class="reportBtns navigi">
         <div class="btnClass1 btnClass"><span class="dotClass dotClass1"></span>智能报告  > <span class="navigiOn">报告详情</span></div>
         <a href="javascript:void(0)" class="goBackBtn">返回</a>
@@ -45,8 +46,70 @@
             </div>
             <div class="dataRight">
 				<p class="reTitle">{{reTitle}}</p>
-				<p class="titleItem">一、钢材</p>
-				<p class="contentItem">2019年第一季度 云南省 钢材价格  元/吨 指数点 环比下降，同比下降。</p>
+				<div class="dataItem" v-for="(item,index) in reportDetailList" :key="index">
+					<!-- <p class="graphName">{{item.title}}</p> -->
+					<p class="titleItem">
+						<span class="titleDot"></span>
+						{{item.title}}
+					</p>
+					<p class="contentItem" v-if="time1.length == 1">{{item.title.substr(0,9)}} 云南省 {{item.maName}}价格 {{item.mmYn[index].price.toFixed(2)}} 元/吨 指数{{item.mmYn[index].exponent.toFixed(2)}}点 环比下降{{item.mmYn[index].hb.toFixed(5) * 100}}%，同比下降{{item.mmYn[index].tb.toFixed(5) * 100}}%。</p>
+					<p class="contentItem" v-else-if="time1.length == 4">{{item.title.substr(0,5)}} 云南省 {{item.maName}}价格 {{item.mmYn[index].price.toFixed(2)}} 元/吨 指数{{item.mmYn[index].exponent.toFixed(2)}}点 环比下降{{item.mmYn[index].hb.toFixed(5) * 100}}%，同比下降{{item.mmYn[index].tb.toFixed(5) * 100}}%。</p>
+					<p class="contentItem" v-else>{{item.title.substr(0,7)}} 云南省 {{item.maName}}价格 {{item.mmYn[index].price.toFixed(2)}} 元/吨 指数{{item.mmYn[index].exponent.toFixed(2)}}点 环比下降{{item.mmYn[index].hb.toFixed(5) * 100}}%，同比下降{{item.mmYn[index].tb * 100}}%。</p>
+					<table class="tableBox" border="1">
+						<thead>
+							<tr>
+								<th rowspan="2">地区</th>
+								<th colspan="5">{{item.maName}} 单位：元/立方米</th>
+							</tr>
+							<tr v-if="time1.length == 1">
+								<th>2018年{{item.title.substr(5,4)}}</th>
+								<th>1</th>
+								<th>{{item.title.substr(0,9)}}</th>
+								<th>同比增长率(%)</th>
+								<th>环比增长率(%)</th>
+							</tr>
+							<tr v-else-if="time1.length == 4">
+								<th>2018年</th>
+								<th>1</th>
+								<th>{{item.title.substr(0,5)}}</th>
+								<th>同比增长率(%)</th>
+								<th>环比增长率(%)</th>
+							</tr>
+							<tr v-else>
+								<th>2018年{{item.title.substr(5,2)}}</th>
+								<th>1</th>
+								<th>{{item.title.substr(0,7)}}</th>
+								<th>同比增长率(%)</th>
+								<th>环比增长率(%)</th>
+							</tr>
+						</thead>
+						<tbody v-for="(aa,index2) in item.mm" :key="index2">
+							<tr>
+								<td>{{aa.areaName}}</td>
+								<td>{{aa.tbPrice.toFixed(2)}}</td>
+								<td>{{aa.hbPrice.toFixed(2)}}</td>
+								<td>{{aa.price.toFixed(2)}}</td>
+								<td>{{aa.tb.toFixed(5) * 100}}%</td>
+								<td>{{aa.hb.toFixed(5) * 100}}%</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td>{{item.mmYn[index].areaName}}</td>
+								<td>{{item.mmYn[index].tbPrice.toFixed(2)}}</td>
+								<td>{{item.mmYn[index].hbPrice.toFixed(2)}}</td>
+								<td>{{item.mmYn[index].price.toFixed(2)}}</td>
+								<td>{{item.mmYn[index].tb.toFixed(5) * 100}}%</td>
+								<td>{{item.mmYn[index].hb.toFixed(5) *100}}%</td>
+							</tr>
+						</tfoot>
+					</table>
+					<!-- <p>{{item.}}价格</p> -->
+					<div :id="'main'+index" style="width: 600px;height:400px;margin:30px auto 20px;"></div>
+					<div :id="'main2'+index" style="width: 600px;height:400px;margin:30px auto 20px;"></div>
+					<div :id="'main1'+index" style="width: 600px;height:400px;margin:30px auto 20px;"></div>
+				</div>
+				
 			</div>
         </div>
 		<router-view></router-view>
@@ -54,6 +117,7 @@
 </div>
 </template>
 <script>
+import $ from 'jquery'
 export default {
 	data() {
 		return {
@@ -83,6 +147,12 @@ export default {
 				mark:[{required:true,message:'请输入备注',trigger:'blur'}]
 			},
 			reTitle:'',
+			reportDetailList:[],
+			time1:'',
+			mycharts:null,
+			loading:true
+			// x:[],
+			// y:[]
         }
     },
 	created(){
@@ -107,17 +177,227 @@ export default {
 		})
 		this.addTime = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
 		this.$api.get_reports_detail(data6).then(v => {
-			console.log(v)
-			console.log(v.data.title)
+			this.loading = false
 			this.reTitle = v.data.title
+			this.reportDetailList = v.data.mapList
+			this.time1 = v.data.timeInterval
+			this.$nextTick(() => {
+				this.reportDetailList.forEach((item,index) => {
+					this.drawGraph(item,index)
+					this.drawGraph2(item,index)
+					this.drawGraph1(item,index)
+				})
+				f
+				
+			})
 		})
 	},
 	computed: {
 		id: function () {
 			return this.$route.query.id
-    	}
-  	},
+		}
+	},
+	mounted() {
+		// this.drawGraph()
+	},
     methods:{
+		drawGraph(aa,bb){
+			let x = [],y = []
+			const mycharts = this.$echarts.init(document.getElementById('main'+bb))
+			aa.mm.forEach(item => {
+				x.push(item.areaName)
+				y.push(item.price)
+			})
+			var option = {
+				// title:{
+				// 	text:aa.title
+				// },
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'cross',
+						crossStyle: {
+							color: '#999'
+						}
+					}
+				},
+				toolbox: {
+					feature: {
+						dataView: {show: true, readOnly: false},
+						magicType: {show: true, type: ['line', 'bar']},
+						restore: {show: true},
+						saveAsImage: {show: true}
+					}
+				},
+				legend: {
+					data:['价格']
+				},
+				xAxis: [
+					{
+						type: 'category',
+						data: x,
+						axisPointer: {
+							type: 'shadow'
+						}
+					}
+				],
+				yAxis: [
+					{
+						type: 'value',
+						// name: '价格',
+						min: 0,
+						max: 6000,
+						interval: 1000,
+						axisLabel: {
+							formatter: '{value}'
+						}
+					}
+				],
+				series:[
+					{
+					name:'价格',
+					type:'bar',
+					data:y,
+					barWidth:30
+					},
+				]
+			}
+			mycharts.setOption(option,true)
+		},
+		drawGraph2(aa,bb){
+			let x = [],y =[],z=[],w =''
+			const mycharts2 = this.$echarts.init(document.getElementById('main2'+bb))
+			aa.mm.forEach(item => {
+				x.push(item.areaName)
+				y.push(item.price)
+				z.push(item.hbPrice)
+				w = aa.maName + '价格'
+			})
+			var option = {
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'cross',
+						crossStyle: {
+							color: '#999'
+						}
+					}
+				},
+				toolbox: {
+					feature: {
+						dataView: {show: true, readOnly: false},
+						magicType: {show: true, type: ['line', 'bar']},
+						restore: {show: true},
+						saveAsImage: {show: true}
+					}
+				},
+				legend: {
+					data:['价格','环比价格']
+				},
+				xAxis: [
+					{
+						type: 'category',
+						data: x,
+						axisPointer: {
+							type: 'shadow'
+						}
+					}
+				],
+				yAxis: [
+					{
+						type: 'value',
+						// name: '价格',
+						min: 0,
+						max: 6000,
+						interval: 1000,
+						axisLabel: {
+							formatter: '{value}'
+						}
+					}
+				],
+				series:[
+					{
+					name:'价格',
+					type:'line',
+					data:y,
+					},
+					{
+					name:'环比价格',
+					type:'line',
+					data:z,
+					}
+
+				]
+			}
+			mycharts2.setOption(option,true)
+		},
+		drawGraph1(aa,bb){
+			let x = [],y =[],z=[]
+			const mycharts1 = this.$echarts.init(document.getElementById('main1'+bb))
+			aa.mm.forEach(item => {
+				x.push(item.areaName)
+				y.push(item.price)
+				z.push(item.tbPrice)
+			})
+			var option = {
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'cross',
+						crossStyle: {
+							color: '#999'
+						}
+					}
+				},
+				toolbox: {
+					feature: {
+						dataView: {show: true, readOnly: false},
+						magicType: {show: true, type: ['line', 'bar']},
+						restore: {show: true},
+						saveAsImage: {show: true}
+					}
+				},
+				legend: {
+					data:['价格','同比价格']
+				},
+				xAxis: [
+					{
+						type: 'category',
+						data: x,
+						axisPointer: {
+							type: 'shadow'
+						}
+					}
+				],
+				yAxis: [
+					{
+						type: 'value',
+						// name: '价格',
+						min: 0,
+						max: 6000,
+						interval: 1000,
+						axisLabel: {
+							formatter: '{value}'
+						}
+					}
+				],
+				series:[
+					{
+					name:'价格',
+					type:'line',
+					data:y,
+					},
+					{
+					name:'同比价格',
+					type:'line',
+					data:z,
+					}
+
+				]
+			}
+			mycharts1.setOption(option,true)
+		},
+		
 		getMarkList(){
 			var data3 = {
 				token:this.token,
@@ -144,7 +424,6 @@ export default {
 			this.inputDis = false
 		},
 		markChange(value){
-			console.log(value)
 			this.modifiedMark = value
 		},
 		saveMark(ss){
@@ -354,7 +633,7 @@ export default {
 	margin-left 8px
 .dataRight
 	width calc(100% - 320px)
-	height 824px
+	// height 824px
 	background #fff
 	padding 20px
 	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
@@ -364,10 +643,40 @@ export default {
 
 .reTitle
 	font-size 16px
+	font-weight bold
 	line-height 30px
 	text-align center
 
 .titleItem
+	font-size 14px
+	font-weight bold
+	line-height 28px
+	box-sizing border-box
+	margin-top 30px
+
+.titleDot
+	width 6px
+	height 6px
+	display inline-block
+	background #7F94FF
+	border-radius 50%
+	margin-right 4px
+	line-height 28px
+
+.graphName
+	font-weight bold
+	text-align center
+	margin-top 30px
+
+.tableBox
+	width 100%
+	// height 300px
+	border 1px #ccc solid
 	margin-top 20px
-	// border 1px red solid
+	font-size 14px
+	text-align center
+	// th
+	// 	border none
+	// td
+	// 	border none
 </style>

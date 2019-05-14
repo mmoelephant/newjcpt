@@ -1,5 +1,5 @@
 <template>
-<div>
+<div v-loading.fullscreen="loading">
 <router-view v-if='$route.name == "dataDetail"'></router-view>
 <div class="dataSubscribe" v-else>
 	<div class="reportBtns">
@@ -9,11 +9,12 @@
 	<div :class="type == 0?'mySubscribe':'mySubscribe1'">
 	<div class="filterSection">
 		<div class="dataList"><div class="verticalBar"></div>订阅列表</div>
-		<div class="adData" @click="openNewSub = true"><i class="iconfont icon-dingyue1"></i></div>
+		<a href=""><div class="adData" @click="openNewSub = true"><i class="iconfont icon-dingyue1"></i></div></a>
 			<!-- demo-ruleForm  -->
 			<!-- label-width="100px"  -->
 		<div class="filterPart"><div class="verticalBar"></div>快速筛查
-		<el-form :model="filterForm" :rules="filteRules"  ref="filterForm" label-width="40px" class="filterList">
+		<el-form :model="filterForm" ref="filterForm" label-width="40px" class="filterList">
+			<!-- :rules="filteRules"   -->
 			<el-form-item label="地区" prop="region" class="filterListItem">
 				<el-select v-model="filterForm.region" multiple collapse-tags placeholder="请选择对比地区" style="width:220px">
 					<el-option v-for="item in regions" :key="item.id" :value="item.id" :label="item.name">
@@ -54,7 +55,7 @@
 				<div class="listItem list_materi">{{item.maName?item.maName.slice(0,15):''}}...</div>
 				<div class="listItem list_name">{{item.title?item.title.slice(0,10):''}}</div>
 				<div class="listItem list_time">{{item.createTime?item.createTime.split('T')[0]:''}}</div>
-				<div class="listItem list_do"><span class="seeBtn" @click="toDetail(item.id)">查看详情</span><span class="deleBtn" @click="deleteItem(item.id)">删除</span></div>
+				<div class="listItem list_do"><a href=""><span class="seeBtn" @click="toDetail(item.id)">查看详情</span></a><a href=""><span class="deleBtn" @click="deleteItem(item.id)">删除</span></a></div>
 			</li>
 		</ul>
 		<div class="noData" :style="imgVis">
@@ -68,7 +69,7 @@
 			<p class="noDatap2">快点击上方新增按钮订阅吧~</p>
 		</div>
 		<el-pagination :page-size="pageSize" :total="totalPage" :pager-count="5" :current-page="pageNum" layout="prev, pager, next" :hide-on-single-page="true" 
-		class="reportPage" current-change="get_data()" prev-click="get_data()" next-click="get_data()">
+		class="reportPage" @current-change="get_data" @prev-click="get_data" @next-click="get_data">
 		</el-pagination>
 	</div>
 	</div>
@@ -101,7 +102,7 @@
 			<p class="noDatap1">暂时没有消息</p>
 		</div>
 		<el-pagination :page-size="pageSize" :total="totalPage" :pager-count="5" :current-page="pageNum" layout="prev, pager, next" :hide-on-single-page="true" 
-		class="reportPage" @current-change="get_data()" @prev-click="get_data()" @next-click="get_data()">
+		class="reportPage" @current-change="get_data" @prev-click="get_data" @next-click="get_data">
 		</el-pagination>
 	</div>	
 	</div>
@@ -179,17 +180,18 @@ export default {
 				region:'',
 				push:false
 			},
-			filteRules:{
-				region:[{required:false,message:'请选择对比地区',trigger:'change'}],
-				type:[{required:false,message:'请选择材料类型',trigger:'change'}],
-				time:[{required:false,message:'请选择时间',trigger:'change'}]
-			},
+			// filteRules:{
+			// 	region:[{required:false,message:'请选择对比地区',trigger:'change'}],
+			// 	type:[{required:false,message:'请选择材料类型',trigger:'change'}],
+			// 	time:[{required:false,message:'请选择时间',trigger:'change'}]
+			// },
 			rules:{
 				name:[{required:true,message:'请输入订阅名称',trigger:'blur'}],
 				time:[{required:true,message:'请选择时间区间',trigger:'change'}],
 				type:[{required:true,message:'请选择材料类型',trigger:'blur change'}],
 				region:[{required:true,message:'请选择对比地区',trigger:'blur change'}],	
-			}
+			},
+			loading:true
       }
 	},
 	created(){
@@ -204,10 +206,12 @@ export default {
 		}
 		this.$api.get_subscrib(data1).then(value => {
 			if(value.data.count != null){
+				this.loading = false
 				this.imgVis.display = 'none'
 				this.dataList = value.data.list
 				this.totalPage = value.data.count
 			}else{
+				this.loading = false
 				this.dataList = []
 				this.imgVis.display = 'block'
 				this.totalPage = 0
@@ -236,6 +240,7 @@ export default {
 				this.pageNum =1
 				this.type = 0
 				this.dataList = []
+				this.loading = true
 				var data2 = {
 					token:this.token,
 					pageNum:this.pageNum,
@@ -246,12 +251,14 @@ export default {
 				}
 				this.$api.get_subscrib(data2).then(v => {
 					if(v.data.count != null){
+						this.loading = false
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
 						this.dataList = v.data.list
 						this.totalPage = v.data.count
 					}else{
+						this.loading = false
 						this.imgVis.display = 'block'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
@@ -264,6 +271,7 @@ export default {
 				this.pageNum = 1
 				this.type = 1
 				this.dataList = []
+				this.loading = true
 				var data3 = {
 					// token:this.token,
 					pageNum:this.pageNum,
@@ -271,12 +279,14 @@ export default {
 				} 
 				this.$api.get_msg(data3).then(v => {
 					if(v.data.total != 0){
+						this.loading = false
 						this.imgVis2.display = 'none'
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
 						this.dataList = v.data.data
 						this.totalPage = v.data.total
 					}else{
+						this.loading = false
 						this.imgVis2.display = 'block'
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
@@ -296,14 +306,17 @@ export default {
 					maId:this.filterForm.type.toString(),
 					month:this.filterForm.time
 				}
+				this.loading = true
 				this.$api.get_subscrib(data4).then(v => {
 					if(v.data.count != null){
+						this.loading = false
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
 						this.dataList = v.data.list
 						this.totalPage = v.data.count
 					}else{
+						this.loading = false
 						this.imgVis.display = 'block'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
@@ -570,6 +583,9 @@ export default {
 	color rgba(44,45,51,1)
 	text-align center
 	line-height 48px
+
+.dataListClass:hover
+	background #D3D8F4
 
 .listItem
 	padding 0 20px

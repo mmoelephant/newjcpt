@@ -8,8 +8,13 @@ const service = axios.create({ //hg
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
+// const service1 = axios.create({ //lw
+// 	baseURL: process.env.NODE_ENV === 'development'?'/lw':'',
+//     withCredentials: false,
+//     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+// })
 const service1 = axios.create({ //lw
-	baseURL: process.env.NODE_ENV === 'development'?'/lw':'',
+	baseURL: '/lw',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
@@ -23,10 +28,15 @@ const service3 = axios.create({
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
+// const formser = axios.create({ //hg
+// 		baseURL: process.env.NODE_ENV === 'development'?'/api':'',
+//     withCredentials: false,
+//     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+// })
 const formser = axios.create({ //hg
-		baseURL: process.env.NODE_ENV === 'development'?'/api':'',
-    withCredentials: false,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+	baseURL: '/api',
+	withCredentials: false,
+	headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 })
 
 service.interceptors.response.use(

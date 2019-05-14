@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-loading.fullscreen="loading">
 	<router-view v-if='$route.name == "reportDetail"'></router-view>
     <div class="intellReport" v-else>
 		<div class="reportBtns" >
@@ -142,7 +142,8 @@ export default {
 				desc: [
 					{required: false, message: '请填写备注', trigger: 'blur'}
 				]
-			}
+			},
+			loading:true
 		}
 	},
 	created(){
@@ -154,6 +155,7 @@ export default {
 		}
 		this.$api.get_reports(data1).then(v => {
 			if(v.data.count != null){
+				this.loading = false
 				this.imgVis.display = 'none'
 				this.reportList = v.data.list
 				this.elPageNum = v.data.count
@@ -179,6 +181,7 @@ export default {
 				this.pageNum = 1
 				this.type = 0
 				this.reportList = []
+				this.loading = true
 				var data2 = {
 					pageNum:this.pageNum,
 					pageSize:this.pageSize,
@@ -186,6 +189,7 @@ export default {
 				}
 				this.$api.get_reports(data2).then(v => {
 					if(v.data.count != null){
+						this.loading = false
 						this.imgVis.display = 'none'
 						this.reportList = v.data.list
 						this.elPageNum = v.data.count				
@@ -200,6 +204,7 @@ export default {
 				this.pageNum = 1
 				this.type = 1
 				this.reportList = []
+				this.loading = true
 				var data3 = {
 					pageNum:this.pageNum,
 					pageSize:this.pageSize,
@@ -207,6 +212,7 @@ export default {
 				}
 				this.$api.get_reports(data3).then(v => {
 					if(v.data.count != null){
+						this.loading = false
 						this.imgVis.display = 'none'
 						this.reportList = v.data.list
 						this.elPageNum = v.data.count						
@@ -222,6 +228,7 @@ export default {
 				this.pageNum = 1
 				this.type = 2
 				this.reportList = []
+				this.loading = true
 				var data4 = {
 					pageNum:this.pageNum,
 					pageSize:this.pageSize,
@@ -230,6 +237,7 @@ export default {
 				}
 				this.$api.get_reports(data4).then(v => {
 					if(v.data.count != null){
+						this.loading = false
 						this.imgVis.display = 'none'
 						this.reportList = v.data.list
 						this.elPageNum = v.data.count		
@@ -322,16 +330,15 @@ export default {
 			})
 			
 			if(this.timeType == 1){
-				this.ruleForm.name = this.ruleForm.timeInterval + area_list.toString() + cate_list.toString() + '月度数据报告'
+				this.ruleForm.name = this.ruleForm.timeInterval.split('-')[0] + '年' + this.ruleForm.timeInterval.split('-')[1] + '月' + area_list.toString() + cate_list.toString() + '月度数据报告'
 			}else if(this.timeType == 2){
-				// console.log(this.ruleForm.timeInterval)
+				let jidu = ''
 				this.seasons.map(ji => {
 					if(this.ruleForm.timeInterval == ji.id){
-						this.ruleForm.timeInterval = ji.name
+						jidu = ji.name
 						}
 				})
-				console.log(this.ruleForm.timeInterval)
-				this.ruleForm.name = '2019年' + this.ruleForm.timeInterval + area_list.toString() + cate_list.toString() + '季度数据报告'
+				this.ruleForm.name = '2019年' + jidu + area_list.toString() + cate_list.toString() + '季度数据报告'
 			}else{
 				this.ruleForm.name = this.ruleForm.timeInterval.substr(0,4) + '年' + area_list.toString() + cate_list.toString() + '年度数据报告'
 			}
