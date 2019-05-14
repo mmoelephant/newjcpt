@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="reportBtns">
-            <div class="btnClass"><span class="dotClass"></span>帮助中心</div>
+            <div class="btnClass"><span class="dotClass"></span>账户设置</div>
         </div>
         <div class='user-box'>
             <div class='title'>
@@ -90,8 +90,9 @@ export default {
         box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
         border-radius 8px
         padding 20px 
-        margin-top 68px
+        margin-top 88px
         box-sizing border-box
+        margin-left 20px
     .form
         label
             font-size 14px
@@ -99,12 +100,12 @@ export default {
     .title 
         display flex
         font-size 16px
-        color tag-color
+        color #7F94FF
         i 
             display block
             width 4px
             height 22px
-            background tag-color
+            background #7F94FF
             margin-right 9px
     .headicon 
         width 124px

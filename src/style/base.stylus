@@ -36,7 +36,9 @@ a
 	color rgba(44,45,51,1)
 	line-height 38px
 	position relative
-
+	cursor pointer
+.btnClass:hover 
+	background rgba(226,230,255,1)
 .btnClass1
 	width 218px
 
@@ -44,7 +46,8 @@ a
 	background-color rgba(127,148,255,1)
 	border 1px solid rgba(108,125,255,1)
 	color rgba(255,255,255,1)
-
+.btnActive:hover
+	background rgba(127,148,255,1)
 .dotClass 
 	width 6px
 	height 6px

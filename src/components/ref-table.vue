@@ -1,6 +1,6 @@
 <template>
   <div style='width:100%; ' class='ul'> 
-    <div id='table'>
+    <div id='table' style='width:auto'>
       <div class="th li">
         <p>{{type==0?'区域':'材料'}}</p>
         <p v-for="(i,index) in time" :key="index">{{i.mdate?i.mdate.toString().substr(0,7):i.asmdate.substr(0,7)}}</p>
