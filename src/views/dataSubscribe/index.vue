@@ -1,11 +1,7 @@
 <template>
-<<<<<<< HEAD
 <div>
 <router-view v-if='$route.name == "dataDetail"'></router-view>
 <div class="dataSubscribe" v-else>
-=======
-<div class="dataSubscribe">
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 	<div class="reportBtns">
 		<div :class="type == 0?'btnClass btnActive':'btnClass'" @click="choose(0)"><span :class="type == 0?'dotClass dotActive':'dotClass'"></span>数据订阅</div>
 		<div :class="type == 1?'btnClass btnActive':'btnClass'" @click="choose(1)"><span :class="type == 1?'dotClass dotActive':'dotClass'"></span>消息接收</div>
@@ -13,7 +9,6 @@
 	<div :class="type == 0?'mySubscribe':'mySubscribe1'">
 	<div class="filterSection">
 		<div class="dataList"><div class="verticalBar"></div>订阅列表</div>
-<<<<<<< HEAD
 		<div class="adData" @click="openNewSub = true"><i class="iconfont icon-dingyue1"></i></div>
 			<!-- demo-ruleForm  -->
 			<!-- label-width="100px"  -->
@@ -23,45 +18,18 @@
 				<el-select v-model="filterForm.region" multiple collapse-tags placeholder="请选择对比地区" style="width:220px">
 					<el-option v-for="item in regions" :key="item.id" :value="item.id" :label="item.name">
 						{{item.name}}
-=======
-		<div class="adData" @click="openNewSub=true"><i class="iconfont icon-dingyue1"></i></div>
-			<!-- demo-ruleForm  -->
-			<!-- label-width="100px"  -->
-		<div class="filterPart"><div class="verticalBar"></div>快速筛查
-		<!-- <el-form :model="filterForm" :rules="rules" ref="filterForm" label-width="40px" class="filterList"> -->
-		<el-form :model="filterForm"  ref="filterForm" label-width="40px" class="filterList">
-			<el-form-item label="地区" prop="region" class="filterListItem">
-				<el-select v-model="filterForm.region" placeholder="请选择对比地区">
-					<el-option v-for="(item,index) in regions" :key="index" :value="item.value">
-						{{item.value}}
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="材料" prop="type" class="filterListItem">
-<<<<<<< HEAD
 				<el-select v-model="filterForm.type" multiple collapse-tags placeholder="请选择材料类型" style="width:220px">
 					<el-option v-for="item in material" :key="item.id" :value="item.id" :label="item.name">
 						{{item.name}}
-=======
-				<el-select v-model="filterForm.type" placeholder="请选择材料类型">
-					<el-option v-for="(item,index) in material" :key="index" :value="item.value">
-						{{item.value}}
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="时间" prop="time" class="filterListItem">
-<<<<<<< HEAD
 				    <el-date-picker v-model="filterForm.time" type="month" value-format='yyyy.MM' placeholder="请选择月份" style="width:220px"></el-date-picker>
-=======
-				    <el-date-picker v-model="filterForm.time" type="month" placeholder="请选择月份"></el-date-picker>
-				<!-- <el-select v-model="filterForm.time" placeholder="请选择报告发布时间">
-					<el-option v-for="(item,index) in material" :key="index" :value="item.value">
-						{{item.value}}
-					</el-option>
-				</el-select> -->
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 			</el-form-item>
 			<el-form-item class="filterListItem">
 				<el-button type="primary" @click="submitForm('filterForm')" class="filterBtn" style="background-color:#8B78FE;margin-left:-30px">筛查</el-button>
@@ -73,7 +41,6 @@
 		<ul class="dataContentUl">
 			<li class="dataListTitle">
 				<!-- <div v-for="(item,index) in dataList" :key="index">编号</div> -->
-<<<<<<< HEAD
 				<div class="titleItem title_num">编号</div>
 				<div class="titleItem title_region">地区</div>
 				<div class="titleItem title_materi">材料</div>
@@ -102,41 +69,6 @@
 		</div>
 		<el-pagination :page-size="pageSize" :total="totalPage" :pager-count="5" :current-page="pageNum" layout="prev, pager, next" :hide-on-single-page="true" 
 		class="reportPage" current-change="get_data()" prev-click="get_data()" next-click="get_data()">
-=======
-				<div class="title_num">编号</div>
-				<div class="title_num">地区</div>
-				<div class="title_num">材料</div>
-				<div class="title_num">订阅名称</div>
-				<div class="title_time">发布时间</div>
-				<div class="title_do">操作</div>
-			</li>
-			<li class="dataListClass">
-				<div class="listItem list_num">DY002</div>
-				<div class="listItem list_region">昆明市、安宁市、曲靖市、丽江市...</div>
-				<div class="listItem list_materi">钢材、土建材料</div>
-				<div class="listItem list_name">钢材 2018.03-2018.09 价格指数 1000 钢材 2018.03-2018.09...</div>
-				<div class="listItem list_time">2018.06.23</div>
-				<div class="listItem list_do"><span class="seeBtn">查看详情</span><span class="deleBtn">删除</span></div>
-			</li>
-			<li class="dataListClass">
-				<div class="listItem list_num">DY002</div>
-				<div class="listItem list_region">昆明市、安宁市、曲靖市、丽江市...</div>
-				<div class="listItem list_materi">钢材、土建材料</div>
-				<div class="listItem list_name">钢材 2018.03-2018.09 价格指数 1000 钢材 2018.03-2018.09...</div>
-				<div class="listItem list_time">2018.06.23</div>
-				<div class="listItem list_do"><span class="seeBtn">查看详情</span><span class="deleBtn">删除</span></div>
-			</li>
-			<!-- <li class="dataListClass" v-for="(item,index) in dataList" v-bind:key="index" @click="">
-				<div class="listItem list_num">{{item.num}}</div>
-				<div class="listItem list_region">{{item.cities}}</div>
-				<div class="listItem list_materi">{{item.materi}}</div>
-				<div class="listItem list_name">{{item.content}}</div>
-				<div class="listItem list_time">{{item.time}}</div>
-				<div class="listItem list_do"><span class="seeBtn">查看详情</span><span class="deleBtn">删除</span></div>
-			</li> -->
-		</ul>
-		<el-pagination :page-size="20" :pager-count="11" layout="prev, pager, next" :total="1000" class="reportPage" current-change="get_data()" prev-click="pageNum--" next-click="pageNum++">
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 		</el-pagination>
 	</div>
 	</div>
@@ -148,7 +80,6 @@
 		<ul class="dataContentUl">
 			<li class="dataListTitle">
 				<!-- <div v-for="(item,index) in dataList" :key="index">编号</div> -->
-<<<<<<< HEAD
 				<div class="titleItem title_num">编号</div>
 				<div class="titleItem title_region">地区</div>
 				<div class="titleItem title_materi">材料</div>
@@ -171,85 +102,31 @@
 		</div>
 		<el-pagination :page-size="pageSize" :total="totalPage" :pager-count="5" :current-page="pageNum" layout="prev, pager, next" :hide-on-single-page="true" 
 		class="reportPage" @current-change="get_data()" @prev-click="get_data()" @next-click="get_data()">
-=======
-				<div class="title_num">编号</div>
-				<div class="title_num">地区</div>
-				<div class="title_num">材料</div>
-				<div class="title_num">详细内容</div>
-				<div class="title_time">发送时间</div>
-				<div class="title_do">操作</div>
-			</li>
-			<li class="dataListClass">
-				<div class="listItem list_num">DY002</div>
-				<div class="listItem list_region">昆明市、安宁市、曲靖市、丽江市...</div>
-				<div class="listItem list_materi">钢材、土建材料</div>
-				<div class="listItem list_name">钢材 2018.03-2018.09 价格指数 1000 钢材 2018.03-2018.09...</div>
-				<div class="listItem list_time">2018.06.23</div>
-				<div class="listItem list_do"><span class="seeBtn">查看详情</span><span class="deleBtn">删除</span></div>
-			</li>
-			<li class="dataListClass">
-				<div class="listItem list_num">DY002</div>
-				<div class="listItem list_region">昆明市、安宁市、曲靖市、丽江市...</div>
-				<div class="listItem list_materi">钢材、土建材料</div>
-				<div class="listItem list_name">钢材 2018.03-2018.09 价格指数 1000 钢材 2018.03-2018.09...</div>
-				<div class="listItem list_time">2018.06.23</div>
-				<div class="listItem list_do"><span class="seeBtn">查看详情</span><span class="deleBtn">删除</span></div>
-			</li>
-			<!-- <li class="dataListClass" v-for="(item,index) in dataList" v-bind:key="index" @click="">
-				<div class="listItem list_num">{{item.num}}</div>
-				<div class="listItem list_region">{{item.cities}}</div>
-				<div class="listItem list_materi">{{item.materi}}</div>
-				<div class="listItem list_name">{{item.content}}</div>
-				<div class="listItem list_time">{{item.time}}</div>
-				<div class="listItem list_do"><span class="seeBtn">查看详情</span><span class="deleBtn">删除</span></div>
-			</li> -->
-		</ul>
-		<el-pagination :page-size="20" :pager-count="11" layout="prev, pager, next" :total="1000" class="reportPage" current-change="get_data()" prev-click="pageNum--" next-click="pageNum++">
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 		</el-pagination>
 	</div>	
 	</div>
 	<el-dialog title="新增材料订阅" :visible.sync="openNewSub" width="620px">
 		<el-form :model="newSubForm" :rules="rules" ref="newSubForm" label-width="90px" class="newSubClass">
 			<el-form-item label="订阅名称" prop="name" class="">
-<<<<<<< HEAD
 				<!-- newSubForm.name -->
 				<el-input v-model="newSubForm.name" placeholder="请先填写您的订阅名称"></el-input>
 			</el-form-item>
 			<el-form-item label="时间区间" prop="time" class="">
 				    <el-date-picker v-model="newSubForm.time" type="monthrange" value-format='yyyy-MM-dd' range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份">
-=======
-				<el-input v-model="newSubForm.name" readonly="true" placeholder="请先填写您的订阅名称"></el-input>
-			</el-form-item>
-			<el-form-item label="时间区间" prop="time" class="">
-				    <el-date-picker v-model="newSubForm.time" type="monthrange" range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份">
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 
 					</el-date-picker>
 			</el-form-item>
 			<el-form-item label="材料类型" prop="type" class="">
-<<<<<<< HEAD
 				<el-select v-model="newSubForm.type" multiple collapse-tags placeholder="请选择材料类型">
 					<el-option v-for="item in material" :key="item.id" :value="item.id" :label="item.name">
 						{{item.name}}
-=======
-				<el-select v-model="newSubForm.type" multiple="true" collapse-tags="true" placeholder="请选择材料类型">
-					<el-option v-for="(item,index) in material" :key="index" :value="item.value">
-						{{item.value}}
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="对比地区" prop="region" class="">
-<<<<<<< HEAD
 				<el-select v-model="newSubForm.region" multiple collapse-tags placeholder="请选择对比地区">
 					<el-option v-for="item in regions" :key="item.id" :value="item.id" :label="item.name">
 						{{item.name}}
-=======
-				<el-select v-model="newSubForm.region" multiple="true" collapse-tags="true" placeholder="请选择对比地区">
-					<el-option v-for="(item,index) in regions" :key="index" :value="item.value">
-						{{item.value}}
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -257,21 +134,13 @@
 				<el-switch v-model="newSubForm.push"></el-switch>
 			</el-form-item>
 			<el-form-item>
-<<<<<<< HEAD
 				<el-button type="primary" @click="submitForm1('newSubForm')" style="background-color:#8B78FE;margin-left:-65px">立即创建</el-button>
 				<el-button @click="cancelNewSub('newSubForm')">取消</el-button>
-=======
-				<el-button type="primary" style="background-color:#8B78FE;margin-left:-65px">立即创建</el-button>
-				<el-button @click="openNewSub = false">取消</el-button>
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 			</el-form-item>
 		</el-form>
 	</el-dialog>
 </div>
-<<<<<<< HEAD
 </div>
-=======
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 </template>
 <script>
 export default {
@@ -281,7 +150,6 @@ export default {
 			// type的值为是全部报告还是平台报告或者其他
 			type:0,
 			pageNum:1,
-<<<<<<< HEAD
 			pageSize:8,
 			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1Nzg4NjMyNywibmJmIjoxNTU3Nzk5OTI3fQ.4BO9dVg1EflfTjjhkyaove_lngXE4OCHhgNVdCVfW3Y',
 			totalPage:8,
@@ -295,39 +163,15 @@ export default {
 			imgVis2:{
 				display:'none'
 			},
-=======
-			pageSize:21,
-			openNewSub: false,
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 			filterForm: {
 				region: '',
 				type:'',
 				time:''
 			},
 			// 地区和材料都是后端获取的
-<<<<<<< HEAD
 			regions:[],
 			material:[],
 			newSubFormName:'',
-=======
-			regions: [{
-				value: '北京'
-			}, {
-				value: '上海'
-			}, {
-				value: '南京'
-			}, {
-				value: '成都'
-			}, {
-				value: '深圳'
-			}, {
-				value: '广州'
-			}],
-			material:[
-				{value:'钢材'},
-				{value:'木材'}
-			],
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 			newSubForm:{
 				name:'',
 				time:'',
@@ -335,14 +179,11 @@ export default {
 				region:'',
 				push:false
 			},
-<<<<<<< HEAD
 			filteRules:{
 				region:[{required:false,message:'请选择对比地区',trigger:'change'}],
 				type:[{required:false,message:'请选择材料类型',trigger:'change'}],
 				time:[{required:false,message:'请选择时间',trigger:'change'}]
 			},
-=======
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 			rules:{
 				name:[{required:true,message:'请输入订阅名称',trigger:'blur'}],
 				time:[{required:true,message:'请选择时间区间',trigger:'change'}],
@@ -351,7 +192,6 @@ export default {
 			}
       }
 	},
-<<<<<<< HEAD
 	created(){
 		this.dataList = []
 		const data1 = {
@@ -389,13 +229,10 @@ export default {
 	// 		return dd.getFullYear()
 	// 	}
 	// },
-=======
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 	methods:{
 		choose:function(status){
 			if(status == 0) {
 				//先重置pageNum 再获取全部的我的订阅
-<<<<<<< HEAD
 				this.pageNum =1
 				this.type = 0
 				this.dataList = []
@@ -633,41 +470,16 @@ export default {
 							this.openTip1()							
 						}
 					})
-=======
-				//this.dataList = value
-				this.type = 0
-			}else {
-				//消息接收
-				// this.dataList = value
-				this.type = 1
-			}
-		},
-		// get_data() {
-		// 	const data = {
-		// 		pageNum:this.pageNum,
-		// 		pageSize: this.pageSize,
-		// 		type:this.type
-		// 	}
-			//请求, 赋值dataList，因为需要有默认列表
-		// },
-		submitForm(formName) {
-			this.$refs[formName].validate((valid) => {
-				if (valid) {
-					alert('submit!');
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 				} else {
 					console.log('error submit!!');
 					return false;
 				}
 			});
 		},
-<<<<<<< HEAD
 		cancelNewSub(formName){
 			this.openNewSub = false
 			this.$refs[formName].resetFields()
 		},
-=======
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 		// toReportDetail(reportId){
 			// window.location.href='reportDetail.vue'
 			// this.reportId = reportId 
@@ -683,23 +495,16 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .dataSubscribe
-<<<<<<< HEAD
 	width 100%
 	height 100%
 
 .mySubscribe
 	width 100%
 	height 100%
-=======
-    width 100%
-	height 100%
-	border 1px red solid
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 
 .mySubscribe1
 	display none
 
-<<<<<<< HEAD
 .messageVis
 	width 100%
 	height 100%
@@ -710,89 +515,11 @@ export default {
 .dataContent
 	width 100%
 	height 100%
-=======
-.messageVis1
-	display none
-.filterSection
-	width 100%
-	padding 0 20px
-	box-sizing border-box
-	margin-top 20px
-	display flex
-	flex-direction row
-	flex-wrap nowrap
-	justify-content flex-start
-.dataList
-	width 184px
-	height 48px
-	background rgba(255,255,255,1)
-	padding-left 32px
-	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
-	border-radius 8px
-	box-sizing border-box
-	margin-right 10px
-	font-size 16px
-	color rgba(127,148,255,1)
-	line-height 48px
-	position relative
-.verticalBar
-	width 4px
-	height 22px
-	background-color rgba(127,148,255,1)
-	position absolute
-	left 20px
-	top 12px
-.adData
-	width 48px
-	height 48px
-	background rgba(254,155,120,1)
-	border 1px solid rgba(245,131,86,1)
-	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
-	border-radius 8px
-	margin-right 20px
-	color white
-	line-height 48px
-	text-align center
-.adData i 
-	font-size 20px
-.filterPart
-	width calc(100% - 262px)
-	height 48px
-	background-color #ffffff
-	padding-left 32px
-	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
-	border-radius 8px
-	font-size 16px
-	color rgba(127,148,255,1)
-	line-height 48px
-	position relative
-
-.filterList
-	position absolute
-	left 146px
-	top 4px
-	display flex
-	flex-direction row
-	flex-wrap nowrap
-	justify-content flex-start
-
-.filterListItem
-	margin-right 20px
-	// padding 0!important
-
-.filterBtn
-	background-color #8B78FE!important
-	margin-left -40px
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 
 .dataContentUl
 	width 100%
 	padding 0 20px
 	box-sizing border-box
-<<<<<<< HEAD
-
-=======
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 .dataListTitle
 	width 100%
 	height 36px
@@ -809,7 +536,6 @@ export default {
 	text-align center
 	line-height 36px
 
-<<<<<<< HEAD
 
 .title_num
 	width 10%
@@ -829,8 +555,6 @@ export default {
 .title_do
 	width 15%
 
-=======
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 .dataListClass
 	width 100%
 	height 48px
@@ -849,7 +573,6 @@ export default {
 
 .listItem
 	padding 0 20px
-<<<<<<< HEAD
 	// border 1px red solid
 	box-sizing border-box
 	overflow hidden
@@ -875,13 +598,6 @@ export default {
 .list_do
 	width 15%
 
-=======
-	box-sizing border-box
-.list_num
-	color #8E9099
-.list_time
-	color #8E9099
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 .seeBtn
 	display inline-block
 	width 60px
@@ -890,7 +606,6 @@ export default {
 	display inline-block
 	width 60px
 	color #454EFF
-<<<<<<< HEAD
 .noData
 	font-size 20px
 	line-height 20px
@@ -912,7 +627,5 @@ export default {
 	margin-top 30px
 	margin-right 160px
 	text-align right
-=======
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 </style>
 

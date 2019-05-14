@@ -15,11 +15,6 @@ export default {
             type:Number
         }
     },
-<<<<<<< HEAD
-    methods:{
-        page(type) {
-            if(disablepage ==2 || disablepage == type) {
-=======
     watch:{
         disablepage(val) {
             console.log(val)
@@ -28,7 +23,6 @@ export default {
     methods:{
         page(type) {
             if(this.disablepage ==2 || this.disablepage == type) {
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
                 return
             } else {
                 this.$emit('pagechange',type)

@@ -19,13 +19,7 @@ a
 	flex-direction row
 	flex-wrap nowrap
 	justify-content flex-start
-<<<<<<< HEAD
 	margin-top 30px
-=======
-	position fixed
-	z-index 10
-	top 90px
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 
 .btnClass 
 	width 140px
@@ -43,12 +37,9 @@ a
 	line-height 38px
 	position relative
 
-<<<<<<< HEAD
 .btnClass1
 	width 218px
 
-=======
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 .btnActive
 	background-color rgba(127,148,255,1)
 	border 1px solid rgba(108,125,255,1)
@@ -63,7 +54,6 @@ a
 	left 22%
 	top 16px
 
-<<<<<<< HEAD
 .dotClass1
 	left 30px
 
@@ -173,11 +163,6 @@ a
 // 	margin-left -40px
 
 
-=======
-.dotActive
-	background-color: #ffffff   
-    
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 .is-current>.el-tree-node__content, .is-current>.el-tree-node__content *
     background tag-color !important
     color #fff

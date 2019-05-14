@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
 <div class="dataDetail">
     <div class="reportBtns navigi">
         <div class="btnClass1 btnClass"><span class="dotClass dotClass1"></span>智能报告  > <span class="navigiOn">报告详情</span></div>
@@ -372,7 +371,3 @@ export default {
 	margin-top 20px
 	// border 1px red solid
 </style>
-=======
-    <div>这是报告详情页</div>
-</template>
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10

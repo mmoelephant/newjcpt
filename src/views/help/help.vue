@@ -1,9 +1,5 @@
 <template>
-<<<<<<< HEAD
-<div class="dataSubscribe">
-=======
 <div class="help-box">
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 	<div class="reportBtns">
 		<div class="btnClass"><span class="dotClass"></span>帮助中心</div>
 	</div>
@@ -32,11 +28,7 @@
 		title="文章详情"
 		:visible.sync="dialogVisible"
 		width="60%">
-<<<<<<< HEAD
-		<div class=''>
-=======
 		<div class='content'>
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 			<h1>
 				{{detail.title}}
 			</h1>
@@ -57,11 +49,7 @@ export default {
 			dataList:[],
 			// type的值为是全部报告还是平台报告或者其他
 			pageNum:1,
-<<<<<<< HEAD
-            pageSize:10,
-=======
             pageSize:8,
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 			total:0,
 			detail:{},
 			dialogVisible:false
@@ -87,53 +75,6 @@ export default {
 		async get_detail(id) {
 			const res = await this.$api.get_help_detail({id:id})
 			this.detail = res.data
-<<<<<<< HEAD
-			this.dialogVisible = true
-		} 
-    }
-}
-</script>
-<style lang="stylus">
-.dataSubscribe
-    width 100%
-	height 100%
-	border 1px red solid
-
-.mySubscribe
-	padding-top 88px
-.dataListClass:hover
-    background #D3D8F4
-.dataList
-	width 184px
-	height 48px
-	background rgba(255,255,255,1)
-	padding-left 32px
-	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
-	border-radius 8px
-	box-sizing border-box
-	margin-right 10px
-	font-size 16px
-	color rgba(127,148,255,1)
-	line-height 48px
-	position relative
-.listItem
-	padding 0 20px
-	box-sizing border-box
-    width 25% 
-    box-sizing border-box
-.list_num
-	color #8E9099
-.list_time
-	color #8E9099
-.seeBtn
-	display inline-block
-	width 60px
-	color #2691FF
-.deleBtn
-	display inline-block
-	width 60px
-	color #454EFF
-=======
 			this.detail.content = this.detail.content.replace(/&amp;/g,'&').
 			replace(/&lt;/g,'<').
 			replace(/&gt;/g,'>')
@@ -230,6 +171,5 @@ export default {
 			margin-top 30px
 		div 
 			padding 30px
->>>>>>> b1cae310e0ec25101301a74dec51513412a76d10
 </style>
 
