@@ -89,7 +89,7 @@
                             @checkList='checkList' 
                             @choseitem='choseitem'
                             :isnext='isnext'></reftable>
-                        <page-btn :disabled="disablepage" @pagechange='pagechange'></page-btn>
+                        <page-btn :disablepage="disablepage" @pagechange='pagechange'></page-btn>
                     </div>
                 </div>
                 <div class='ch' v-show ='showcharts'>
@@ -175,11 +175,21 @@ export default {
             checked:[],//选中作为图渲染的数据,
             mycharts:null,
             change_charts:'bar',//展示图表的类型
-            color:['#ff406b','#09d8ca','#ffa966','#2bbdef','#5f81ff','#ff7e68','#18db98','#d06cff','#77a1ff','#ffc047']
+            color:['#ff406b','#09d8ca','#ffa966','#2bbdef','#5f81ff','#ff7e68','#18db98','#d06cff','#77a1ff','#ffc047'],
+            boxwidth:0,
+            tablewidth:0
         }
     },
     created() {       
         this.get_cate()
+    },
+    mounted() {
+        this.boxwidth = $('#table').width()
+        this.tablewidth = $('.th').width()
+        if(this.boxwidth>this.tablewidth) {
+        } else {
+            this.disablepage = 2
+        }
     },
     components:{
         reftable,
@@ -1067,7 +1077,21 @@ export default {
 
         },
         pagechange(type) {
-            console.log(type)
+            let scroll = $('#table').scrollLeft()
+            console.log(scroll,this.tablewidth,this.boxwidt)
+            if(type == -1) {
+                if(scroll>this.tablewidth-this.boxwidth) {
+                    $('#table').scrollLeft(srcoll-this.boxwidth)
+                } else {
+                    $('#table').scrollLeft(0)
+                }
+            } else {
+                if(this.tablewidth-scroll>this.boxwidth) {
+                    $('#table').scrollLeft(srcoll+this.boxwidth)
+                } else {
+                    $('#table').scrollLeft(this.tablewidth)
+                }
+            }
         }
     }
 }

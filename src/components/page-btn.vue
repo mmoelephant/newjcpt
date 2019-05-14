@@ -15,6 +15,11 @@ export default {
             type:Number
         }
     },
+    watch:{
+        disablepage(val) {
+            console.log(val)
+        }
+    },
     methods:{
         page(type) {
             if(this.disablepage ==2 || this.disablepage == type) {

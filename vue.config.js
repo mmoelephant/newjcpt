@@ -1,11 +1,11 @@
 module.exports = {
     // 选项...
-    publicPath:'',
+    publicPath:process.env.NODE_ENV === 'development'?'':'/home/distN',
     outputDir:'dist',
     assetsDir:'',
     indexPath: 'index.html',
     lintOnSave: true,
-    productionSourceMap: true,
+    productionSourceMap: false,
     devServer: {// 环境配置
         host: 'localhost',
         port: 1234,

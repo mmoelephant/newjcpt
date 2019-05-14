@@ -2,23 +2,24 @@ import axios, { AxiosResponse } from 'axios'
 import qs from 'qs'
 // const baseURL = '/api'
 // const baseURL = '/'
+// console.log(process.env.NODE_ENV === 'development' )
 const service = axios.create({ //hg
-	baseURL: '/api',
+		baseURL: process.env.NODE_ENV === 'development'?'/api':'',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const service1 = axios.create({ //lw
-	baseURL: '/lw',
+	baseURL: process.env.NODE_ENV === 'development'?'/lw':'',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const service2 = axios.create({ //xb
-	baseURL: '/xb',
+	baseURL: process.env.NODE_ENV === 'development'?'/xb':'',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const formser = axios.create({ //hg
-		baseURL: '/api',
+		baseURL: process.env.NODE_ENV === 'development'?'/api':'',
     withCredentials: false,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 })

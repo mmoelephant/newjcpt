@@ -1,6 +1,6 @@
 <template>
-  <div style='width:100%;overflow-x:auto' class='ul'> 
-    <div style='width:auto'>
+  <div style='width:100%; ' class='ul'> 
+    <div id='table'>
       <div class="th li">
         <p>{{type==0?'区域':'材料'}}</p>
         <p v-for="(i,index) in time" :key="index">{{i.mdate?i.mdate.toString().substr(0,7):i.asmdate.substr(0,7)}}</p>
@@ -19,12 +19,13 @@
             <span v-if='t_type=="hb"'>{{num.huanbi?Number(num.huanbi).toFixed(2):'-'}}</span>  
           </p>
         </div>
-      </el-checkbox-group>
+      </el-checkbox-group> 
     </div>
   </div>
 
 </template>
 <script>
+import $ from 'jquery'
 export default {
     data() {
       return {
@@ -46,6 +47,9 @@ export default {
         isnext:{
           type:Boolean
         }
+    },
+    mounted() {
+      
     },
     watch:{
       checked:{
@@ -85,7 +89,7 @@ export default {
     align-items center
     height 32px
     box-sizing border-box
-    padding 6px
+    
     width auto
     p 
       width 190px
@@ -100,8 +104,11 @@ export default {
     p+p 
       width 76px
     
-  .th
+  .th 
     background #B0BDFF
+    p
+      background #B0BDFF
+      padding 6px
   i 
     cursor: pointer
     flex-shrink 0
@@ -112,6 +119,8 @@ export default {
         justify-content space-between
         color font-color-black
         flex-shrink 0
+        height 32px
+        padding-left 6px
         .iconfont 
           font-size 10px
           color: #637CFB
@@ -122,12 +131,17 @@ export default {
 
       p+p 
         justify-content center
+        padding 0
     .li:nth-child(even) 
       background #F3F4FE
+      p
+        background #F3F4FE
     
 
     .li:nth-child(odd) 
       background #DFE1F4
+      p
+        background #DFE1F4
 .label
     width 100%
 </style>
