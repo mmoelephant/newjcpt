@@ -8,13 +8,8 @@ const service = axios.create({ //hg
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
-// const service1 = axios.create({ //lw
-// 	baseURL: process.env.NODE_ENV === 'development'?'/lw':'',
-//     withCredentials: false,
-//     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
-// })
 const service1 = axios.create({ //lw
-	baseURL: '/lw',
+	baseURL: process.env.NODE_ENV === 'development'?'/lw':'',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
@@ -24,17 +19,12 @@ const service2 = axios.create({ //xb
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const service3 = axios.create({
-	baseURL: '/api',
+	baseURL: process.env.NODE_ENV === 'development'?'/api':'',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
-// const formser = axios.create({ //hg
-// 		baseURL: process.env.NODE_ENV === 'development'?'/api':'',
-//     withCredentials: false,
-//     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-// })
 const formser = axios.create({ //hg
-	baseURL: '/api',
+	baseURL: process.env.NODE_ENV === 'development'?'/api':'http://192.168.8.20:9440',
 	withCredentials: false,
 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 })

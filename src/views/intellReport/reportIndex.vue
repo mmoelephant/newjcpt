@@ -50,7 +50,7 @@
 					</el-form>
 				</el-dialog>
 				<li class="reportListClass" v-for="item in reportList" :key="item.id" @click="toDetail(item.id)">
-					<img src="reportIconn" class="reportIcon">
+					<img :src="get_img(item.materialClassID)" class="reportIcon">
 					<div :class="item.mark == 1?'markClass':'markClass markDisplay'">{{}}</div>
 					<div :class="item.type == 1?'reporType':'reporType reporType1'">{{item.type == 1?'平台':'我的'}}</div>
 					<p class="reporTitle">{{item.title}}</p>
@@ -63,7 +63,7 @@
 				<p class="noDatap2">不要着急，要不再试试~</p>
 			</div>
 			<el-pagination :page-size="pageSize" :total="elPageNum" :pager-count="5" :current-page="pageNum" :hide-on-single-page="true" layout="prev, pager, next"  class="reportPage" @current-change="get_data">
-            </el-pagination>
+      </el-pagination>
 		</div>
     </div>
 	</div>
@@ -78,7 +78,7 @@ export default {
 			type:0,
 			pageNum:1,
 			pageSize:13,
-			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1Nzk3MzA4NywibmJmIjoxNTU3ODg2Njg3fQ.wToe35NgdkppMYyKfWF7q7WLg4lg6fT9F9XwMjivxw8',
+			token:this.$store.state.login.token,
 			elPageNum:13,
 			imgVis:{
 				display:'none'
@@ -146,7 +146,6 @@ export default {
 		}
 	},
 	created(){
-		this.reportList = []
 		var data1 = {
 			pageNum:this.pageNum,
 			pageSize:this.pageSize,
@@ -165,11 +164,9 @@ export default {
 			}
 		})
 		this.$api.get_area().then(res => {
-			console.log(res)
 			this.regions = res.data
 		})
 		this.$api.get_cate().then(res => {
-			console.log(res)
 			this.material = res.data
 		})
 	},
@@ -250,6 +247,7 @@ export default {
 		},
 		get_data(val) {
 			console.log(val)
+			this.pageNum = val
 			var data5 = {
 				pageNum:val,
 				pageSize: this.pageSize,
@@ -381,8 +379,6 @@ export default {
 			this.ruleFormName()
 		},
 		toReportDetail(reportId){
-			// window.location.href='reportDetail.vue'
-			// this.reportId = reportId 
 			this.$router.push({
 				path:'reportDetail',
 				query:{
@@ -441,6 +437,12 @@ export default {
 		cancleNewReport(formName){
 			this.dialogFormVisible = false
 			this.$refs[formName].resetFields();
+		},
+		get_img(type) {
+			if(type.indexOf(",") != -1) {
+				return'/img/report/more.png'
+			}
+			return '/img/report/bg_'+type+'.png'
 		},
     }
 	}

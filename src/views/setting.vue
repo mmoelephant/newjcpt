@@ -33,14 +33,14 @@
                 更新资料
             </div>
         </div>
-    </div>
+    </div> 
 </template>
 <script>
 export default {
     data() {
         return {
             formLabel:{},
-            defaultimg:'this.src="'+ require('../../public/img/default.png') +'"',
+            defaultimg:'this.src="'+ require('../../public/img/head.png') +'"',
             user:this.$store.state.login.userInfo,
             dataURL:''
         }
@@ -69,9 +69,9 @@ export default {
             this.dataURL&&this.dataURL.length>0?this.formLabel.headPortrait = this.dataURL:''
             this.formLabel.token = this.$store.state.login.token
             const res = await this.$api.updata_user(this.formLabel)
-            if(res.data.result == 0) {
-                this.$store.commit('login/SET_USER_INFO', res.data.data)
-                sessionStorage.setItem('user', JSON.stringify(res.data.data))
+            if(res.data.user) {
+                this.$store.commit('login/SET_USER_INFO', res.data.user)
+                sessionStorage.setItem('user', JSON.stringify(res.data.user))
                 this.$message({
                     message: '修改成功',
                     type: 'success'
@@ -90,7 +90,7 @@ export default {
         box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
         border-radius 8px
         padding 20px 
-        margin-top 88px
+        margin-top 20px
         box-sizing border-box
         margin-left 20px
     .form

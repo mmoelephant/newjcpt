@@ -95,6 +95,10 @@ export default {
                 sessionStorage.setItem('token', res.data.user.token)
                 sessionStorage.setItem('user', JSON.stringify(res.data.user))
                 this.$store.commit('login/SET_USER_INFO', res.data.user)
+                // this.$message({
+                //     message: '恭喜你，登录成功',
+                //     type: 'success'
+                // });
                 this.$router.replace('/ref')
             } else {
                 if(res.data.message == '此手机号未注册' || res.data.message == '手机号格式不对') {
@@ -124,6 +128,8 @@ export default {
 
 <style lang="stylus" scoped>
     @import '../style/color.stylus'
+    .icon-mima
+        font-size 19px
     .login 
         width 100% 
         height 100%

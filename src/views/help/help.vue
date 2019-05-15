@@ -85,7 +85,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 	.help-box
-		padding-top 88px
+		// padding-top 88px
 		width 100%
 		height 100%	
 		box-sizing border-box

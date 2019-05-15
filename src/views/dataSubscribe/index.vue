@@ -9,7 +9,9 @@
 	<div :class="type == 0?'mySubscribe':'mySubscribe1'">
 	<div class="filterSection">
 		<div class="dataList"><div class="verticalBar"></div>订阅列表</div>
-		<a href="javascript:void(0)"><div class="adData" @click="openNewSub = true"><i class="iconfont icon-dingyue1"></i></div></a>
+		<a href="javascript:;"><div class="adData" @click="openNewSub = true"><i class="iconfont icon-dingyue1"></i></div></a>
+			<!-- demo-ruleForm  -->
+			<!-- label-width="100px"  -->
 		<div class="filterPart"><div class="verticalBar"></div>快速筛查
 		<el-form :model="filterForm" ref="filterForm" label-width="40px" class="filterList">
 			<!-- :rules="filteRules"   -->
@@ -53,7 +55,7 @@
 				<div class="listItem list_materi">{{item.maName?item.maName.slice(0,15):''}}...</div>
 				<div class="listItem list_name">{{item.title?item.title.slice(0,10):''}}</div>
 				<div class="listItem list_time">{{item.createTime?item.createTime.split('T')[0]:''}}</div>
-				<div class="listItem list_do"><a href="javascript:void(0)"><span class="seeBtn" @click="toDetail(item.id)">查看详情</span></a><a href="javascript:void(0)"><span class="deleBtn" @click="deleteItem(item.id)">删除</span></a></div>
+				<div class="listItem list_do"><a href="javascript:;"><span class="seeBtn" @click="toDetail(item.id)">查看详情</span></a><a href="javascript:;"><span class="deleBtn" @click="deleteItem(item.id)">删除</span></a></div>
 			</li>
 		</ul>
 		<div class="noData" :style="imgVis">
@@ -150,7 +152,7 @@ export default {
 			type:0,
 			pageNum:1,
 			pageSize:8,
-			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1Nzg4NjMyNywibmJmIjoxNTU3Nzk5OTI3fQ.4BO9dVg1EflfTjjhkyaove_lngXE4OCHhgNVdCVfW3Y',
+			token:this.$store.state.login.token,
 			totalPage:8,
 			openNewSub: false,
 			imgVis:{
@@ -345,7 +347,7 @@ export default {
 			}
 		},
 		toDetail(aa){
-			this.$router.push({name:'dataDetail',query:{id:aa}})
+			this.$router.push('/dataIndex/dataDetail?id='+aa)
 		},
 		openErr1(){
 			this.$message({
@@ -489,16 +491,6 @@ export default {
 			this.openNewSub = false
 			this.$refs[formName].resetFields()
 		},
-		// toReportDetail(reportId){
-			// window.location.href='reportDetail.vue'
-			// this.reportId = reportId 
-			// this.$router.push({
-			// 	path:'reportDetail',
-			// 	query:{
-			// 		reportId:reportId
-			// 	}
-			// })
-		// },
     }
 }
 </script>

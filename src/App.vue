@@ -9,15 +9,15 @@
                 <div class='right'>
                     <p @click='$router.push("/")'>回到首页</p>
                     <i></i>
-                    <p class='blue' @click='logout'>退出登录</p>
+                    <p class='blue' @click='logout'>{{token&&token.length>0?'退出登录':'登录'}}</p>
                 </div>
             </el-header>
             <el-container style='height:100%;'>
                 <el-aside width="200px" class='side'>
 					<div class='userinfo'>
 						<img :src='user&&user.headPortrait?user.headPortrait:""' :onerror='defaultimg'/>
-						<h1>{{user&&user.name?user.name:"暂未设置"}}</h1>
-						<p>{{user&&user.unit?user.unit:"暂未设置"}}</p>
+						<h1>{{token&&token.length>0?user&&user.name?user.name:"暂未设置":"尚未登录"}}</h1>
+						<p>{{token&&token.length>0?user&&user.unit?user.unit:"暂未设置":"尚未登录"}}</p>
 					</div>
                     <el-menu
                         :default-active="$route.matched&&$route.matched[0]?$route.matched[0].path:''"
@@ -26,7 +26,7 @@
                         text-color="#8E9099"
                         router>
                         <el-menu-item  :index="item.router" v-for='(item, index) in navList' :key='index'>
-                            <i :class="'iconfont navicon' + ' ' + item.icon"></i>
+                            <i :class="'iconfont navicon' + ' ' + item.icon" :style='item.icon=="icon-dingyue"?"font-size:20px;":""'></i>
                             <template slot="title" >
                                 <span style='margin-right:48px'>{{item.name}}</span>
 								<i class='iconfont icon-shang-copy arrow'></i>
@@ -78,12 +78,23 @@ export default {
                 }
             ],
 			mainHeight: 0,
-			defaultimg:'this.src="'+ require('../public/img/default.png') +'"'
+			defaultimg:'this.src="'+ require('../public/img/head.png') +'"'
         };
 	},
 	computed:{
 		user() {
 			return this.$store.state.login.userInfo
+		},
+		token() {
+			return this.$store.state.login.token
+		}
+	},
+	watch: {
+		user:{
+			handler(val) {
+				console.log(val)
+			},
+			deep:true
 		}
 	},
 	created() {

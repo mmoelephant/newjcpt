@@ -1,6 +1,6 @@
 <template>
   <div style='width:100%; ' class='ul'> 
-    <div id='table' style='width:auto'>
+    <div id='table' style='width:auto' >
       <div class="th li">
         <p>{{type==0?'区域':'材料'}}</p>
         <p v-for="(i,index) in time" :key="index">{{i.mdate?i.mdate.toString().substr(0,7):i.asmdate.substr(0,7)}}</p>
@@ -12,15 +12,16 @@
             <el-checkbox :label='i' v-if='type==1' class='label'>{{i[0].name?i[0].name.substr(0,6):''}}</el-checkbox>
             <i class="iconfont icon-shang-copy" @click="chose_area(i[0])" v-if='!isnext'></i>
           </p>
-          <p v-for='(num) in i' :key='num.id' >
+          <p v-for='(num,a) in i' :key='a' >
             <span v-if='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}</span>  
-            <span v-if='t_type=="zs"'>{{num.exponent?Number(num.exponent).toFixed(2):'-'}}</span>  
-            <span v-if='t_type=="tb"'>{{num.tongbi?Number(num.tongbi).toFixed(2):'-'}}</span>  
-            <span v-if='t_type=="hb"'>{{num.huanbi?Number(num.huanbi).toFixed(2):'-'}}</span>  
+            <span v-if='t_type=="zs"'>{{num.price ==0?"-":num.exponent?Number(num.exponent).toFixed(2):'-'}}</span>  
+            <span v-if='t_type=="tb"'>{{num.price==0?"-":num.tongbi?Number(num.tongbi).toFixed(4):'-'}}</span>  
+            <span v-if='t_type=="hb"'>{{num.price==0?"-":num.huanbi?Number(num.huanbi).toFixed(4):'-'}}</span>  
           </p>
         </div>
       </el-checkbox-group> 
     </div>
+    <p v-show='tabledata.length ==0'>暂无数据</p>
   </div>
 
 </template>
@@ -67,7 +68,6 @@ export default {
           })
           this.time = t
           this.checked = []
-          // this.$emit('checkList',val)
         },
         deep:true
       }

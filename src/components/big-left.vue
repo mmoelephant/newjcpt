@@ -150,7 +150,7 @@ export default {
         margin-top -92px
     
     .left
-        height 100%
+        // height 100%
         width px2vw(380)
         flex-shrink 0
         padding-top px2vh(88)

@@ -3,7 +3,7 @@
         <div class='box'>
             <div class='tt'>
                 <i></i>
-                <p>检测平台数据总量</p>
+                <p>监测平台数据总量</p>
                 <p class='fontb'>{{all}}<span>条</span></p>
                 
             </div>
@@ -480,11 +480,16 @@ export default {
 @import '../style/px2vh.stylus'
 .right
     width px2vw(480)
-    padding-top 93px
+    padding-top px2vh(88)
     margin-left 100px
+    height 100%
+    display flex
+    flex-direction column
+    justify-content space-between
+    box-sizing border-box
     .box
         width 100%
-        height px2vh(242)
+        height 33%
         background url('../../public/img/right.png') no-repeat
         background-size 100% 100%
         margin-bottom 20px

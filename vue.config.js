@@ -21,29 +21,21 @@ module.exports = {
             //     secure: false
             // },
             '/api': { //辉哥
-                target: 'http://192.168.8.104:9440',
+                target: 'http://192.168.8.20:9440',
                 pathRewrite: { '^/api': '' },
                 ws: true,
                 changeOrigin: true,
                 secure: false
             },
-            // '/lw': { //老王
-            //     target: 'http://192.168.8.20:9102',
-            //     pathRewrite: { '^/lw': '' },
-            //     ws: true,
-            //     changeOrigin: true,
-            //     secure: false
-            // },
             '/lw': { //老王
-                target: 'http://192.168.8.104:9102',
-                // target: 'http://192.168.8.20:9220',
+                target: 'http://192.168.8.20:9220',
                 pathRewrite: { '^/lw': '' },
                 ws: true,
                 changeOrigin: true,
                 secure: false
             },
             '/xb': { //小白
-                target: 'http://192.168.8.20:9330',
+                target: 'http://192.168.8.20:9220',
                 pathRewrite: { '^/xb': '' },
                 ws: true,
                 changeOrigin: true,
