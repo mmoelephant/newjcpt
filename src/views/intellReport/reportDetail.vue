@@ -16,7 +16,7 @@
 			<p class="newTime">时间<span class="timeSpan">{{addTime}}</span></p>
 			<el-form :model="markForm" :rules="rules" ref="markForm">
 				<el-form-item prop="mark">
-					<el-input type="textarea" :autosize="{minRows:4,maxRows:10}" clearable v-model="markForm.mark" placeholder="请输入备注" minlength="10"  maxlength="50" show-word-limit></el-input>
+					<el-input type="textarea" :autosize="{minRows:4,maxRows:10}" clearable v-model="markForm.mark" placeholder="请输入备注" minlength="10"  maxlength="100" show-word-limit></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="submitForm('markForm')" class="newNow">立即创建</el-button>
@@ -180,7 +180,7 @@ export default {
 		})
 		this.addTime = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
 		this.$api.get_reports_detail(data6).then(v => {
-			this.loading = false
+			// this.loading = false
 			this.reTitle = v.data.title
 			this.reportDetailList = v.data.mapList
 			this.time1 = v.data.timeInterval
