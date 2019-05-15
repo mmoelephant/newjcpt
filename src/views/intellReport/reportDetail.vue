@@ -8,7 +8,7 @@
         <div class="filterSection">
             <div class="dataList" style="width:242px"><div class="verticalBar"></div>我的备注</div>
             <div class="adData adData1" @click="openMark"><i class="iconfont icon-xinzeng1"></i></div>
-            <div class="filterPart" style="width:calc(100% - 456px)"><div class="verticalBar"></div>报告内容<p class="decoText">Contents of the report</p></div>
+            <div class="filterPart" style="width:calc(100% - 456px)"><div class="verticalBar"></div>报告内容<!--p class="decoText">Contents of the report</p--></div>
             <div class="xzBtn adData"><i class="iconfont icon-xiazai"></i></div>
             <div class="dyBtn adData"><i class="iconfont icon-dayin"></i></div>
         </div>
@@ -30,12 +30,12 @@
 				<div class="markItem" v-for="item in markList" :key="item.id">
                     <p class="timeTip">最新提交时间</p>
                     <p class="time">{{item.updateTime?item.updateTime.split('T')[0]:'-'}}</p>
-					<el-input type="textarea" :readonly="markRight" :disabled="inputDis" :autosize = "{ minRows: 2, maxRows: 10}" class="markBox" v-model="item.mark" @change="markChange"></el-input>
+					<el-input type="textarea" :readonly="markRight" :disabled="item.inputDis" :autosize = "{ minRows: 2, maxRows: 10}" class="markBox" v-model="item.mark" @change="markChange"></el-input>
                     <i class="el-icon-error closeMark" @click="deleteMark(item.id)"></i>
                     <div class="doBtns">
-                        <button class="btn" @click="modifyMark(item.id)" :style="btnVis">修改</button>
-                        <button class="btn btnSave" :style="btnVis1" @click="saveMark(item.id)" :key="item.id">保存</button>
-                        <button class="btn btnCancle" :style="btnVis1" @click="cancelModify()" :key="item.id">取消</button>
+                        <button class="btn" @click="modifyMark(item)" :style="item.btnVis">修改</button>
+                        <button class="btn btnSave" :style="item.btnVis1" @click="saveMark(item)">保存</button>
+                        <button class="btn btnCancle" :style="item.btnVis1" @click="cancelModify(item)">取消</button>
                     </div>
                 </div>
 				<div class="noData" :style="imgVis">
@@ -46,13 +46,13 @@
             </div>
             <div class="dataRight">
 				<p class="reTitle">{{reTitle}}</p>
-				<div class="dataItem" v-for="(item,index) in reportDetailList" :key="index">
-					<!-- <p class="graphName">{{item.title}}</p> -->
-					<p class="titleItem">
+				<div class="dataItem" v-for="(item,index) in reportDetailList" :key="index" >
+					<p class="graphName" v-if='item.mm =="暂无数据"'>暂无数据</p>
+					<p class="titleItem" v-if='item.mm !="暂无数据"'>
 						<span class="titleDot"></span>
 						{{item.title}}
 					</p>
-					<p class="contentItem" >
+					<p class="contentItem" v-if='item.mm !="暂无数据"'>
 						<span v-if="time1.length == 1">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
 						<span v-else-if="time1.length == 4">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
 						<span v-else>{{item.title?item.title.substr(0,7):'-'}} 云南省 {{item.maName}}价格</span>
@@ -60,29 +60,32 @@
 						指数{{item.mmYn[index].exponent?item.mmYn[index].exponent.toFixed(2):''}}点 
 						环比下降{{item.mmYn[index].hb?item.mmYn[index].hb.toFixed(5) * 100:'-'}}%，
 						同比下降{{item.mmYn[index].tb?item.mmYn[index].tb.toFixed(5) * 100:'-'}}%。</p>
-					<table class="tableBox" border="1">
+					<table class="tableBox" border="1" v-if='item.mm !="暂无数据"'>
 						<thead>
 							<tr>
 								<th rowspan="2">地区</th>
 								<th colspan="5">{{item.maName}} 单位：元/立方米</th>
 							</tr>
+							<!--季度-->
 							<tr v-if="time1.length == 1">
-								<th>2018年{{item.title.substr(5,4)}}</th>
-								<th>1</th>
-								<th>{{item.title.substr(0,9)}}</th>
+								<th>{{Number(item.mm[0].maDate.substr(0,4))-1}}年{{Number(item.mm[0].maDate.substr(5,2))}}月</th>
+								<th>{{Number(item.mm[0].maDate.substr(0,4))}}年{{Number(item.mm[0].maDate.substr(5,2))-1}}月</th>
+								<th>{{item.mm[0].maDate.substr(0,9)}}</th>
 								<th>同比增长率(%)</th>
 								<th>环比增长率(%)</th>
 							</tr>
+							<!--年度-->
 							<tr v-else-if="time1.length == 4">
-								<th>2018年</th>
-								<th>1</th>
-								<th>{{item.title.substr(0,5)}}</th>
+								<th>{{Number(item.mm[0].maDate.substr(0,4))-1}}年</th>
+								<th>{{Number(item.mm[0].maDate.substr(0,4))-1}}年</th>
+								<th>{{item.mm[0].maDate.substr(0,4)}}年</th>
 								<th>同比增长率(%)</th>
 								<th>环比增长率(%)</th>
 							</tr>
+							<!--月度-->
 							<tr v-else>
-								<th>2018年{{item.title.substr(5,2)}}</th>
-								<th>1</th>
+								<th>{{Number(item.mm[0].maDate.substr(0,4))-1}}年{{Number(item.mm[0].maDate.substr(5,2))}}月</th>
+								<th>{{Number(item.mm[0].maDate.substr(0,4))}}年{{Number(item.mm[0].maDate.substr(5,2))-1}}月</th>
 								<th>{{item.title.substr(0,7)}}</th>
 								<th>同比增长率(%)</th>
 								<th>环比增长率(%)</th>
@@ -157,9 +160,16 @@ export default {
 			mycharts:null,
 			loading:true
         }
-    },
+	},
+	watch:{
+		markList:{
+			handler(val) {
+				console.log(val)
+			},
+			deep:true
+		}
+	},
 	created(){
-		this.markList = []
 		var data1 = {
 			token:this.token,
 			// reportId:'6b0efab0a0a746e6be8562d51359d214'
@@ -172,6 +182,15 @@ export default {
 		this.$api.get_markList(data1).then(v => {
 			if(v.data.data != null){
 				this.imgVis.display = 'none'
+				v.data.data.filter(item => {
+					item.inputDis = false
+					item.btnVis1 = {
+						display: "none"
+					}
+					item.btnVis = {
+						display: "block"
+					}
+				})
 				this.markList = v.data.data
 			}else{
 				this.imgVis.display = 'block'
@@ -204,6 +223,7 @@ export default {
 	},
     methods:{
 		drawGraph(aa,bb){
+			if(aa.mm=='暂无数据') return 
 			let x = [],y = []
 			const mycharts = this.$echarts.init(document.getElementById('main'+bb))
 			aa.mm.forEach(item => {
@@ -268,6 +288,7 @@ export default {
 			mycharts.setOption(option,true)
 		},
 		drawGraph2(aa,bb){
+			if(aa.mm=='暂无数据') return
 			let x = [],y =[],z=[]
 			// ,w =''
 			const mycharts2 = this.$echarts.init(document.getElementById('main2'+bb))
@@ -338,6 +359,7 @@ export default {
 			mycharts2.setOption(option,true)
 		},
 		drawGraph1(aa,bb){
+			if(aa.mm=='暂无数据') return
 			let x = [],y =[],z=[]
 			const mycharts1 = this.$echarts.init(document.getElementById('main1'+bb))
 			aa.mm.forEach(item => {
@@ -414,22 +436,32 @@ export default {
 			}
 			this.$api.get_markList(data3).then(v => {
 				if(v.data.data != null){
-					this.imgVis.display = 'none'
-					this.markList = v.data.data
+					v.data.data.filter(item => {
+						item.inputDis = false
+						item.btnVis1 = {
+							display: "none"
+						}
+						item.btnVis = {
+							display: "block"
+						}
+					})
+					this.markList=v.data.data
+					console.log(this.markList)
 				}else{
 					this.imgVis.display = 'block'
 					this.markList = []
 				}
 			})
+			console.log(this.markList)
 		},
 		openMark(){
 			this.openNewMark = true
 		},
-		modifyMark(){
+		modifyMark(item){
 			this.markRight = false
-			this.btnVis.display = 'none'
-			this.btnVis1.display = ''
-			this.inputDis = false
+			item.btnVis={display:'none'}
+			item.btnVis1={display:''}
+			item.inputDis = false
 		},
 		markChange(value){
 			this.modifiedMark = value
@@ -437,7 +469,7 @@ export default {
 		saveMark(ss){
 			var data5 = {
 				token:this.token,
-				id:ss,
+				id:ss.id,
 				mark:this.modifiedMark
 			}
 			this.$api.modify_mark(data5).then(v => {
@@ -451,9 +483,10 @@ export default {
 				}
 			})
 		},
-		cancelModify(){
+		cancelModify(item){
 			this.btnVis.display = ''
 			this.btnVis1.display = 'none'
+			item.inputDis = true
 		},
 		deteleTip(){
 			this.$message({

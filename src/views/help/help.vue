@@ -75,9 +75,28 @@ export default {
 		async get_detail(id) {
 			const res = await this.$api.get_help_detail({id:id})
 			this.detail = res.data
-			this.detail.content = this.detail.content.replace(/&amp;/g,'&').
-			replace(/&lt;/g,'<').
-			replace(/&gt;/g,'>')
+			this.detail.content = this.detail.content.replace(/&amp;/g,'&')
+			.replace(/&lt;/g,'<')
+			.replace(/&gt;/g,'>')
+			.replace(/&amp;nbsp;/g,' ')
+			.replace(/&quot;/g,'"').
+			replace(/&iexcl;/g, '?').
+			replace(/&cent;/g, '￠'). 
+			replace(/&pound;/g, '￡').
+			replace(/&curren;/g, '¤')
+			.replace(/&yen;/g, '￥')
+			.replace(/&brvbar;/g, '|')
+			.replace(/&sect;/g, '§')
+			.replace(/&uml;/g, '¨')
+			.replace(/&copy;/g, '©')
+            .replace(/&laquo;/g, '?')
+            .replace(/&not;/g, '?')
+            .replace(/&reg;/g, '®')
+            .replace(/&deg;/g, '°')
+            .replace(/&plusmn;/g, '±')
+            .replace(/&acute;/g, '′')
+            .replace(/&middot;/g, '·')
+            .replace(/&ordm;/g, 'o')
 			this.dialogVisible = true
 		},
     }

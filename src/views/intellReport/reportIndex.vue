@@ -15,7 +15,7 @@
 				<el-dialog title="新建智能报告" :visible.sync="dialogFormVisible" width="620px">
 					<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
   						<el-form-item label="报告名称" prop="name">
-  							<el-input v-model="ruleForm.name" readonly placeholder="请先选择以下内容"></el-input>
+  							{{ruleForm.name}}
   						</el-form-item>
   						<el-form-item label="报告类型" prop="type">
   							<el-select v-model="ruleForm.type" placeholder="请选择报告类型" @change="changeType" :style="ruleFormClass">
@@ -23,12 +23,15 @@
   							</el-select>
   						</el-form-item>
   						<el-form-item label="时间节点" prop="timeInterval">
-  							<el-select v-model="ruleForm.timeInterval" :placeholder="word" :style="season" @change="changeTime">
+  							<el-select v-model="ruleForm.timeInterval" :placeholder="word" :style="season" @change="changeTime" v-if='ruleForm.type==2'>
   								<el-option v-for="item in seasons" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
   							</el-select>
-							<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy-MM' range-separator="至" 
-							:placeholder="word" :start-placeholder="startWord" :end-placeholder="endWord">
-							</el-date-picker>
+								<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy-MM' range-separator="至" 
+								:placeholder="word" v-if='ruleForm.type==1'>
+								</el-date-picker>
+								<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy' 
+								:placeholder="word" v-if='ruleForm.type==3'>
+								</el-date-picker>
   						</el-form-item>
   						<el-form-item label="材料类型" prop="materialType">
   							<el-select v-model="ruleForm.materialType" multiple collapse-tags placeholder="请选择材料类型" @change="changeMateri" :style="ruleFormClass">
@@ -50,7 +53,14 @@
 					</el-form>
 				</el-dialog>
 				<li class="reportListClass" v-for="item in reportList" :key="item.id" @click="toDetail(item.id)">
-					<img :src="get_img(item.materialClassID)" class="reportIcon">
+					<img src="../../../public/img/report/more.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID.indexOf(",") != -1'>
+					<img src="../../../public/img/report/bg_1.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 1'>
+					<img src="../../../public/img/report/bg_3.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 3'>
+					<img src="../../../public/img/report/bg_4.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 4'>
+					<img src="../../../public/img/report/bg_5.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 5'>
+					<img src="../../../public/img/report/bg_6.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 6'>
+					<img src="../../../public/img/report/bg_7.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 7'>
+					<img src="../../../public/img/report/bg_31.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 31'>
 					<div :class="item.mark == 1?'markClass':'markClass markDisplay'">{{}}</div>
 					<div :class="item.type == 1?'reporType':'reporType reporType1'">{{item.type == 1?'平台':'我的'}}</div>
 					<p class="reporTitle">{{item.title}}</p>
@@ -98,7 +108,7 @@ export default {
 			material:[],
 			regions:[],
 			ruleForm: {
-				name: '',
+				name: '请先选择相应的报告内容',
 				type:'',
 				timeInterval: '',
 				materialType:'',
@@ -123,9 +133,6 @@ export default {
 				width:'260px'
 			},
 			rules: {
-				name: [
-					{required: true, message: '必须有报告内容', trigger: 'blur' },
-				],
 				type: [
 					{required: true, message: '请选择报告类型', trigger: 'change'}
 				],
@@ -246,7 +253,6 @@ export default {
 			}
 		},
 		get_data(val) {
-			console.log(val)
 			this.pageNum = val
 			var data5 = {
 				pageNum:val,
@@ -338,7 +344,7 @@ export default {
 				this.seasons.map(ji => {
 					if(this.ruleForm.timeInterval == ji.id){
 						jidu = ji.name
-						}
+					}
 				})
 				this.ruleForm.name = '2019年' + jidu + area_list.toString() + cate_list.toString() + '季度数据报告'
 			}else{
@@ -440,9 +446,9 @@ export default {
 		},
 		get_img(type) {
 			if(type.indexOf(",") != -1) {
-				return'/img/report/more.png'
+				return'../../../public/img/report/more.png'
 			}
-			return '/img/report/bg_'+type+'.png'
+			return '../../../public/img/report/bg_'+type+'.png'
 		},
     }
 	}

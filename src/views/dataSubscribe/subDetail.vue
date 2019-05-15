@@ -7,7 +7,7 @@
     <div class="dataBox">
         <div class="filterSection">
             <div class="dataList" style="width:300px"><div class="verticalBar"></div>订阅内容</div>
-            <div class="filterPart" style="width:calc(100% - 456px)"><div class="verticalBar"></div>数据详情<p class="decoText">Contents of the report</p></div>
+            <div class="filterPart" style="width:calc(100% - 456px)"><div class="verticalBar"></div>数据详情<!--p class="decoText">Contents of the report</p--></div>
             <div class="xzBtn adData"><i class="iconfont icon-xiazai"></i></div>
             <div class="dyBtn adData"><i class="iconfont icon-dayin"></i></div>
         </div>
@@ -28,10 +28,10 @@
 			</div>
 			<div class="dataRight">
 				<div class="rightBox">
-					<h1>{{subInfoName}}</h1>
+					<h1 style='font-size:20px;color:#2C2D33;text-align:center;padding:40px 0 20px 0'>{{subInfoName}}</h1>
 					<div class='table-box' v-for='(item,index) in tableData' :key='index'>
-                        <div class='t'>
-                            <p>{{item.maName }}地区数据表
+                        <div class='t' v-if='item.maName'>
+                            <p>{{item.maName}}地区数据表
                             </p>
                             <ul>
                                 <li :class='item.chosed_type=="price"? "ac" :""' @click='item.chosed_type="price"'>价格</li>
@@ -40,7 +40,7 @@
                                 <li :class='item.chosed_type=="hb"? "ac" :""' @click='item.chosed_type="hb"'>环比</li>
                             </ul>
                         </div>
-						<div id='table' class='ul'>
+						<div id='table' class='ul'  v-if='item.maName'>
 							<div class="th li">
 								<p>区域</p>
 								<p v-for="(t,i) in tableData[0].datalist[0]" :key="i">{{t.maDate}}</p>
@@ -53,13 +53,14 @@
 									<p v-for='(num) in d' :key='num.id' >
 										<span v-if='item.chosed_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}</span>  
 										<span v-if='item.chosed_type=="zs"'>{{num.exponent?Number(num.exponent).toFixed(2):'-'}}</span>  
-										<span v-if='item.chosed_type=="tb"'>{{num.tongbi?Number(num.tongbi).toFixed(2):'-'}}</span>  
-										<span v-if='item.chosed_type=="hb"'>{{num.huanbi?Number(num.huanbi).toFixed(2):'-'}}</span>  
+										<span v-if='item.chosed_type=="tb"'>{{num.tb?Number(num.tb).toFixed(4):'-'}}</span>  
+										<span v-if='item.chosed_type=="hb"'>{{num.hb?Number(num.hb).toFixed(4):'-'}}</span>  
 									</p>
 								</div>
 							</div>
 							
 						</div>
+						<!--div v-else>暂无数据</div-->
 					</div>
 				</div>
 			</div>
@@ -95,12 +96,16 @@ export default {
 			v.data.mapList.filter(item => {
 				item.chosed_type = 'price'
 				item.datalist=[]
-				let keys = Object.keys(item.data)
-				keys.forEach(key => {
-					item.datalist.push(item.data[key])
-				})
+				if(item.data) {
+					let keys = Object.keys(item.data)
+					keys.forEach(key => {
+						item.datalist.push(item.data[key])
+					})
+				}
+				
 			})
 			this.tableData = v.data.mapList
+			console.log(this.tableData)
 		})
 	},
 	components:{

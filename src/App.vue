@@ -67,11 +67,13 @@ export default {
                     name: '数据订阅',
                     icon: 'icon-dingyue',
                     router: '/dataIndex'
-                }, {
-                    name: '帮助中心',
-                    icon: 'icon-bangzhu',
-                    router: '/help'
-                }, {
+				}, 
+				// {
+                //     name: '帮助中心',
+                //     icon: 'icon-bangzhu',
+                //     router: '/help'
+				// }, 
+				{
                     name: '账户设置',
                     icon: 'icon-setting',
                     router: '/setting'
