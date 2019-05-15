@@ -1,12 +1,12 @@
 <template>
-    <div style='height:100%'>
+    <div style='height:100%' v-loading.fullscreen.lock="loading">
         <div class="reportBtns">
 			<div :class="timetype == 0?'btnClass btnActive':'btnClass'" @click="timetype = 0"><span :class="timetype == 0?'dotClass dotActive':'dotClass'"></span>月度数据</div>
 			<div :class="timetype == 1?'btnClass btnActive':'btnClass'" @click="timetype = 1"><span :class="timetype == 1?'dotClass dotActive':'dotClass'"></span>季度数据</div>
 			<div :class="timetype == 2?'btnClass btnActive':'btnClass'" @click="timetype = 2"><span :class="timetype == 2?'dotClass dotActive':'dotClass'"></span>年度数据</div>
 		</div>
-        <el-container style='height:100%;background:#F6F7FE;padding:88px 20px 40px 20px;box-sizing:border-box'>
-            <el-aside width="320px" style='border-radius:4px;background:#fff;margin-right:20px' class='cate'>
+        <el-container style='height:100%;background:#F6F7FE;padding:20px 20px 40px 20px;box-sizing:border-box'>
+            <el-aside width="320px" style='border-radius:4px;background:#fff;' class='cate'>
                 <div class='title'>
                     <i></i>
                     材料选择
@@ -95,14 +95,14 @@
                 <div class='ch' v-show ='showcharts'>
                     <h1>云南省材料价格对比柱状图</h1>
                     <div class='tool'>
-                        <ul>
-                            <li @click='change_charts="bar"'>
+                        <ul>   
+                            <li @click='change_charts="bar"' :class='change_charts=="bar"?"active":""'>
                                 <i class='iconfont icon-zhuzhuangtu'></i>
                             </li>
-                            <li @click='change_charts="line"'>
+                            <li @click='change_charts="line"' :class='change_charts=="line"?"active":""'>
                                 <i class='iconfont icon-zhexian'></i>
                             </li>
-                            <li @click='change_charts="mixin"'>
+                            <li @click='change_charts="mixin"' :class='change_charts=="mixin"?"active":""'>
                                 <i class='iconfont icon-zhuzhuangzhexian'></i>
                             </li>
                         </ul>
@@ -175,14 +175,16 @@ export default {
             checked:[],//选中作为图渲染的数据,
             mycharts:null,
             change_charts:'bar',//展示图表的类型
-            color:['#ff406b','#09d8ca','#ffa966','#2bbdef','#5f81ff','#ff7e68','#18db98','#d06cff','#77a1ff','#ffc047'],
+            color:['#ff5193','#09d8ca','#ffa966','#2bbdef','#5f81ff',
+            '#ff7e68','#18db98','#d06cff','#77a1ff','#f58d13','#ed5627',
+            '#fe76cc','#f037c2','#18cb00','#2da5ea','#994eee'],
             boxwidth:0,
-            tablewidth:0
+            tablewidth:0,
+            loading:false
         }
     },
     created() {       
         this.get_cate()
-        console.log(this.$route)
     },
     mounted() {
         
@@ -271,15 +273,15 @@ export default {
                     return [(y-1)+'-'+exmonth,y+'-'+month]
                     break;
                 case 9:
-                    if(m<4) {
+                    if(month<4) {
                         month = 3
                         exmonth = 7
                         exyear=y-1
-                    } else if(m<7) {
+                    } else if(month<7) {
                         month = 6
                         exmonth = 10
                         exyear=y-1
-                    } else if(m<10) {
+                    } else if(month<10) {
                         month = 9
                         exmonth = 1
                         exyear=y
@@ -293,15 +295,15 @@ export default {
                     return [exyear+'-'+exmonth,y+'-'+month]
                     break;
                 case 18:
-                    if(m<4) {
+                    if(month<4) {
                         month = 3
                         exmonth = 9
                         exyear=y-2
-                    } else if(m<7) {
+                    } else if(month<7) {
                         month = 6
                         exmonth = 1
                         exyear=y-1
-                    } else if(m<10) {
+                    } else if(month<10) {
                         month = 9
                         exmonth = 4
                         exyear=y-1
@@ -329,6 +331,7 @@ export default {
             this.time = this.monthoptions[0].value
         },
         async get_area_data() {// 获取区域的数据
+            this.loading = true
             this.tabledata =[]
             this.checked = []
             const t_arr=this.formateTime()
@@ -339,24 +342,30 @@ export default {
                 area:this.chosed_area.area
             }
             const res = await this.$api.get_area_time_list(data)
-            let keys = Object.keys(res.data.data)
-            keys.forEach(key => {
-                this.tabledata.push(res.data.data[key])
-            })
-            if(this.showcharts) { //如果展示图表  渲染
-                if(this.change_charts=='bar') {
-                    this.init()
-                } else if(this.change_charts=='line') {
-                    this.init_line()
-                } else {
-                    this.init_barline()
+            if(Object.keys(res.data.data).length>0) {
+                let keys = Object.keys(res.data.data)
+                keys.forEach(key => {
+                    this.tabledata.push(res.data.data[key])
+                })
+                if(this.showcharts) { //如果展示图表  渲染
+                    if(this.change_charts=='bar') {
+                        this.init()
+                    } else if(this.change_charts=='line') {
+                        this.init_line()
+                    } else {
+                        this.init_barline()
+                    }
                 }
+            } else {
+                this.tabledata = []
             }
             this.$nextTick(() =>{
                 this.show_page()
+                this.loading = false
             })
         },
         async get_cate_data() { //获取材料的数据 目前只获取全省的材料的数据
+            this.loading = true
             this.tabledata = []
             this.checked = []
             const t_arr=this.formateTime()
@@ -380,6 +389,10 @@ export default {
                     this.init_barline()
                 }
             }
+            this.$nextTick(() =>{
+                this.show_page()
+                this.loading = false
+            })
         },
         handleNodeClick(data) { //选择材料
             this.checked = []
@@ -409,37 +422,43 @@ export default {
                     })
                     if(this.chosed_tab==0) {
                         legend.push(item[0].area_name)
-                        y.push({data:data,type:'bar',name:item[0].area_name,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.checked.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                        y.push({data:data,type:'bar',name:item[0].area_name,
+                        barMaxWidth:20,
+                        itemStyle:{
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[index] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }})
                     } else {
                         legend.push(item[0].name)
-                        y.push({data:data,type:'bar',name:item[0].name,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.checked.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                        y.push({data:data,type:'bar',name:item[0].name,
+                        barMaxWidth:20,
+                        itemStyle:{
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[index] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: index<this.checked.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }})
                     }                    
                 })
@@ -459,19 +478,20 @@ export default {
                         type:'bar',
                         name:'全省',
                         itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[0]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         },
                         barMaxWidth:20
                     })
@@ -499,39 +519,42 @@ export default {
                             y.push({data:data,type:'bar',name:defaultcate[0].area_name,
                             barMaxWidth:20,
                             itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false,
-                            }
+                            color:this.color[0]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false,
+                            //     barMaxWidth:20,
+                            // }
                         }})
                         } else {
                             legend.push(defaultcate[0].name)
                             y.push({data:data,type:'bar',name:defaultcate[0].name,
                             barMaxWidth:20,
                             itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false,
-                                barMaxWidth:20
-                            }
+                            color:this.color[0]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false,
+                            //     barMaxWidth:20
+                            // }
                         }})
                         }  
                     } catch(e) {
@@ -541,7 +564,8 @@ export default {
                     
                 }
                 
-            }          
+            }       
+            console.log(y)   
             const option = {
                 tooltip : {
                     trigger: 'axis'
@@ -601,36 +625,38 @@ export default {
                     if(this.chosed_tab==0) {
                         legend.push(item[0].area_name)
                         y.push({data:data,type:'line',name:item[0].area_name,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[index] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }})
                     } else {
                         legend.push(item[0].name)
                         y.push({data:data,type:'line',name:item[0].name,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[index] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }})
                     }                    
                 })
@@ -650,19 +676,20 @@ export default {
                         type:'line',
                         name:'全省',
                         itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[0]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }
                     })
                     arr.forEach(item => {
@@ -689,38 +716,40 @@ export default {
                             y.push({data:data,type:'bar',name:defaultcate[0].area_name,
                             barMaxWidth:20,
                             itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[0]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }})
                         } else {
                             legend.push(defaultcate[0].name)
                             y.push({data:data,type:'bar',name:defaultcate[0].name,
                             barMaxWidth:20,
                             itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[0]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }})
                         }  
                     } catch(e) {
@@ -790,97 +819,107 @@ export default {
                     })
                     if(this.chosed_tab==0) {
                         legend.push(item[0].area_name)
-                        y.push({data:data,type:'bar',name:item[0].area_name,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                        y.push({data:data,type:'bar',name:item[0].area_name,
+                        barMaxWidth:20,
+                        itemStyle:{
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[index] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }},
-                            {data:tb,type:'line',name:item[0].area_name,yAxisIndex:1,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
-                        }},
+                        //     {data:tb,type:'line',name:item[0].area_name,yAxisIndex:1,itemStyle:{
+                        //     color:this.color[index]
+                        //     // {
+                        //     //     type: 'linear',
+                        //     //     x: 0,
+                        //     //     y: 0,
+                        //     //     x2: 0,
+                        //     //     y2: 1,
+                        //     //     colorStops: [{
+                        //     //         offset: 0, color: this.color[index] // 0% 处的颜色
+                        //     //     }, {
+                        //     //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                        //     //     }],
+                        //     //     globalCoord: false
+                        //     // }
+                        // }},
                             {data:hb,type:'line',name:item[0].area_name,yAxisIndex:1,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[index] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }})
                     } else {
                         legend.push(item[0].name)
-                        y.push({data:data,type:'bar',name:item[0].name,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                        y.push({data:data,type:'bar',name:item[0].name,
+                        barMaxWidth:20,
+                        itemStyle:{
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[index] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }},
                             {data:tb,type:'line',name:item[0].name,yAxisIndex:1,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[index] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }},{
                             data:hb,type:'line',name:item[0].name,yAxisIndex:1,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[index] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[index] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }}
                         )
                     }                    
@@ -900,47 +939,50 @@ export default {
                         data:[],
                         type:'bar',
                         name:'全省',
+                        barMaxWidth:20,
                         itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[0]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }
                     })
-                    y.push({//同比
-                        data:[],
-                        type:'line',
-                        name:'全省',
-                        yAxisIndex:1,
-                        emphasis:{
-                            label:{
-                                formatter:'{b}同比: {c}'
-                            }
-                        },itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
-                        }
-                    })
+                    // y.push({//同比
+                    //     data:[],
+                    //     type:'line',
+                    //     name:'全省',
+                    //     yAxisIndex:1,
+                    //     emphasis:{
+                    //         label:{
+                    //             formatter:'{b}同比: {c}'
+                    //         }
+                    //     },itemStyle:{
+                    //         color:this.color[0]
+                    //         // {
+                    //         //     type: 'linear',
+                    //         //     x: 0,
+                    //         //     y: 0,
+                    //         //     x2: 0,
+                    //         //     y2: 1,
+                    //         //     colorStops: [{
+                    //         //         offset: 0, color: this.color[0] // 0% 处的颜色
+                    //         //     }, {
+                    //         //         offset: 1, color: this.color[1] // 100% 处的颜色
+                    //         //     }],
+                    //         //     globalCoord: false
+                    //         // }
+                    //     }
+                    // })
                      y.push({//环比
                         data:[],
                         type:'line',
@@ -951,26 +993,27 @@ export default {
                                 formatter:'{b}环比: {c}'
                             }
                         },itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[0]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }
                     })
                     arr.forEach(item => {
                         x.push(item.mdate.substr(0,7))
                         y[0].data.push(item.price)
-                        y[1].data.push(item.tongbi)
-                        y[2].data.push(item.huanbi)
+                        // y[1].data.push(item.tongbi)
+                        y[1].data.push(item.huanbi)
                     })
                     legend=['全省']
                 } else {
@@ -990,36 +1033,38 @@ export default {
                         if(this.chosed_tab==0) {
                             legend.push(defaultcate[0].area_name)
                             y.push({data:data,type:'bar',name:defaultcate[0].area_name,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }})
                         } else {
                             legend.push(defaultcate[0].name)
                             y.push({data:data,type:'bar',name:defaultcate[0].name,itemStyle:{
-                            color:{
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [{
-                                    offset: 0, color: this.color[0] // 0% 处的颜色
-                                }, {
-                                    offset: 1, color: this.color[1] // 100% 处的颜色
-                                }],
-                                globalCoord: false
-                            }
+                            color:this.color[index]
+                            // {
+                            //     type: 'linear',
+                            //     x: 0,
+                            //     y: 0,
+                            //     x2: 0,
+                            //     y2: 1,
+                            //     colorStops: [{
+                            //         offset: 0, color: this.color[0] // 0% 处的颜色
+                            //     }, {
+                            //         offset: 1, color: this.color[1] // 100% 处的颜色
+                            //     }],
+                            //     globalCoord: false
+                            // }
                         }})
                         }  
                     } catch(e) {
@@ -1119,8 +1164,6 @@ export default {
             } else {
                 this.disablepage = 0
             }
-
-            console.log(this.disablepage)
         },
         pagechange(type) {
             let scroll = $('.ul').scrollLeft()
@@ -1337,8 +1380,8 @@ export default {
                 li
                     width 50px
                     height 50px
-                    background #FB6371
-                    box-shadow 0px 6px 6px 0px rgba(251,99,113,0.24)
+                    background #7F94FF
+                    box-shadow 0px 6px 6px 0px rgba(127,148,255,0.24)
                     border-radius 50%
                     text-align center
                     color #fff
@@ -1347,8 +1390,14 @@ export default {
                     cursor pointer
                     .iconfont 
                         font-size 26px
-                li+li
-                    background #7F94FF
+                .active
+                    background #FB6371
+                    box-shadow 0px 6px 6px 0px rgba(251,99,113,0.24)
+                .active:hover
+                    background #FB6371
+                    box-shadow 0px 6px 6px 0px rgba(251,99,113,0.24)
+                li:hover
+                    background #AEBBFF
                     box-shadow 0px 6px 6px 0px rgba(127,148,255,0.24)
             ul+ul
                 li

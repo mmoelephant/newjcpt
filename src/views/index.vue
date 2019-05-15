@@ -83,6 +83,7 @@ export default {
 			cursor pointer
 	.bt-line
 		position absolute
+		width 100%
 		i 
 			display block
 			position absolute
@@ -98,7 +99,7 @@ export default {
 			background url('../../public/img/cutlight.png') no-repeat
 			background-size 100% 100%
 			left px2vw(40)
-			bottom -7px
+			bottom -3px
 	.content 
 		display flex
 		width 100% 

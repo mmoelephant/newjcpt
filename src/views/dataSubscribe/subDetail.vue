@@ -73,7 +73,7 @@ import reftable from '../../components/ref-table'
 export default {
 	data() {
 		return {
-			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1Nzg4NjMyNywibmJmIjoxNTU3Nzk5OTI3fQ.4BO9dVg1EflfTjjhkyaove_lngXE4OCHhgNVdCVfW3Y',
+			token:this.$store.state.login.token,
 			subDetail:[],
 			subInfoName:'',
 			subInfoTime:'',
@@ -101,7 +101,6 @@ export default {
 				})
 			})
 			this.tableData = v.data.mapList
-			console.log(this.tableData)
 		})
 	},
 	components:{

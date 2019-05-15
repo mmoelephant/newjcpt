@@ -3,7 +3,7 @@
 	 <!-- style="border:1px red solid" -->
     <div class="reportBtns navigi">
         <div class="btnClass1 btnClass"><span class="dotClass dotClass1"></span>智能报告  > <span class="navigiOn">报告详情</span></div>
-        <a href="javascript:void(0)" class="goBackBtn">返回</a>
+        <a href="javascript:void(0)" class="goBackBtn" @click='$router.back()'>返回</a>
     </div>
     <div class="dataBox">
         <div class="filterSection">
@@ -52,9 +52,14 @@
 						<span class="titleDot"></span>
 						{{item.title}}
 					</p>
-					<p class="contentItem" v-if="time1.length == 1">{{item.title.substr(0,9)}} 云南省 {{item.maName}}价格 {{item.mmYn[index].price.toFixed(2)}} 元/吨 指数{{item.mmYn[index].exponent.toFixed(2)}}点 环比下降{{item.mmYn[index].hb.toFixed(5) * 100}}%，同比下降{{item.mmYn[index].tb.toFixed(5) * 100}}%。</p>
-					<p class="contentItem" v-else-if="time1.length == 4">{{item.title.substr(0,5)}} 云南省 {{item.maName}}价格 {{item.mmYn[index].price.toFixed(2)}} 元/吨 指数{{item.mmYn[index].exponent.toFixed(2)}}点 环比下降{{item.mmYn[index].hb.toFixed(5) * 100}}%，同比下降{{item.mmYn[index].tb.toFixed(5) * 100}}%。</p>
-					<p class="contentItem" v-else>{{item.title.substr(0,7)}} 云南省 {{item.maName}}价格 {{item.mmYn[index].price.toFixed(2)}} 元/吨 指数{{item.mmYn[index].exponent.toFixed(2)}}点 环比下降{{item.mmYn[index].hb.toFixed(5) * 100}}%，同比下降{{item.mmYn[index].tb * 100}}%。</p>
+					<p class="contentItem" >
+						<span v-if="time1.length == 1">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
+						<span v-else-if="time1.length == 4">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
+						<span v-else>{{item.title?item.title.substr(0,7):'-'}} 云南省 {{item.maName}}价格</span>
+						{{item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}} 元/吨 
+						指数{{item.mmYn[index].exponent?item.mmYn[index].exponent.toFixed(2):''}}点 
+						环比下降{{item.mmYn[index].hb?item.mmYn[index].hb.toFixed(5) * 100:'-'}}%，
+						同比下降{{item.mmYn[index].tb?item.mmYn[index].tb.toFixed(5) * 100:'-'}}%。</p>
 					<table class="tableBox" border="1">
 						<thead>
 							<tr>
@@ -86,21 +91,21 @@
 						<tbody v-for="(aa,index2) in item.mm" :key="index2">
 							<tr>
 								<td>{{aa.areaName}}</td>
-								<td>{{aa.tbPrice.toFixed(2)}}</td>
-								<td>{{aa.hbPrice.toFixed(2)}}</td>
-								<td>{{aa.price.toFixed(2)}}</td>
-								<td>{{aa.tb.toFixed(5) * 100}}%</td>
-								<td>{{aa.hb.toFixed(5) * 100}}%</td>
+								<td>{{aa.tbPrice?aa.tbPrice.toFixed(2):'-'}}</td>
+								<td>{{aa.hbPrice?aa.hbPrice.toFixed(2):'-'}}</td>
+								<td>{{aa.price?aa.price.toFixed(2):'-'}}</td>
+								<td>{{aa.tb?aa.tb.toFixed(5) * 100:'-'}}%</td>
+								<td>{{aa.hb?aa.hb.toFixed(5) * 100:'-'}}%</td>
 							</tr>
 						</tbody>
 						<tfoot>
 							<tr>
 								<td>{{item.mmYn[index].areaName}}</td>
-								<td>{{item.mmYn[index].tbPrice.toFixed(2)}}</td>
-								<td>{{item.mmYn[index].hbPrice.toFixed(2)}}</td>
-								<td>{{item.mmYn[index].price.toFixed(2)}}</td>
-								<td>{{item.mmYn[index].tb.toFixed(5) * 100}}%</td>
-								<td>{{item.mmYn[index].hb.toFixed(5) *100}}%</td>
+								<td>{{item.mmYn[index].tbPrice?item.mmYn[index].tbPrice.toFixed(2):'-'}}</td>
+								<td>{{item.mmYn[index].hbPrice?item.mmYn[index].hbPrice.toFixed(2):'-'}}</td>
+								<td>{{item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}}</td>
+								<td>{{item.mmYn[index].tb?item.mmYn[index].tb.toFixed(5) * 100:'-'}}%</td>
+								<td>{{item.mmYn[index].hb?item.mmYn[index].hb.toFixed(5) *100:"-"}}%</td>
 							</tr>
 						</tfoot>
 					</table>
@@ -122,7 +127,7 @@ export default {
 	data() {
 		return {
 			openNewMark:false,
-			token:'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwOTdmMGRkOWUyMjc0Y2NmYjc2ZjRmYWMxNDQxNjMzOSIsImV4cCI6MTU1Nzg4NjMyNywibmJmIjoxNTU3Nzk5OTI3fQ.4BO9dVg1EflfTjjhkyaove_lngXE4OCHhgNVdCVfW3Y',
+			token:this.$store.state.login.token,
 			markList:[],
 			markRight:true,
 			inputDis:true,

@@ -98,9 +98,9 @@ export default {
             this.chart.setOption({
                 series: [{
                     type: 'map',
-                    top:0,
-                    left:0,
-                    right:0,
+                    top:80,
+                    left:80,
+                    right:80,
                     bottom:50,
                     map: 'yn',
                     markPoint:{
@@ -152,7 +152,7 @@ export default {
     .cb
         width px2vw(880)
         height 100% 
-        padding-top px2vh(42)
+        padding-top px2vh(88)
         box-sizing border-box
         display flex
         flex-direction column
