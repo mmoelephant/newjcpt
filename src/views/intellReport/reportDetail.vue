@@ -52,7 +52,7 @@
 						<span class="titleDot"></span>
 						{{item.title}}
 					</p>
-					<p class="contentItem" >
+					<p class="contentItem">
 						<span v-if="time1.length == 1">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
 						<span v-else-if="time1.length == 4">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
 						<span v-else>{{item.title?item.title.substr(0,7):'-'}} 云南省 {{item.maName}}价格</span>
@@ -67,22 +67,22 @@
 								<th colspan="5">{{item.maName}} 单位：元/立方米</th>
 							</tr>
 							<tr v-if="time1.length == 1">
-								<th>2018年{{item.title.substr(5,4)}}</th>
-								<th>1</th>
+								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年'}}</th>
+								<th>{{item.title.substr(0,9)}}</th>
 								<th>{{item.title.substr(0,9)}}</th>
 								<th>同比增长率(%)</th>
 								<th>环比增长率(%)</th>
 							</tr>
 							<tr v-else-if="time1.length == 4">
-								<th>2018年</th>
-								<th>1</th>
+								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年'}}</th>
+								<th>{{item.title.substr(0,5)}}</th>
 								<th>{{item.title.substr(0,5)}}</th>
 								<th>同比增长率(%)</th>
 								<th>环比增长率(%)</th>
 							</tr>
 							<tr v-else>
-								<th>2018年{{item.title.substr(5,2)}}</th>
-								<th>1</th>
+								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + item.title.substr(5,3)}}</th>
+								<th>{{item.title.substr(5,2) == '01'?(parseInt(item.title.substr(0,4)) - 1).toString() + '12月':item.title.substr(0,5) + (parseInt(item.title.substr(5,2)) - 1).toString() + '月'}}</th>
 								<th>{{item.title.substr(0,7)}}</th>
 								<th>同比增长率(%)</th>
 								<th>环比增长率(%)</th>
@@ -204,6 +204,7 @@ export default {
 	},
     methods:{
 		drawGraph(aa,bb){
+			if(aa.mm == "暂无数据") return
 			let x = [],y = []
 			const mycharts = this.$echarts.init(document.getElementById('main'+bb))
 			aa.mm.forEach(item => {
@@ -268,6 +269,7 @@ export default {
 			mycharts.setOption(option,true)
 		},
 		drawGraph2(aa,bb){
+			if(aa.mm == "暂无数据") return
 			let x = [],y =[],z=[]
 			// ,w =''
 			const mycharts2 = this.$echarts.init(document.getElementById('main2'+bb))
@@ -338,6 +340,7 @@ export default {
 			mycharts2.setOption(option,true)
 		},
 		drawGraph1(aa,bb){
+			if(aa.mm == "暂无数据") return
 			let x = [],y =[],z=[]
 			const mycharts1 = this.$echarts.init(document.getElementById('main1'+bb))
 			aa.mm.forEach(item => {

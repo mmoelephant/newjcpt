@@ -15,7 +15,7 @@
 				<el-dialog title="新建智能报告" :visible.sync="dialogFormVisible" width="620px">
 					<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
   						<el-form-item label="报告名称" prop="name">
-  							<el-input v-model="ruleForm.name" readonly placeholder="请先选择以下内容"></el-input>
+								{{ruleForm.name}}
   						</el-form-item>
   						<el-form-item label="报告类型" prop="type">
   							<el-select v-model="ruleForm.type" placeholder="请选择报告类型" @change="changeType" :style="ruleFormClass">
@@ -23,11 +23,11 @@
   							</el-select>
   						</el-form-item>
   						<el-form-item label="时间节点" prop="timeInterval">
-  							<el-select v-model="ruleForm.timeInterval" :placeholder="word" :style="season" @change="changeTime">
+  							<el-select v-model="ruleForm.timeInterval" :placeholder="word" :style="season" @change="changeTime" v-if="ruleForm.type == 2">
   								<el-option v-for="item in seasons" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
   							</el-select>
 							<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy-MM' range-separator="至" 
-							:placeholder="word" :start-placeholder="startWord" :end-placeholder="endWord">
+							:placeholder="word" :start-placeholder="startWord" :end-placeholder="endWord" v-else>
 							</el-date-picker>
   						</el-form-item>
   						<el-form-item label="材料类型" prop="materialType">
@@ -124,7 +124,7 @@ export default {
 			},
 			rules: {
 				name: [
-					{required: true, message: '必须有报告内容', trigger: 'blur' },
+					{required: true, message: '必须有报告内容'},
 				],
 				type: [
 					{required: true, message: '请选择报告类型', trigger: 'change'}
