@@ -294,7 +294,8 @@ export default {
 				})
 			}
 		},
-		get_data() {
+		get_data(val=1) {
+			this.pageNum = val
 			if(this.type == 0){
 				var data4 = {
 					token:this.token,
@@ -404,40 +405,29 @@ export default {
 			})
 		},
 		submitForm(formName) {
-			this.$refs[formName].validate((valid) => {
-				console.log(this.pageNum)
-				console.log(this.pageSize)
-				if (valid) {
-					var data6 = {
-						token:this.token,
-						pageNum:this.pageNum,
-						pageSize:this.pageSize,
-						areaId:this.filterForm.region.toString(),
-						maId:this.filterForm.type.toString(),
-						month:this.filterForm.time
-					}
-					this.$api.get_subscrib(data6).then(v => {
-						if(v.data.count != null){
-							this.imgVis.display = 'none'
-							this.imgVis1.display = 'none'
-							this.imgVis2.display = 'none'
-							this.$refs[formName].resetFields()
-							this.dataList = v.data.list
-							this.totalPage = v.data.count
-						}else{
-							this.dataList = []
-							this.$refs[formName].resetFields()
-							this.imgVis.display = 'none'
-							this.imgVis1.display = 'block'
-							this.imgVis2.display = 'none'
-							this.totalPage = 0
-						}
-					})
-				} else {
-					console.log('error submit!!');
-					return false;
+			var data6 = {
+				token:this.token,
+				pageNum:this.pageNum,
+				pageSize:this.pageSize,
+				areaId:this.filterForm.region.toString(),
+				maId:this.filterForm.type.toString(),
+				month:this.filterForm.time
+			}
+			this.$api.get_subscrib(data6).then(v => {
+				if(v.data.count != null){
+					this.imgVis.display = 'none'
+					this.imgVis1.display = 'none'
+					this.imgVis2.display = 'none'
+					this.dataList = v.data.list
+					this.totalPage = v.data.count
+				}else{
+					this.dataList = []
+					this.imgVis.display = 'none'
+					this.imgVis1.display = 'block'
+					this.imgVis2.display = 'none'
+					this.totalPage = 0
 				}
-			});
+			})
 		},
 		openTip(){
 			this.$message({

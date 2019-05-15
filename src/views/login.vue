@@ -15,8 +15,11 @@
                 <div class='input'>
                     <div :class='focusIndex == 1? "onfocus":error1&&error1.length>0?"onerror":""'>
                         <i class='iconfont icon-zhanghao'></i>
-                        <input placeholder='请输入手机号' 
+                        <span v-if='focusIndex != 1 && name.length==0 && !isSupportPlaceholder' @click='getfocus(0)'>请输入手机号</span>
+                        <input 
+                            autocomplete="off"
                             v-model='name' 
+                            :placeholder="isSupportPlaceholder?'请输入手机号':''"
                             @focus="focus(1)"
                             @blur="blur(1)"
                             :class='error1&&error1.length>0?"red":name&&name.length>0?"blue":""'>
@@ -26,7 +29,10 @@
                 <div class='input'>
                     <div :class='focusIndex == 2? "onfocus":error2&&error2.length>0?"onerror":""'>
                         <i class='iconfont icon-mima'></i>
-                        <input placeholder='请输入密码' 
+                        <span v-if='focusIndex != 2 && password.length==0&& !isSupportPlaceholder' @click='getfocus(1)'>请输入密码</span>
+                        <input
+                            autocomplete="off"
+                            :placeholder="isSupportPlaceholder?'请输入密码':''"
                             v-model='password' type='password'
                             @focus="focus(2)"
                             @blur="blur(2)"
@@ -39,7 +45,7 @@
                     :class='!name || name.length ==0 || !password || password.length==0?"loginbtn disabled":"loginbtn abled"'>登录</el-button>
                 <div class='tool'>
                     <p @click='$router.replace("/")'>&lt;返回首页</p>
-                    <p @click='$router.push("/help")'>帮助中心</p>
+                    <!--p>帮助中心</p-->
                 </div>
             </div>
         </div>
@@ -47,6 +53,7 @@
 </template>
 
 <script>
+import $ from 'jquery'
 export default {
     data() {
         return {
@@ -54,10 +61,29 @@ export default {
             password:'',
             error2:'',
             error1:'',
-            focusIndex:0
+            focusIndex:0,
+            isSupportPlaceholder:''
         }
     },
+    created() {
+        
+    },
+    mounted() {
+        const input = $('input')[0]
+        this.isSupportPlaceholder =  'placeholder' in input
+		const that = this
+		document.onkeydown = function(e) {
+			var keycode = document.all ? event.keyCode : e.which;
+			if (keycode == 13) {
+				that.login()
+				return false;
+			}
+		}
+	},
     methods:{
+        getfocus(index) {
+            $('input')[index].focus()
+        },
         focus(i) {
             this.focusIndex = i
             if(i ==1) {
@@ -187,7 +213,7 @@ export default {
                 color rgba(153,153,153,1)
                 width 100%
                 margin-bottom 14px
-                
+                position relative              
                 div
                     display flex
                     align-items center
@@ -208,6 +234,13 @@ export default {
                     margin-left 14px
                     outline none
                     line-height 32px
+                    height 32px
+                    display block
+                span 
+                    position absolute
+                    color #8E9099
+                    font-size 14px
+                    left 40px
                 .blue
                     border-color #3577EC
                 .red 
