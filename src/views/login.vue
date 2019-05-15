@@ -208,6 +208,8 @@ export default {
                     margin-left 14px
                     outline none
                     line-height 32px
+                    height 32px
+                    display block
                 .blue
                     border-color #3577EC
                 .red 

@@ -89,7 +89,6 @@ export default {
             const data = {
                 id:this.cate.cid,
                 monthNumber:1,
-                area:"53"
             }
             const res = await this.$api.get_bg_line(data)
 			let cate_list = this.$store.state.bigscreen.cate_list
