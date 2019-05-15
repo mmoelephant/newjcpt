@@ -1,6 +1,5 @@
 <template>
 <div class="dataDetail" v-loading.fullscreen="loading">
-	 <!-- style="border:1px red solid" -->
     <div class="reportBtns navigi">
         <div class="btnClass1 btnClass"><span class="dotClass dotClass1"></span>智能报告  > <span class="navigiOn">报告详情</span></div>
         <a href="javascript:void(0)" class="goBackBtn" @click='$router.back()'>返回</a>
@@ -15,27 +14,28 @@
         </div>
 		<el-dialog title="新增备注" :visible.sync="openNewMark" width="620px">
 			<p class="newTime">时间<span class="timeSpan">{{addTime}}</span></p>
-			<el-form :model="markForm" :rules="rules" ref="markForm" class="">
+			<el-form :model="markForm" :rules="rules" ref="markForm">
 				<el-form-item prop="mark">
-				<el-input type="textarea" :autosize="{ minRows: 4, maxRows: 10}" clearable v-model="markForm.mark" placeholder="请输入备注" minlength="10"  maxlength="50" show-word-limit></el-input>
+					<el-input type="textarea" :autosize="{minRows:4,maxRows:10}" clearable v-model="markForm.mark" placeholder="请输入备注" minlength="10"  maxlength="50" show-word-limit></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="submitForm('markForm')" style="background-color:#8B78FE">立即创建</el-button>
+					<el-button type="primary" @click="submitForm('markForm')" class="newNow">立即创建</el-button>
+					<!-- style="background-color:#9A7CFF"  -->
 					<el-button @click="cancelMark('markForm')">取消</el-button>
-				</el-form-item>
+					</el-form-item>
 			</el-form>
 		</el-dialog>
         <div class="dataContent">
             <div class="dataLeft">
 				<div class="markItem" v-for="item in markList" :key="item.id">
                     <p class="timeTip">最新提交时间</p>
-                    <p class="time">{{item.updateTime?item.updateTime.split('T')[0]:''}}</p>
+                    <p class="time">{{item.updateTime?item.updateTime.split('T')[0]:'-'}}</p>
 					<el-input type="textarea" :readonly="markRight" :disabled="inputDis" :autosize = "{ minRows: 2, maxRows: 10}" class="markBox" v-model="item.mark" @change="markChange"></el-input>
                     <i class="el-icon-error closeMark" @click="deleteMark(item.id)"></i>
                     <div class="doBtns">
-                        <button class="btn" @click="modifyMark()" :style="btnVis">修改</button>
-                        <button class="btn btnSave" :style="btnVis1" @click="saveMark(item.id)">保存</button>
-                        <button class="btn btnCancle" :style="btnVis1" @click="cancelModify()">取消</button>
+                        <button class="btn" @click="modifyMark(item.id)" :style="btnVis">修改</button>
+                        <button class="btn btnSave" :style="btnVis1" @click="saveMark(item.id)" :key="item.id">保存</button>
+                        <button class="btn btnCancle" :style="btnVis1" @click="cancelModify()" :key="item.id">取消</button>
                     </div>
                 </div>
 				<div class="noData" :style="imgVis">
@@ -156,8 +156,6 @@ export default {
 			time1:'',
 			mycharts:null,
 			loading:true
-			// x:[],
-			// y:[]
         }
     },
 	created(){
@@ -192,7 +190,6 @@ export default {
 					this.drawGraph2(item,index)
 					this.drawGraph1(item,index)
 				})
-				f
 				
 			})
 		})
@@ -262,6 +259,7 @@ export default {
 					{
 					name:'价格',
 					type:'bar',
+					color: ['#637CFB','#FE9B78'],
 					data:y,
 					barWidth:30
 					},
@@ -270,13 +268,14 @@ export default {
 			mycharts.setOption(option,true)
 		},
 		drawGraph2(aa,bb){
-			let x = [],y =[],z=[],w =''
+			let x = [],y =[],z=[]
+			// ,w =''
 			const mycharts2 = this.$echarts.init(document.getElementById('main2'+bb))
 			aa.mm.forEach(item => {
 				x.push(item.areaName)
 				y.push(item.price)
 				z.push(item.hbPrice)
-				w = aa.maName + '价格'
+				// w = aa.maName + '价格'
 			})
 			var option = {
 				tooltip: {
@@ -324,11 +323,13 @@ export default {
 					{
 					name:'价格',
 					type:'line',
+					color:['#637CFB'],
 					data:y,
 					},
 					{
 					name:'环比价格',
 					type:'line',
+					color:['#FE9B78'],
 					data:z,
 					}
 
@@ -390,11 +391,13 @@ export default {
 					{
 					name:'价格',
 					type:'line',
+					color:['#637CFB'],
 					data:y,
 					},
 					{
 					name:'同比价格',
 					type:'line',
+					color:['#FE9B78'],
 					data:z,
 					}
 
@@ -422,7 +425,7 @@ export default {
 		openMark(){
 			this.openNewMark = true
 		},
-		modifyMark(bb){
+		modifyMark(){
 			this.markRight = false
 			this.btnVis.display = 'none'
 			this.btnVis1.display = ''
@@ -536,6 +539,9 @@ export default {
     width 100%
     height 100%
 
+.goBackBtn
+
+
 .dataBox
     width 100%
     height 100%
@@ -604,13 +610,22 @@ export default {
 	margin-left 10px
 	font-size 14px
 	color #7F94FF
-	line-height 28px
+	line-height 24px
 	text-align center
+	transition background color 0.5s
+
+.btn:hover
+	color #FEFEFE
+	background #8FA1FF
 
 .btnSave
 	background #6C7DFF
 	color white
+	transition background color 0.5s
 
+.btnSave:hover
+	background #6C7DFF
+	color white
 .noData
 	font-size 18px
 	line-height 18px
@@ -636,6 +651,13 @@ export default {
 
 .timeSpan
 	margin-left 8px
+
+.newNow
+	background #9A7CFF
+	transition background 0.5s
+
+.newNow:hover
+	background #C7B7FF
 .dataRight
 	width calc(100% - 320px)
 	// height 824px
@@ -645,6 +667,7 @@ export default {
 	border-radius 8px
 	box-sizing border-box
 	font-size 14px
+	line-height 24px
 
 .reTitle
 	font-size 16px
@@ -675,13 +698,9 @@ export default {
 
 .tableBox
 	width 100%
-	// height 300px
 	border 1px #ccc solid
+	border-collapse collapse
 	margin-top 20px
 	font-size 14px
 	text-align center
-	// th
-	// 	border none
-	// td
-	// 	border none
 </style>

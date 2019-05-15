@@ -109,8 +109,8 @@ export default {
 	computed: {
 		id: function () {
 			return this.$route.query.id
-    	}
-  	},
+		}
+	},
     methods:{
     }
 }

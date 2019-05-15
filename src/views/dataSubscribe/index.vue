@@ -69,7 +69,7 @@
 			<p class="noDatap2">快点击上方新增按钮订阅吧~</p>
 		</div>
 		<el-pagination :page-size="pageSize" :total="totalPage" :pager-count="5" :current-page="pageNum" layout="prev, pager, next" :hide-on-single-page="true" 
-		class="reportPage" @current-change="get_data" @prev-click="get_data" @next-click="get_data">
+		class="reportPage" @current-change="get_data">
 		</el-pagination>
 	</div>
 	</div>
@@ -102,7 +102,7 @@
 			<p class="noDatap1">暂时没有消息</p>
 		</div>
 		<el-pagination :page-size="pageSize" :total="totalPage" :pager-count="5" :current-page="pageNum" layout="prev, pager, next" :hide-on-single-page="true" 
-		class="reportPage" @current-change="get_data" @prev-click="get_data" @next-click="get_data">
+		class="reportPage" @current-change="get_data">
 		</el-pagination>
 	</div>	
 	</div>
@@ -196,6 +196,7 @@ export default {
 	},
 	created(){
 		this.dataList = []
+		this.loading = true
 		const data1 = {
 			token:this.token,
 			pageNum:this.pageNum,
@@ -205,13 +206,12 @@ export default {
 			month:this.filterForm.time,
 		}
 		this.$api.get_subscrib(data1).then(value => {
+			this.loading = false
 			if(value.data.count != null){
-				this.loading = false
 				this.imgVis.display = 'none'
 				this.dataList = value.data.list
 				this.totalPage = value.data.count
 			}else{
-				this.loading = false
 				this.dataList = []
 				this.imgVis.display = 'block'
 				this.totalPage = 0
@@ -250,15 +250,14 @@ export default {
 					month:this.filterForm.time
 				}
 				this.$api.get_subscrib(data2).then(v => {
+					this.loading = false
 					if(v.data.count != null){
-						this.loading = false
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
 						this.dataList = v.data.list
 						this.totalPage = v.data.count
 					}else{
-						this.loading = false
 						this.imgVis.display = 'block'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
@@ -278,15 +277,14 @@ export default {
 					pageSize:this.pageSize
 				} 
 				this.$api.get_msg(data3).then(v => {
+					this.loading = false
 					if(v.data.total != 0){
-						this.loading = false
 						this.imgVis2.display = 'none'
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
 						this.dataList = v.data.data
 						this.totalPage = v.data.total
 					}else{
-						this.loading = false
 						this.imgVis2.display = 'block'
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
@@ -308,15 +306,14 @@ export default {
 				}
 				this.loading = true
 				this.$api.get_subscrib(data4).then(v => {
+					this.loading = false
 					if(v.data.count != null){
-						this.loading = false
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
 						this.dataList = v.data.list
 						this.totalPage = v.data.count
 					}else{
-						this.loading = false
 						this.imgVis.display = 'block'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
@@ -331,6 +328,7 @@ export default {
 					pageSize:this.pageSize
 				}
 				this.$api.get_msg(data5).then(v => {
+					this.loading = false
 					if(v.data != null){
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
@@ -475,8 +473,8 @@ export default {
 						if(v.data.msg = 'success'){
 							this.openNewSub = false
 							this.$refs[formName].resetFields()
-							this.openTip()
 							this.get_data()
+							this.openTip()
 						}else{
 							this.openNewSub = false
 							this.$refs[newSubForm].resetFields()

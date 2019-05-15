@@ -44,7 +44,7 @@
   							<el-input type="textarea" v-model="ruleForm.desc" placeholder="请输入备注，可选填"></el-input>
   						</el-form-item>
   						<el-form-item>
-  							<el-button type="primary" @click="submitForm('ruleForm')" style="background-color:#8B78FE">立即创建</el-button>
+  							<el-button type="primary" @click="submitForm('ruleForm')" class="newNow">立即创建</el-button>
   							<el-button @click="cancleNewReport('ruleForm')">取消</el-button>
   						</el-form-item>
 					</el-form>
@@ -152,8 +152,8 @@ export default {
 			token:this.token
 		}
 		this.$api.get_reports(data1).then(v => {
+			this.loading = false
 			if(v.data.count != null){
-				this.loading = false
 				this.imgVis.display = 'none'
 				this.reportList = v.data.list
 				this.elPageNum = v.data.count
@@ -184,8 +184,8 @@ export default {
 					token:this.token
 				}
 				this.$api.get_reports(data2).then(v => {
+					this.loading = false
 					if(v.data.count != null){
-						this.loading = false
 						this.imgVis.display = 'none'
 						this.reportList = v.data.list
 						this.elPageNum = v.data.count				
@@ -207,8 +207,8 @@ export default {
 					type:this.type
 				}
 				this.$api.get_reports(data3).then(v => {
+					this.loading = false
 					if(v.data.count != null){
-						this.loading = false
 						this.imgVis.display = 'none'
 						this.reportList = v.data.list
 						this.elPageNum = v.data.count						
@@ -232,13 +232,13 @@ export default {
 					type:this.type
 				}
 				this.$api.get_reports(data4).then(v => {
+					this.loading = false
 					if(v.data.count != null){
-						this.loading = false
 						this.imgVis.display = 'none'
 						this.reportList = v.data.list
 						this.elPageNum = v.data.count		
 					}else{
-						this.imgVis.display = 'block'
+						this.imgVis.display = 'none'
 						this.reportList = []
 						this.elPageNum = 0
 					}
@@ -249,24 +249,26 @@ export default {
 			console.log(val)
 			this.pageNum = val
 			var data5 = {
-				pageNum:this.pageNum,
+				pageNum:val,
 				pageSize: this.pageSize,
 				token:this.token
 			}
 			var data6 = {
-				pageNum:this.pageNum,
+				pageNum:val,
 				pageSize:this.pageSize,
 				type:this.type
 			}
 			var data7 = {
-				pageNum:this.pageNum,
+				pageNum:val,
 				pageSize:this.pageSize,
 				token:this.token,
 				type:this.type
 			}
+			this.loading = true
 			//请求, 赋值reportList，因为需要有默认列表
 			if(this.type == 0){
 				this.$api.get_reports(data5).then(v => {
+					this.loading = false
 					if(v.data.count != null){
 						this.imgVis.display = 'none'
 						this.reportList = v.data.list
@@ -279,6 +281,7 @@ export default {
 				})
 			}else if(this.type == 1){
 				this.$api.get_reports(data6).then(v => {
+					this.loading = false
 					if(v.data.count != null){
 						this.imgVis.display = 'none'
 						this.reportList = v.data.list
@@ -291,6 +294,7 @@ export default {
 				})
 			}else{
 				this.$api.get_reports(data7).then(v => {
+					this.loading = false
 					if(v.data.count != null){
 						this.imgVis.display = 'none'
 						this.reportList = v.data.list
@@ -365,13 +369,13 @@ export default {
 				this.timeType = 3
 			}
 		},
-		changeTime(ss){
+		changeTime(){
 			this.ruleFormName()
 		},
-		changeMateri(vv){
+		changeMateri(){
 			this.ruleFormName()
 		},
-		changeRegion(cc){
+		changeRegion(){
 			this.ruleFormName()
 		},
 		toReportDetail(reportId){
@@ -416,8 +420,8 @@ export default {
 						if(v.data.msg == 'success'){
 							this.dialogFormVisible = false
 							this.$refs[formName].resetFields()
-							this.openTip()
 							this.get_data()
+							this.openTip()
 						}else{
 							this.dialogFormVisible = false
 							this.$refs[formName].resetFields()
@@ -509,7 +513,10 @@ export default {
 	margin-right 20px
 	margin-bottom 20px
 	position relative
+	transition background-color 0.5s
 
+.newReport:hover
+	background-color #A99BFF
 
 .newReport1
 	display block
@@ -517,6 +524,12 @@ export default {
 .newReport2
 	display none
 
+.newNow
+	background #9A7CFF
+	transition background 0.5s
+
+.newNow:hover
+	background #C7B7FF
 // .reportDialogClass
 // 	height 620px
 // 	border 1px red solid
