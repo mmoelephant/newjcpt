@@ -9,9 +9,7 @@
 	<div :class="type == 0?'mySubscribe':'mySubscribe1'">
 	<div class="filterSection">
 		<div class="dataList"><div class="verticalBar"></div>订阅列表</div>
-		<a href=""><div class="adData" @click="openNewSub = true"><i class="iconfont icon-dingyue1"></i></div></a>
-			<!-- demo-ruleForm  -->
-			<!-- label-width="100px"  -->
+		<a href="javascript:void(0)"><div class="adData" @click="openNewSub = true"><i class="iconfont icon-dingyue1"></i></div></a>
 		<div class="filterPart"><div class="verticalBar"></div>快速筛查
 		<el-form :model="filterForm" ref="filterForm" label-width="40px" class="filterList">
 			<!-- :rules="filteRules"   -->
@@ -55,7 +53,7 @@
 				<div class="listItem list_materi">{{item.maName?item.maName.slice(0,15):''}}...</div>
 				<div class="listItem list_name">{{item.title?item.title.slice(0,10):''}}</div>
 				<div class="listItem list_time">{{item.createTime?item.createTime.split('T')[0]:''}}</div>
-				<div class="listItem list_do"><a href=""><span class="seeBtn" @click="toDetail(item.id)">查看详情</span></a><a href=""><span class="deleBtn" @click="deleteItem(item.id)">删除</span></a></div>
+				<div class="listItem list_do"><a href="javascript:void(0)"><span class="seeBtn" @click="toDetail(item.id)">查看详情</span></a><a href="javascript:void(0)"><span class="deleBtn" @click="deleteItem(item.id)">删除</span></a></div>
 			</li>
 		</ul>
 		<div class="noData" :style="imgVis">
@@ -69,7 +67,7 @@
 			<p class="noDatap2">快点击上方新增按钮订阅吧~</p>
 		</div>
 		<el-pagination :page-size="pageSize" :total="totalPage" :pager-count="5" :current-page="pageNum" layout="prev, pager, next" :hide-on-single-page="true" 
-		class="reportPage" @current-change="get_data" @prev-click="get_data" @next-click="get_data">
+		class="reportPage" @current-change="get_data">
 		</el-pagination>
 	</div>
 	</div>
@@ -102,7 +100,7 @@
 			<p class="noDatap1">暂时没有消息</p>
 		</div>
 		<el-pagination :page-size="pageSize" :total="totalPage" :pager-count="5" :current-page="pageNum" layout="prev, pager, next" :hide-on-single-page="true" 
-		class="reportPage" @current-change="get_data" @prev-click="get_data" @next-click="get_data">
+		class="reportPage" @current-change="get_data">
 		</el-pagination>
 	</div>	
 	</div>
@@ -196,6 +194,7 @@ export default {
 	},
 	created(){
 		this.dataList = []
+		this.loading = true
 		const data1 = {
 			token:this.token,
 			pageNum:this.pageNum,
@@ -205,13 +204,12 @@ export default {
 			month:this.filterForm.time,
 		}
 		this.$api.get_subscrib(data1).then(value => {
+			this.loading = false
 			if(value.data.count != null){
-				this.loading = false
 				this.imgVis.display = 'none'
 				this.dataList = value.data.list
 				this.totalPage = value.data.count
 			}else{
-				this.loading = false
 				this.dataList = []
 				this.imgVis.display = 'block'
 				this.totalPage = 0
@@ -250,15 +248,14 @@ export default {
 					month:this.filterForm.time
 				}
 				this.$api.get_subscrib(data2).then(v => {
+					this.loading = false
 					if(v.data.count != null){
-						this.loading = false
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
 						this.dataList = v.data.list
 						this.totalPage = v.data.count
 					}else{
-						this.loading = false
 						this.imgVis.display = 'block'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
@@ -278,15 +275,14 @@ export default {
 					pageSize:this.pageSize
 				} 
 				this.$api.get_msg(data3).then(v => {
+					this.loading = false
 					if(v.data.total != 0){
-						this.loading = false
 						this.imgVis2.display = 'none'
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
 						this.dataList = v.data.data
 						this.totalPage = v.data.total
 					}else{
-						this.loading = false
 						this.imgVis2.display = 'block'
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
@@ -308,15 +304,14 @@ export default {
 				}
 				this.loading = true
 				this.$api.get_subscrib(data4).then(v => {
+					this.loading = false
 					if(v.data.count != null){
-						this.loading = false
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
 						this.dataList = v.data.list
 						this.totalPage = v.data.count
 					}else{
-						this.loading = false
 						this.imgVis.display = 'block'
 						this.imgVis1.display = 'none'
 						this.imgVis2.display = 'none'
@@ -331,6 +326,7 @@ export default {
 					pageSize:this.pageSize
 				}
 				this.$api.get_msg(data5).then(v => {
+					this.loading = false
 					if(v.data != null){
 						this.imgVis.display = 'none'
 						this.imgVis1.display = 'none'
@@ -475,8 +471,8 @@ export default {
 						if(v.data.msg = 'success'){
 							this.openNewSub = false
 							this.$refs[formName].resetFields()
-							this.openTip()
 							this.get_data()
+							this.openTip()
 						}else{
 							this.openNewSub = false
 							this.$refs[newSubForm].resetFields()

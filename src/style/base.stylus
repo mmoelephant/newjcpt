@@ -37,10 +37,13 @@ a
 	line-height 38px
 	position relative
 	cursor pointer
+
 .btnClass:hover 
 	background rgba(226,230,255,1)
+
 .btnClass1
 	width 218px
+	padding-left 30px
 
 .btnActive
 	background-color rgba(127,148,255,1)
@@ -58,7 +61,7 @@ a
 	top 16px
 
 .dotClass1
-	left 30px
+	left 18px
 
 .dotActive
 	background-color: #ffffff
@@ -72,6 +75,10 @@ a
 	color rgba(69,78,255,1)
 	text-decoration underline
 	line-height 38px
+	transition color 0.5s
+
+.goBackBtn:hover
+	color #8FA1FF
 
 .filterSection
 	width 100%
@@ -114,11 +121,17 @@ a
 	color white
 	line-height 48px
 	text-align center
+	transition background 0.5s
+
+.adData:hover
+	background #FFB499
 
 .adData1
 	background #8B78FE
 	border 1px solid rgba(108,86,245,1)
-
+	transition background 0.5s
+.adData1:hover
+	background #A596FF
 .adData i 
 	font-size 20px
 .xzBtn
@@ -128,7 +141,12 @@ a
 	background #78A4FE
 	border 1px solid rgba(79,115,247,1)
 	margin-left 10px
-	margin-right 0 !important	
+	margin-right 0 !important
+	transition background 0.5s	
+
+.dyBtn:hover
+	background #8db2fe
+
 .filterPart
 	width calc(100% - 262px)
 	height 48px
