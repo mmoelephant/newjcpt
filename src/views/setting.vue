@@ -9,7 +9,7 @@
                 基本资料
             </div>
             <div class='headicon'>
-                <img :src='dataURL?dataURL:user?user.headPortrait:""' :onerror='defaultimg'/>
+                <img :src='dataURL?dataURL:user&&user.headPortrait?user.headPortrait:""' :onerror='defaultimg'/>
                 <div class='shadow'>
                     点击上传
                 </div>
@@ -40,7 +40,7 @@ export default {
     data() {
         return {
             formLabel:{},
-            defaultimg:'this.src="'+ require('../../public/img/head.png') +'"',
+			defaultimg:'this.src="'+ require('../../public/img/head.png') +'"',
             user:this.$store.state.login.userInfo,
             dataURL:''
         }
