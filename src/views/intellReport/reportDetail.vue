@@ -30,10 +30,11 @@
 				<div class="markItem" v-for="item in markList" :key="item.id">
                     <p class="timeTip">最新提交时间</p>
                     <p class="time">{{item.updateTime?item.updateTime.split('T')[0]:'-'}}</p>
-					<el-input type="textarea" :readonly="markRight" :disabled="item.inputDis" :autosize = "{ minRows: 2, maxRows: 10}" class="markBox" v-model="item.mark" @change="markChange"></el-input>
+					<el-input type="textarea" :readonly="markRight" :disabled="item.inputDis" :autosize = "{ minRows: 2, maxRows: 10}" class="markBox" v-model="item.mark"></el-input>
+					<!-- @change="markChange" -->
                     <i class="el-icon-error closeMark" @click="deleteMark(item.id)"></i>
                     <div class="doBtns">
-                        <button class="btn" @click="modifyMark(item)" :style="item.btnVis">修改</button>
+                        <button class="btn" :style="item.btnVis" @click="modifyMark(item)">修改</button>
                         <button class="btn btnSave" :style="item.btnVis1" @click="saveMark(item)">保存</button>
                         <button class="btn btnCancle" :style="item.btnVis1" @click="cancelModify(item)">取消</button>
                     </div>
@@ -68,24 +69,24 @@
 							</tr>
 							<!--季度-->
 							<tr v-if="time1.length == 1">
-								<th>{{Number(item.mm[0].maDate.substr(0,4))-1}}年{{Number(item.mm[0].maDate.substr(5,2))}}月</th>
+								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年' + item.title.substr(5,4)}}</th>
 								<th>{{Number(item.mm[0].maDate.substr(0,4))}}年{{Number(item.mm[0].maDate.substr(5,2))-1}}月</th>
-								<th>{{item.mm[0].maDate.substr(0,9)}}</th>
+								<th>{{item.title.substr(0,9)}}</th>
 								<th>同比增长率(%)</th>
 								<th>环比增长率(%)</th>
 							</tr>
 							<!--年度-->
 							<tr v-else-if="time1.length == 4">
-								<th>{{Number(item.mm[0].maDate.substr(0,4))-1}}年</th>
-								<th>{{Number(item.mm[0].maDate.substr(0,4))-1}}年</th>
-								<th>{{item.mm[0].maDate.substr(0,4)}}年</th>
+								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年'}}</th>
+								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年'}}</th>
+								<th>{{item.title.substr(0,5)}}</th>
 								<th>同比增长率(%)</th>
 								<th>环比增长率(%)</th>
 							</tr>
 							<!--月度-->
 							<tr v-else>
-								<th>{{Number(item.mm[0].maDate.substr(0,4))-1}}年{{Number(item.mm[0].maDate.substr(5,2))}}月</th>
-								<th>{{Number(item.mm[0].maDate.substr(0,4))}}年{{Number(item.mm[0].maDate.substr(5,2))-1}}月</th>
+								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年' + item.title.substr(5,2)}}</th>
+								<th>{{item.title.substr(5,1) == '1'?(parseInt(item.title.substr(0,4)) - 1).toString() + '年12月':item.title.substr(0,5) + (parseInt(item.title.substr(5,2)) - 1).toString() + '月'}}</th>
 								<th>{{item.title.substr(0,7)}}</th>
 								<th>同比增长率(%)</th>
 								<th>环比增长率(%)</th>
@@ -164,7 +165,7 @@ export default {
 	watch:{
 		markList:{
 			handler(val) {
-				console.log(val)
+				// console.log(val)
 			},
 			deep:true
 		}
@@ -183,12 +184,12 @@ export default {
 			if(v.data.data != null){
 				this.imgVis.display = 'none'
 				v.data.data.filter(item => {
-					item.inputDis = false
+					item.inputDis = true
 					item.btnVis1 = {
 						display: "none"
 					}
 					item.btnVis = {
-						display: "block"
+						display: ""
 					}
 				})
 				this.markList = v.data.data
@@ -353,7 +354,6 @@ export default {
 					color:['#FE9B78'],
 					data:z,
 					}
-
 				]
 			}
 			mycharts2.setOption(option,true)
@@ -422,7 +422,6 @@ export default {
 					color:['#FE9B78'],
 					data:z,
 					}
-
 				]
 			}
 			mycharts1.setOption(option,true)
@@ -437,22 +436,23 @@ export default {
 			this.$api.get_markList(data3).then(v => {
 				if(v.data.data != null){
 					v.data.data.filter(item => {
-						item.inputDis = false
+						item.inputDis = true
 						item.btnVis1 = {
 							display: "none"
 						}
 						item.btnVis = {
-							display: "block"
+							display: ""
 						}
 					})
+					this.imgVis.display = 'none'
 					this.markList=v.data.data
-					console.log(this.markList)
+					// console.log(this.markList)
 				}else{
 					this.imgVis.display = 'block'
 					this.markList = []
 				}
 			})
-			console.log(this.markList)
+			// console.log(this.markList)
 		},
 		openMark(){
 			this.openNewMark = true
@@ -462,31 +462,37 @@ export default {
 			item.btnVis={display:'none'}
 			item.btnVis1={display:''}
 			item.inputDis = false
+			this.modifiedMark = item.mark
+			console.log(item.mark)
 		},
-		markChange(value){
-			this.modifiedMark = value
-		},
-		saveMark(ss){
+		// markChange(value){
+		// 	this.modifiedMark = value
+		// },
+		saveMark(item){
 			var data5 = {
 				token:this.token,
-				id:ss.id,
-				mark:this.modifiedMark
+				id:item.id,
+				// mark:this.modifiedMark
+				mark:item.mark
 			}
 			this.$api.modify_mark(data5).then(v => {
 				if(v.data.msg == 'success'){
-					this.btnVis1.display = 'none'
-					this.btnVis.display = ''
+					item.btnVis1.display = 'none'
+					item.btnVis.display = ''
+					item.inputDis = true
 					this.getMarkList()
 				}else{
-					this.btnVis1.display = ''
-					this.btnVis.display = 'none'
+					item.btnVis1.display = ''
+					item.btnVis.display = 'none'
+					item.inputDis = false
 				}
 			})
 		},
 		cancelModify(item){
-			this.btnVis.display = ''
-			this.btnVis1.display = 'none'
-			item.inputDis = true
+			this.getMarkList()
+			// item.btnVis.display = ''
+			// item.btnVis1.display = 'none'
+			// item.inputDis = true
 		},
 		deteleTip(){
 			this.$message({
@@ -571,14 +577,10 @@ export default {
 .dataDetail
     width 100%
     height 100%
-
 .goBackBtn
-
-
 .dataBox
     width 100%
     height 100%
-
 .dataContent
 	width 100%
 	height 100%
@@ -596,7 +598,6 @@ export default {
     flex-direction column
     flex-wrap nowwrap
     justify-content flex-start
-
 .markItem
 	width 300px
 	background #fff
@@ -607,21 +608,18 @@ export default {
 	font-size 14px
 	line-height 14px
 	position relative
-
 .timeTip
     color #8E9099
     margin-bottom 12px
 .time
     color #2C2D33
     margin-bottom 20px
-
 .closeMark
     position absolute
     right 18px
     top 15px
     font-size 24px
     color #8E9099
-
 .markBox
 	width 100%
 	overflow hidden
@@ -646,16 +644,13 @@ export default {
 	line-height 24px
 	text-align center
 	transition background color 0.5s
-
 .btn:hover
 	color #FEFEFE
 	background #8FA1FF
-
 .btnSave
 	background #6C7DFF
 	color white
 	transition background color 0.5s
-
 .btnSave:hover
 	background #6C7DFF
 	color white
@@ -663,7 +658,6 @@ export default {
 	font-size 18px
 	line-height 18px
 	text-align center
-
 .noDatap2
 	margin-top 10px
 	font-size 14px
@@ -674,21 +668,17 @@ export default {
 	margin 0 auto
 	margin-top 100px
 	margin-bottom 10px
-
 .newTime
 	position relative
 	top -34px
 	font-size 14px
 	color #8E9099
 	line-height 14px
-
 .timeSpan
 	margin-left 8px
-
 .newNow
 	background #9A7CFF
 	transition background 0.5s
-
 .newNow:hover
 	background #C7B7FF
 .dataRight
@@ -701,20 +691,17 @@ export default {
 	box-sizing border-box
 	font-size 14px
 	line-height 24px
-
 .reTitle
 	font-size 16px
 	font-weight bold
 	line-height 30px
 	text-align center
-
 .titleItem
 	font-size 14px
 	font-weight bold
 	line-height 28px
 	box-sizing border-box
 	margin-top 30px
-
 .titleDot
 	width 6px
 	height 6px
@@ -723,12 +710,10 @@ export default {
 	border-radius 50%
 	margin-right 4px
 	line-height 28px
-
 .graphName
 	font-weight bold
 	text-align center
 	margin-top 30px
-
 .tableBox
 	width 100%
 	border 1px #ccc solid
