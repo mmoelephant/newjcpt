@@ -3,13 +3,13 @@ module.exports = {
     publicPath:process.env.NODE_ENV === 'development'?'':'/home/distN',
     outputDir:'dist',
     assetsDir:'',
+    indexPath:'index.html',
     productionSourceMap: false,
     lintOnSave: true,
     devServer: {// 环境配置
         host: 'localhost',
         port: 1234,
         https: false,
-        indexPath: 'index.html',
         hotOnly: false,
         open: false, //配置自动启动浏览器
         proxy: {// 配置多个代理(配置一个 proxy: 'http://localhost:4000' )
@@ -43,4 +43,13 @@ module.exports = {
             }
         }
     },
+    pwa:{
+        iconPaths:{
+            favicon32:'favicon.ico',
+            favicon16:'favicon.ico',
+            appleTouchIcon:'favicon.ico',
+            maskIcon:'favicon.ico',
+            msTileImage:'favicon.ico'
+        }
+    }
 }

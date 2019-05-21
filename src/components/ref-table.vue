@@ -3,7 +3,7 @@
     <div id='table' style='width:auto' >
       <div class="th li">
         <p>{{type==0?'区域':'材料'}}</p>
-        <p v-for="(i,index) in time" :key="index">{{i.mdate?i.mdate.toString().substr(0,7):i.asmdate.substr(0,7)}}</p>
+        <p v-for="(i,index) in time" :key="index">{{i}}</p>
       </div>
       <el-checkbox-group v-model="checked">    
         <div v-for="(i,index) in tabledata" :key="index" class='li'>
@@ -15,8 +15,8 @@
           <p v-for='(num,a) in i' :key='a' >
             <span v-if='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}</span>  
             <span v-if='t_type=="zs"'>{{num.price ==0?"-":num.exponent?Number(num.exponent).toFixed(2):'-'}}</span>  
-            <span v-if='t_type=="tb"'>{{num.price==0?"-":num.tongbi?Number(num.tongbi).toFixed(4):'-'}}</span>  
-            <span v-if='t_type=="hb"'>{{num.price==0?"-":num.huanbi?Number(num.huanbi).toFixed(4):'-'}}</span>  
+            <span v-if='t_type=="tb"'>{{num.price==0?"-":num.tongbi?(Number(num.tongbi)*100).toFixed(2)+'%':'-'}}</span>  
+            <span v-if='t_type=="hb"'>{{num.price==0?"-":num.huanbi?(Number(num.huanbi)*100).toFixed(2)+'%':'-'}}</span>  
           </p>
         </div>
       </el-checkbox-group> 
@@ -47,6 +47,9 @@ export default {
         },
         isnext:{
           type:Boolean
+        },
+        timeType:{
+          type:Number
         }
     },
     mounted() {
@@ -60,13 +63,30 @@ export default {
       },
       tabledata:{
         handler(val) {
-          let t = []
-          val.map(item => {
-            if(item.length>t.length) {
-              t = item
-            }
-          })
-          this.time = t
+          this.time = []
+          if(val.length >0) {
+            val[0].map(item => {
+              if(this.timeType ==0) {
+                const d = item.mdate?item.mdate.toString().substr(0,7):item.asmdate.toString().substr(0,7)
+                this.time.push(d)
+              } else if(this.timeType == 1) {
+                const m = item.mdate?Number(item.mdate.substr(5,2)):Number(item.asmdate.substr(5,2))
+                const y = item.mdate?item.mdate.substr(0,4):item.asmdate.substr(0,4)
+                if(m ==1) {
+                  this.time.push(y+'年第一季度')
+                } else if( m ==4) {
+                  this.time.push(y+'年第二季度')
+                } else if( m ==7) {
+                  this.time.push(y+'年第三季度')
+                } else {
+                  this.time.push(y+'年第四季度')
+                }
+              } else {
+                const y = item.mdate?item.mdate.substr(0,4):item.asmdate.substr(0,4)
+                this.time.push(y+'年')
+              }
+            })
+          }
           this.checked = []
         },
         deep:true
@@ -102,7 +122,7 @@ export default {
       box-sizing border-box
       flex-shrink 0
     p+p 
-      width 76px
+      width 130px
     
   .th 
     background #B0BDFF

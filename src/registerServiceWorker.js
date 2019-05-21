@@ -1,6 +1,15 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker'
+var cacheName = 'bs-0-2-0';
+var cacheFiles = [
+    '/',
+    './index.html',
+    './index.js',
+    './style.css',
+    // './img/.png',
+    // './img/loading.svg'
+];
 
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {

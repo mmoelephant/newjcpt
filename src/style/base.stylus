@@ -19,7 +19,8 @@ a
 	flex-direction row
 	flex-wrap nowrap
 	justify-content flex-start
-	margin-top 30px
+	padding-top 30px
+	// position absolute
 
 .btnClass 
 	width 140px
@@ -186,7 +187,7 @@ a
 
 .is-current>.el-tree-node__content, .is-current>.el-tree-node__content *
     background tag-color !important
-    color #fff
+    color #fff !important
 .el-tree-node__content
     height 28px
 .el-tree-node__content:hover 
@@ -203,3 +204,8 @@ a
     content: "\e620"
 .el-tree-node__children .el-icon-caret-right:before
     content: ""
+
+.el-tree-node__expand-icon
+    color #637CFB !important
+.el-tree-node__label
+	color #2C2D33

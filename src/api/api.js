@@ -67,11 +67,23 @@ const api = {
 			return service2.post('/PageUserController/updateUserInfo',data)
 		},
 		// 数据查询
-		get_cate_time_list(data) {
-			return service1.post('/PageMaterialController/getMaterialsInfoEncapsulation',data)
+		get_area_time_list(data,type) {
+			if(type == 0) {
+				return service1.post('/PageMaterialController/getMaterialsInfoByAreaEncapsulation',data)
+			} else if(type==1) {
+				return service1.post('/PageMaterialController/getMaterialsInfoByAreaQuarter',data)
+			} else {
+				return service1.post('/PageMaterialController/getMaterialsInfoByAreaYear',data)
+			}
 		},
-		get_area_time_list(data) {
-			return service1.post('/PageMaterialController/getMaterialsInfoByAreaEncapsulation',data)
+		get_cate_time_list(data,type) {
+			if(type == 0) {
+				return service1.post('/PageMaterialController/getMaterialsInfoEncapsulation',data)
+			} else if(type==1) {
+				return service1.post('/PageMaterialController/getMaterialsInfoByQuarter',data)
+			} else {
+				return service1.post('/PageMaterialController/getMaterialsInfoByYear',data)
+			}
 		},
 		get_yn_time_list(data) {
 			return service1.post('/PageMaterialController/getMaterialsInfoByProvinceAreaEncapsulation',data)

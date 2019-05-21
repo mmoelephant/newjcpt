@@ -479,7 +479,7 @@ export default {
 <style lang="stylus" scoped>
 @import '../style/px2vh.stylus'
 .right
-    width px2vw(480)
+    width px2vw(500)
     padding-top px2vh(88)
     margin-left 100px
     height 100%
@@ -526,8 +526,8 @@ export default {
         width 100%
         height px2vh(170)
     #line,#bar
-        width px2vw(740)
+        width 100%
         height px2vh(170)
-        position relative
+        // position relative
         // left -50px
 </style>
