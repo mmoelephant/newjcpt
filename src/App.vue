@@ -24,46 +24,16 @@
                     <p class='blue' @click='logout'>{{token&&token.length>0?'退出登录':'登录'}}</p>
                 </div>
             </el-header>
-<<<<<<< HEAD
-            <el-container style='height:100%;'>
-                <el-aside width="200px" class='side'>
-					<div class='userinfo'>
-						<img :src='user&&user.headPortrait?user.headPortrait:""' :onerror='defaultimg'/>
-						<h1>{{token&&token.length>0?user&&user.name?user.name:"暂未设置":"尚未登录"}}</h1>
-						<p>{{token&&token.length>0?user&&user.unit?user.unit:"暂未设置":"尚未登录"}}</p>
-					</div>
-                    <el-menu
-                        :default-active="$route.matched&&$route.matched[0]?$route.matched[0].path:''"
-                        class="el-menu-vertical-demo"
-                        background-color="#fff"
-                        text-color="#8E9099"
-                        router>
-                        <el-menu-item :index="item.router" v-for='(item, index) in navList' :key='index'>
-                            <i :class="'iconfont navicon' + ' ' + item.icon" :style='item.icon=="icon-dingyue"?"font-size:20px;":""'></i>
-                            <template slot="title" >
-                                <span style='margin-right:48px'>{{item.name}}</span>
-								<i class='iconfont icon-shang-copy arrow'></i>
-                            </template>
-							
-                        </el-menu-item >
-                    </el-menu>
-                </el-aside>
-                <el-main class='main'>
-                    <router-view ></router-view>
-                </el-main>
-=======
-            <el-container style='height:100%;flex-direction:column'>
-				<router-view></router-view>
-				<p class='ba'>云南省建设工程材料及设备价格监测系统</p>
-				<p class='ba'>滇公网安备 5301110011230  备案编号：滇ICP备16100321号  Copyright 2018-2019 版</p>
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
+            <el-container style='height:100%;flex-direction:column;'>
+				<router-view style="height:100%"></router-view>
+				<!-- <p class='ba'>云南省建设工程材料及设备价格监测系统</p>
+				<p class='ba'>滇公网安备 5301110011230  备案编号：滇ICP备16100321号  Copyright 2018-2019 版</p> -->
             </el-container>
         </el-container>
 	</div>
 </template>
 
 <script>
-
 export default {
 	name: 'app',
 	data() {

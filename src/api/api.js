@@ -141,6 +141,10 @@ const api = {
 		if(data) data = qs.stringify(data, { allowDots: true })
 		return formser.post('/PageReportController/addReport', data)
 	},
+	delete_report(data){
+		if(data) data = qs.stringify(data, { allowDots: true })
+		return formser.post('/PageReportController/deleteReport', data)	
+	},
 	get_subscrib(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
 		return formser.post('/PageSubscriptionController/findPage', data)

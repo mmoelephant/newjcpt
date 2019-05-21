@@ -11,8 +11,6 @@
             <div class="dyBtn adData"><i class="iconfont icon-dayin"></i></div>
         </div>
         <div class="dataContent">
-<<<<<<< HEAD
-=======
             <div class="dataLeft">
 				<div class="markItem" v-for="item in markList" :key="item.id">
                     <p class="timeTip">最新提交时间</p>
@@ -32,7 +30,6 @@
 					<p class="noDatap2">点击上方<span style="color:#8B78FE">创建按钮</span>，立即新建一个吧</p>
 				</div>
             </div>
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
             <div class="dataRight">
 				<p class="reTitle">{{reTitle}}</p>
 				<div class="dataItem" v-for="(item,index) in reportDetailList" :key="index" >
@@ -44,40 +41,11 @@
 					<table class="tableBox" border="1" v-if='item.mm !="暂无数据"'>
 						<thead>
 							<tr>
-<<<<<<< HEAD
 								<th>材料名称</th>
 								<th>单位</th>
 								<th>本期价格（元）</th>
 								<th>比上期价格涨跌(元)</th>
 								<th>涨跌幅(%)</th>
-=======
-								<th rowspan="2">地区</th>
-								<th colspan="5">{{item.maName}} 单位：元/立方米</th>
-							</tr>
-							<!--季度-->
-							<tr v-if="time1.length == 1">
-								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年' + item.title.substr(5,4)}}</th>
-								<th>{{Number(item.mm[0].maDate.substr(0,4))}}年{{Number(item.mm[0].maDate.substr(5,2))-1}}月</th>
-								<th>{{item.title.substr(0,9)}}</th>
-								<th>同比增长率(%)</th>
-								<th>环比增长率(%)</th>
-							</tr>
-							<!--年度-->
-							<tr v-else-if="time1.length == 4">
-								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年'}}</th>
-								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年'}}</th>
-								<th>{{item.title.substr(0,5)}}</th>
-								<th>同比增长率(%)</th>
-								<th>环比增长率(%)</th>
-							</tr>
-							<!--月度-->
-							<tr v-else>
-								<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年' + item.title.substr(5,2)}}</th>
-								<th>{{item.title.substr(5,1) == '1'?(parseInt(item.title.substr(0,4)) - 1).toString() + '年12月':item.title.substr(0,5) + (parseInt(item.title.substr(5,2)) - 1).toString() + '月'}}</th>
-								<th>{{item.title.substr(0,7)}}</th>
-								<th>同比增长率(%)</th>
-								<th>环比增长率(%)</th>
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
 							</tr>
 						</thead>
 						<tbody v-for="(aa,index2) in item.mm" :key="index2">
@@ -117,15 +85,12 @@ export default {
         }
 	},
 	watch:{
-<<<<<<< HEAD
-=======
 		markList:{
 			handler(val) {
 				// console.log(val)
 			},
 			deep:true
 		}
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
 	},
 	created(){
 		var data1 = {
@@ -136,8 +101,6 @@ export default {
 			id:this.id,
 			token:this.token
 		}
-<<<<<<< HEAD
-=======
 		this.$api.get_markList(data1).then(v => {
 			if(v.data.data != null){
 				this.imgVis.display = 'none'
@@ -157,7 +120,6 @@ export default {
 			}
 		})
 		this.addTime = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
 		this.$api.get_reports_detail(data6).then(v => {
 			this.loading = false
 			console.log(v.data.timeInterval)
@@ -196,8 +158,6 @@ export default {
 	mounted() {
 	},
     methods:{
-<<<<<<< HEAD
-=======
 		drawGraph(aa,bb){
 			if(aa.mm=='暂无数据') return 
 			let x = [],y = []
@@ -545,7 +505,6 @@ export default {
 			this.openNewMark = false
 			this.$refs[formName].resetFields()
 		}
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
     }
 }
 </script>
@@ -553,10 +512,7 @@ export default {
 .dataDetail
     width 100%
     height 100%
-<<<<<<< HEAD
-=======
 .goBackBtn
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
 .dataBox
     width 100%
     height 100%
@@ -571,8 +527,6 @@ export default {
 	flex-direction row
 	flex-wrap nowrap
 	justify-content space-around
-<<<<<<< HEAD
-=======
 .dataLeft
     width 300px
     display flex
@@ -662,7 +616,6 @@ export default {
 	transition background 0.5s
 .newNow:hover
 	background #C7B7FF
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
 .dataRight
 	width 100%
 	background #fff
@@ -690,14 +643,7 @@ export default {
 	background #7F94FF
 	border-radius 50%
 	margin-right 4px
-<<<<<<< HEAD
-	line-height 20px
-.contentItem
-	margin-top 30px
-	font-size 14px
-=======
 	line-height 28px
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
 .graphName
 	font-weight bold
 	text-align center
@@ -709,12 +655,4 @@ export default {
 	margin-top 20px
 	font-size 14px
 	text-align center
-<<<<<<< HEAD
-
-.tableFoot
-	text-align left
-	td
-		padding-left 20px
-=======
->>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
 </style>

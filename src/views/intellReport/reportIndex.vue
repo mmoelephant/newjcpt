@@ -2,132 +2,144 @@
 <div v-loading.fullscreen="loading">
 	<router-view v-if='$route.name == "reportDetail"'></router-view>
 	<div class="intellReport" v-else>
-		<div class="reportBtns">
-			<div class="btnClass"><span class="dotClass"></span>智能报告  > <span class="navigiOn">全部报告</span></div>
-			<div class="viewToggle">
-				<span :class="type == 0?'view1 viewActive':'view1'" @click="choose(0)">网格显示</span>
-				<span :class="type == 1?'view2 viewActive':'view2'" @click="choose(1)">列表显示</span>
-			</div>
-			<div class="search">
-				<!-- <el-autocomplete class="searchBox" v-model="state2" :fetch-suggestions="querySearch" placeholder="请输入内容" :trigger-on-focus="false" @select="handleSelect">
-				</el-autocomplete> -->
-			</div>
+		<div class="inteLeft">
+			<div :class="bigType == 0 ?'all allOn':'all'" @click="toggleBig(0)">全部报告</div>
+			<div :class="bigType == 1 ?'month monthOn':'month'" @click="toggleBig(1)">月度智能报告</div>
+			<div :class="bigType == 2 ?'custom customOn':'custom'" @click="toggleBig(2)">自定义报告</div>
 		</div>
-		<div class="reportContent">
-			<div class="gridView" :style="viewToggle">
-				<!-- 月度智能报告(网格视图) -->
-				<div>
-					<el-badge value="new" class="item"><p class="reporTypeTitle">月度智能报告</p></el-badge>
-					<ul class="gridUl">
-						<li class="gridListClass" v-for="item in systemReport" :key="item.id">
-							<img src="../../../public/img/report/more.png" class="reportImg" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
-							<img src="../../../public/img/report/single.png" class="reportImg" v-else>
-							<p class="reporTitle">云南省建设工程主要材料市场价格变动情况</p>
-							<p class="reporTime">{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}</p>
-						</li>
-					</ul>
-					<div class="noData" :style="noImg">
-						<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-						<p class="noDatap1">暂时没有找到</p>
-						<p class="noDatap2">不要着急，要不再试试~</p>
-					</div>
-					<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" layout="prev, pager, next" 
-					class="reportPage" @current-change="get_data1">
-					</el-pagination>
+		<div class="inteRight">
+			<div class="reportBtns">
+				<div class="btnClass"><span class="dotClass"></span>智能报告  > <span class="navigiOn">{{navigiOn}}</span></div>
+				<div class="viewToggle">
+					<span :class="type == 0?'view1 viewActive':'view1'" @click="choose(0)">网格显示</span>
+					<span :class="type == 1?'view2 viewActive':'view2'" @click="choose(1)">列表显示</span>
 				</div>
-				<!-- 自定义报告(网格视图) -->
-				<div>
-					<el-badge value="new" class="item"><p class="reporTypeTitle">自定义报告</p></el-badge>
-					<ul class="gridUl">
-						<li class="gridListClass" v-for="item in customReport" :key="item.id">
-							<img src="../../../public/img/report/more1.png" class="reportIcon" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
-							<img src="../../../public/img/report/single1.png" class="reportIcon" v-else>
-							<div :class="item.materialClassID&&item.materialClassID.indexOf(',') != -1?'reportMateri':'reportMateri reportMateri1'">
-								{{item.materialClassID&&item.materialClassID.indexOf(',') != -1?item.materialName:'单材料-' + item.materialName}}
-							</div>
-							<div class="reporType" v-if="item.dataType == 1">月报</div>
-							<div class="reporType1" v-else-if="item.dataType == 2">季报</div>
-							<div class="reporType2" v-else>年报</div>
-							<a href="javascript:void(0)"><img src="../../../public/img/report/delete.png" class="deleteIcon"></a>
-							<p class="reportarea">{{item.areaName}}</p>
-							<p class="reporTitle1">{{item.title}}</p>
-							<p class="reporTime">{{item.createTime?item.createTime.split('T')[0]:''}}</p>
-						</li>
-					</ul>
-					<div class="noData" :style="noImgCustom">
-						<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-						<p class="noDatap1">暂时没有找到</p>
-						<p class="noDatap2">不要着急，要不再试试~</p>
-					</div>
-					<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" layout="prev, pager, next" 
-					class="reportPage" @current-change="get_data2">
-					</el-pagination>
+				<div class="search">
+					<!-- <el-autocomplete class="searchBox" v-model="state2" :fetch-suggestions="querySearch" placeholder="请输入内容" :trigger-on-focus="false" @select="handleSelect">
+					</el-autocomplete> -->
 				</div>
 			</div>
-			<div class="listView" :style="viewToggle1">
-				<!-- 月度智能报告(列表视图) -->
-				<div>
-					<el-badge value="new" class="item"><p class="reporTypeTitle">月度智能报告</p></el-badge>
-					<ul class="listUl">
-						<li class="lisTitle">
-							<span class="titleItem titleNum">编号</span>
-							<span class="titleItem titleT">报告标题</span>
-							<span class="titleItem titleTime">创建时间</span>
-							<span class="titleItem titleDo">操作</span>
-						</li>
-						<li class="listClass" v-for="(item,index) in systemReport" :key="index">
-							<span class="listItem listNum">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
-							<span class="listItem listT">
-								<a href="javascript:void(0)">
-									云南省建设工程主要材料市场价格变动情况{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}
-								</a>
-							</span>
-							<span class="listItem listTime">{{item.createTime?item.createTime.split('T')[0]:''}}</span>
-							<span class="listItem listDo"><a href="javascript:void(0)">查看报告></a></span>	
-						</li>
-					</ul>
-					<div class="noData" :style="noImg">
-						<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-						<p class="noDatap1">暂时没有找到</p>
-						<p class="noDatap2">不要着急，要不再试试~</p>
+			<div class="reportContent">
+				<div class="gridView" :style="viewToggle">
+					<!-- 月度智能报告(网格视图) -->
+					<div :class="bigType == 2?'systemVis':''">
+						<el-badge value="new"><p class="reporTypeTitle">月度智能报告</p></el-badge>
+						<ul class="gridUl">
+							<li class="gridListClass" v-for="item in systemReport" :key="item.id">
+								<img src="../../../public/img/report/more.png" class="reportImg" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
+								<img src="../../../public/img/report/single.png" class="reportImg" v-else>
+								<p class="reporTitle">云南省建设工程主要材料市场价格变动情况</p>
+								<p class="reporTime">{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}</p>
+							</li>
+						</ul>
+						<div class="noData" :style="noImg">
+							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
+							<p class="noDatap1">暂时没有找到</p>
+							<p class="noDatap2">不要着急，要不再试试~</p>
+						</div>
+						<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" layout="prev, pager, next" 
+						class="reportPage" @current-change="get_data1">
+						</el-pagination>
 					</div>
-					<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" layout="prev, pager, next" 
-					class="reportPage" @current-change="get_data1">
-					</el-pagination>
+					<!-- 自定义报告(网格视图) -->
+					<div :class="bigType == 1?'customVis':''">
+						<el-badge value="new"><p class="reporTypeTitle">自定义报告</p></el-badge>
+						<div :class="bigType == 2?'newRe':'newRe1'">新建智能报告</div>
+						<ul class="gridUl">
+							<li class="gridListClass" v-for="item in customReport" :key="item.id">
+								<img src="../../../public/img/report/more1.png" class="reportIcon" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
+								<img src="../../../public/img/report/single1.png" class="reportIcon" v-else>
+								<div :class="item.materialClassID&&item.materialClassID.indexOf(',') != -1?'reportMateri':'reportMateri reportMateri1'">
+									{{item.materialClassID&&item.materialClassID.indexOf(',') != -1?item.materialName:'单材料-' + item.materialName}}
+								</div>
+								<div class="reporType" v-if="item.dataType == 1">月报</div>
+								<div class="reporType1" v-else-if="item.dataType == 2">季报</div>
+								<div class="reporType2" v-else>年报</div>
+								<a href="javascript:void(0)"><img src="../../../public/img/report/delete.png" class="deleteIcon"></a>
+								<p class="reportarea">{{item.areaName}}</p>
+								<p class="reporTitle1">{{item.title}}</p>
+								<p class="reporTime">{{item.createTime?item.createTime.split('T')[0]:''}}</p>
+							</li>
+						</ul>
+						<div class="noData" :style="noImgCustom">
+							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
+							<p class="noDatap1">暂时没有找到</p>
+							<p class="noDatap2">不要着急，要不再试试~</p>
+						</div>
+						<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" layout="prev, pager, next" 
+						class="reportPage" @current-change="get_data2">
+						</el-pagination>
+					</div>
 				</div>
-				<!-- 自定义报告(列表视图) -->
-				<div>
-					<el-badge value="new" class="item"><p class="reporTypeTitle">自定义报告</p></el-badge>
-					<ul class="listUl">
-						<li class="lisTitle">
-							<span class="titleItem titleNum_custom">编号</span>
-							<span class="titleItem titleT_custom">报告标题</span>
-							<span class="titleItem titleType_custom">类型</span>
-							<span class="titleItem titleTime_custom">创建时间</span>
-							<span class="titleItem titleDo_custom">操作</span>
-						</li>
-						<li class="listClass" v-for="(item,index) in customReport" :key="index">
-							<span class="listItem listNum_custom">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
-							<span class="listItem listT_custom">
-								<a href="javascript:void(0)">
-									{{item.title?item.title.substr(0,25)+'...':'-'}}
-								</a>
-							</span>
-							<span class="listItem listType_custom" v-if="item.dataType == 1">月度</span>
-							<span class="listItem listType_custom1" v-else-if="item.dataType == 2">季度</span>
-							<span class="listItem listType_custom2" v-else>年度</span>
-							<span class="listItem listTime_custom">{{item.createTime?item.createTime.split('T')[0]:'-'}}</span>
-							<span class="listItem listDo_custom"><a href="javascript:void(0)" class="toDetail">查看报告</a><a href="javascript:void(0)" class="deleteRe">删除</a></span>	
-						</li>
-					</ul>
-					<div class="noData" :style="noImgCustom">
-						<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-						<p class="noDatap1">暂时没有找到</p>
-						<p class="noDatap2">不要着急，要不再试试~</p>
+				<div class="listView" :style="viewToggle1">
+					<!-- 月度智能报告(列表视图) -->
+					<div :class="bigType == 2?'systemVis':''">
+						<el-badge value="new"><p class="reporTypeTitle">月度智能报告</p></el-badge>
+						<ul class="listUl">
+							<li class="lisTitle">
+								<span class="titleItem titleNum">编号</span>
+								<span class="titleItem titleT">报告标题</span>
+								<span class="titleItem titleTime">创建时间</span>
+								<span class="titleItem titleDo">操作</span>
+							</li>
+							<li class="listClass" v-for="(item,index) in systemReport" :key="index">
+								<span class="listItem listNum">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
+								<span class="listItem listT">
+									<a href="javascript:void(0)">
+										云南省建设工程主要材料市场价格变动情况{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}
+									</a>
+								</span>
+								<span class="listItem listTime">{{item.createTime?item.createTime.split('T')[0]:''}}</span>
+								<span class="listItem listDo"><a href="javascript:void(0)">查看报告></a></span>	
+							</li>
+						</ul>
+						<div class="noData" :style="noImg">
+							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
+							<p class="noDatap1">暂时没有找到</p>
+							<p class="noDatap2">不要着急，要不再试试~</p>
+						</div>
+						<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" layout="prev, pager, next" 
+						class="reportPage" @current-change="get_data1">
+						</el-pagination>
 					</div>
-					<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" layout="prev, pager, next" 
-					class="reportPage" @current-change="get_data2">
-					</el-pagination>
+					<!-- 自定义报告(列表视图) -->
+					<div :class="bigType == 1?'customVis':''">
+						<el-badge value="new"><p class="reporTypeTitle">自定义报告</p></el-badge>
+						<div :class="bigType == 2?'newRe':'newRe1'">新建智能报告</div>
+						<ul class="listUl">
+							<li class="lisTitle">
+								<span class="titleItem titleNum_custom">编号</span>
+								<span class="titleItem titleT_custom">报告标题</span>
+								<span class="titleItem titleType_custom">类型</span>
+								<span class="titleItem titleTime_custom">创建时间</span>
+								<span class="titleItem titleDo_custom">操作</span>
+							</li>
+							<li class="listClass" v-for="(item,index) in customReport" :key="index">
+								<span class="listItem listNum_custom">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
+								<span class="listItem listT_custom">
+									<a href="javascript:void(0)">
+										{{item.title?item.title.substr(0,25)+'...':'-'}}
+									</a>
+								</span>
+								<span class="listItem listType_custom" v-if="item.dataType == 1">月度</span>
+								<span class="listItem listType_custom1" v-else-if="item.dataType == 2">季度</span>
+								<span class="listItem listType_custom2" v-else>年度</span>
+								<span class="listItem listTime_custom">{{item.createTime?item.createTime.split('T')[0]:'-'}}</span>
+								<span class="listItem listDo_custom">
+									<a href="javascript:void(0)" class="toDetail">查看报告</a>
+									<a href="javascript:void(0)" class="deleteRe" @click="deleteRe(item.id)">删除</a>
+									</span>	
+							</li>
+						</ul>
+						<div class="noData" :style="noImgCustom">
+							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
+							<p class="noDatap1">暂时没有找到</p>
+							<p class="noDatap2">不要着急，要不再试试~</p>
+						</div>
+						<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" layout="prev, pager, next" 
+						class="reportPage" @current-change="get_data2">
+						</el-pagination>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -138,6 +150,8 @@
 export default {
 	data() {
 		return {
+			bigType:0,
+			navigiOn:'全部报告',
 			// type切换网格视图或列表视图
 			type:0,
 			token:this.$store.state.login.token,
@@ -291,6 +305,18 @@ export default {
     //   this.restaurants = this.loadAll();
     },
 	methods:{
+		toggleBig:function(aa){
+			if(aa == 0){
+				this.bigType = 0
+				this.navigiOn = '全部报告'
+			}else if(aa == 1){
+				this.bigType = 1
+				this.navigiOn = '月度智能报告'
+			}else{
+				this.bigType = 2
+				this.navigiOn = '自定义报告'
+			}
+		},
 		choose:function(status){
 			if(status == 0){
 				this.type = 0
@@ -359,6 +385,14 @@ export default {
 					this.customReport= []
 					this.totalPage2 = 0
 				}
+			})
+		},
+		deleteRe(dd){
+			var data9 = {
+				id:dd
+			}
+			this.$api.delete_report(data9).then(v => {
+				console.log(v)
 			})
 		},
 		toDetail(aa){
@@ -506,8 +540,95 @@ export default {
 <style lang="stylus" scoped>
 .intellReport
 	width 100%
-	position relative
+	height 100%
+	overflow auto
+	// border 1px red solid
+	display flex
+	flex-direction row
+	flex-wrap wrap
+	justify-content flex-start
+	// position relative
+	// z-index -1
+.inteLeft
+	width 200px
+	height 100%
+	background-color #fff
 
+.all
+	width 100%
+	height 58px
+	background url(../../../public/img/report/all_grey.png) no-repeat 15px 15px
+	padding-left 46px
+	box-sizing border-box
+	margin-bottom 10px
+	font-size 16px
+	font-weight bold
+	color #8E9099
+	line-height 58px
+
+.allOn
+	background url(../../../public/img/report/all_white.png) no-repeat 15px 15px,linear-gradient(-90deg,rgba(97,224,255,1) 0%,rgba(100,57,248,1) 100%) 
+	color white
+
+.all:hover
+	background #F5F6FE url(../../../public/img/report/all_black.png) no-repeat 15px 15px
+	color #2C2D33
+
+.allOn:hover
+	background url(../../../public/img/report/all_white.png) no-repeat 15px 15px,linear-gradient(-90deg,rgba(97,224,255,1) 0%,rgba(100,57,248,1) 100%) 
+	color white
+
+.month
+	width 100%
+	height 58px
+	background url(../../../public/img/report/month_grey.png) no-repeat 15px 15px
+	padding-left 46px
+	box-sizing border-box
+	margin-bottom 10px
+	font-size 16px
+	font-weight bold
+	color #8E9099
+	line-height 58px
+
+.month:hover
+	background #F5F6FE url(../../../public/img/report/month_black.png) no-repeat 15px 15px
+	color #2C2D33
+
+.monthOn
+	background url(../../../public/img/report/month_white.png) no-repeat 15px 15px,linear-gradient(-90deg,rgba(97,224,255,1) 0%,rgba(100,57,248,1) 100%) 
+	color white
+
+.monthOn:hover
+	background url(../../../public/img/report/month_white.png) no-repeat 15px 15px,linear-gradient(-90deg,rgba(97,224,255,1) 0%,rgba(100,57,248,1) 100%) 
+	color white
+
+.custom
+	width 100%
+	height 58px
+	background url(../../../public/img/report/custom_grey.png) no-repeat 15px 15px
+	padding-left 46px
+	box-sizing border-box
+	margin-bottom 10px
+	font-size 16px
+	font-weight bold
+	color #8E9099
+	line-height 58px
+
+.custom:hover
+	background #F5F6FE url(../../../public/img/report/custom_black.png) no-repeat 15px 15px
+	color #2C2D33
+
+.customOn
+	background url(../../../public/img/report/custom_white.png) no-repeat 15px 15px,linear-gradient(-90deg,rgba(97,224,255,1) 0%,rgba(100,57,248,1) 100%) 
+	color white
+
+.customOn:hover
+	background url(../../../public/img/report/custom_white.png) no-repeat 15px 15px,linear-gradient(-90deg,rgba(97,224,255,1) 0%,rgba(100,57,248,1) 100%) 
+	color white
+	
+
+.inteRight
+	width calc(100% - 200px)
 .search
 	width 460px
 	height 38px
@@ -528,7 +649,6 @@ export default {
 
 .reportContent
 	width 100%
-	height 100%
 	padding 40px 20px
 	box-sizing border-box
 	font-size 14px
@@ -539,6 +659,26 @@ export default {
 	font-size 20px
 	line-height 20px
 
+.newRe
+	width 154px
+	height 24px
+	// background-color 
+	background #8B78FE url(../../../public/img/report/add.png) no-repeat 10px 
+	border 1px solid #6C56F5
+	border-radius 24px
+	font-size 14px
+	color #fff
+	line-height 24px
+	text-align center
+	position absolute
+	top 182px
+	left 380px
+
+.newRe:hover
+	background-color #9f8ffe
+.newRe1
+	display none
+
 .gridUl
 	padding 20px 10px
 	box-sizing border-box
@@ -546,6 +686,15 @@ export default {
 	flex-direction row
 	flex-wrap wrap
 	justify-content flex-start
+
+.systemVis
+	display none
+
+.customVis
+	display none
+
+.newVis
+	display none
 
 .gridListClass
 	width 208px

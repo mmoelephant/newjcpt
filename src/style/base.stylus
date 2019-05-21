@@ -23,7 +23,7 @@ a
 	// position absolute
 
 .btnClass 
-	width 218px
+	width 240px
 	height 38px
 	background-color #ffffff
 	padding-left 30px
