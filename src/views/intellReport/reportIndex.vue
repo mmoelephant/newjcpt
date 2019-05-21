@@ -1,109 +1,166 @@
 <template>
-	<div v-loading.fullscreen="loading">
+<div v-loading.fullscreen="loading">
 	<router-view v-if='$route.name == "reportDetail"'></router-view>
-    <div class="intellReport" v-else>
-		<div class="reportBtns" >
-			<div :class="type == 0?'btnClass btnActive':'btnClass'" @click="choose(0)"><span :class="type == 0?'dotClass dotActive':'dotClass'"></span>全部报告</div>
-			<div :class="type == 1?'btnClass btnActive':'btnClass'" @click="choose(1)"><span :class="type == 1?'dotClass dotActive':'dotClass'"></span>平台发布</div>
-			<div :class="type == 2?'btnClass btnActive':'btnClass'" @click="choose(2)"><span :class="type == 2?'dotClass dotActive':'dotClass'"></span>我的报告</div>
+	<div class="intellReport" v-else>
+		<div class="reportBtns">
+			<div class="btnClass"><span class="dotClass"></span>智能报告  > <span class="navigiOn">全部报告</span></div>
+			<div class="viewToggle">
+				<span :class="type == 0?'view1 viewActive':'view1'" @click="choose(0)">网格显示</span>
+				<span :class="type == 1?'view2 viewActive':'view2'" @click="choose(1)">列表显示</span>
+			</div>
+			<div class="search">
+				<!-- <el-autocomplete class="searchBox" v-model="state2" :fetch-suggestions="querySearch" placeholder="请输入内容" :trigger-on-focus="false" @select="handleSelect">
+				</el-autocomplete> -->
+			</div>
 		</div>
 		<div class="reportContent">
-			<ul class="reportContentUl">
-				<li :class="type==2?'newReport newReport1':'newReport newReport2'" @click="dialogForm">
-					<p class="newReporTitle">新建智能报告</p>
-				</li>
-				<el-dialog title="新建智能报告" :visible.sync="dialogFormVisible" width="620px">
-					<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-  						<el-form-item label="报告名称" prop="name">
-<<<<<<< HEAD
-								{{ruleForm.name}}
-=======
-  							{{ruleForm.name}}
->>>>>>> 536b50aac3a2af76522fbf15bd130aac49161468
-  						</el-form-item>
-  						<el-form-item label="报告类型" prop="type">
-  							<el-select v-model="ruleForm.type" placeholder="请选择报告类型" @change="changeType" :style="ruleFormClass">
-  								<el-option v-for="item in reType" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
-  							</el-select>
-  						</el-form-item>
-  						<el-form-item label="时间节点" prop="timeInterval">
-<<<<<<< HEAD
-  							<el-select v-model="ruleForm.timeInterval" :placeholder="word" :style="season" @change="changeTime" v-if="ruleForm.type == 2">
-  								<el-option v-for="item in seasons" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
-  							</el-select>
-							<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy-MM' range-separator="至" 
-							:placeholder="word" :start-placeholder="startWord" :end-placeholder="endWord" v-else>
-							</el-date-picker>
-=======
-  							<el-select v-model="ruleForm.timeInterval" :placeholder="word" :style="season" @change="changeTime" v-if='ruleForm.type==2'>
-  								<el-option v-for="item in seasons" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
-  							</el-select>
-								<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy-MM' range-separator="至" 
-								:placeholder="word" v-if='ruleForm.type==1'>
-								</el-date-picker>
-								<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy' 
-								:placeholder="word" v-if='ruleForm.type==3'>
-								</el-date-picker>
->>>>>>> 536b50aac3a2af76522fbf15bd130aac49161468
-  						</el-form-item>
-  						<el-form-item label="材料类型" prop="materialType">
-  							<el-select v-model="ruleForm.materialType" multiple collapse-tags placeholder="请选择材料类型" @change="changeMateri" :style="ruleFormClass">
-  								<el-option v-for="item in material" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
-  							</el-select>
-  						</el-form-item>
-  						<el-form-item label="对比地区" prop="compareRegion">
-  							<el-select v-model="ruleForm.compareRegion" multiple collapse-tags placeholder="请选择对比地区" @change="changeRegion" :style="ruleFormClass">
-  								<el-option v-for="item in regions" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
-  							</el-select>
-  						</el-form-item>
-  						<el-form-item label="添加备注" prop="desc">
-  							<el-input type="textarea" v-model="ruleForm.desc" placeholder="请输入备注，可选填"></el-input>
-  						</el-form-item>
-  						<el-form-item>
-  							<el-button type="primary" @click="submitForm('ruleForm')" class="newNow">立即创建</el-button>
-  							<el-button @click="cancleNewReport('ruleForm')">取消</el-button>
-  						</el-form-item>
-					</el-form>
-				</el-dialog>
-				<li class="reportListClass" v-for="item in reportList" :key="item.id" @click="toDetail(item.id)">
-					<img src="../../../public/img/report/more.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID.indexOf(",") != -1'>
-					<img src="../../../public/img/report/bg_1.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 1'>
-					<img src="../../../public/img/report/bg_3.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 3'>
-					<img src="../../../public/img/report/bg_4.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 4'>
-					<img src="../../../public/img/report/bg_5.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 5'>
-					<img src="../../../public/img/report/bg_6.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 6'>
-					<img src="../../../public/img/report/bg_7.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 7'>
-					<img src="../../../public/img/report/bg_31.png" class="reportIcon" v-if='item.materialClassID&&item.materialClassID== 31'>
-					<div :class="item.mark == 1?'markClass':'markClass markDisplay'">{{}}</div>
-					<div :class="item.type == 1?'reporType':'reporType reporType1'">{{item.type == 1?'平台':'我的'}}</div>
-					<p class="reporTitle">{{item.title}}</p>
-					<p class="reporTime">{{item.createTime?item.createTime.split('T')[0]:''}}</p>
-				</li>
-			</ul>
-			<div class="noData" :style="imgVis">
-				<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-				<p class="noDatap1">暂时没有找到</p>
-				<p class="noDatap2">不要着急，要不再试试~</p>
+			<div class="gridView" :style="viewToggle">
+				<!-- 月度智能报告(网格视图) -->
+				<div>
+					<el-badge value="new" class="item"><p class="reporTypeTitle">月度智能报告</p></el-badge>
+					<ul class="gridUl">
+						<li class="gridListClass" v-for="item in systemReport" :key="item.id">
+							<img src="../../../public/img/report/more.png" class="reportImg" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
+							<img src="../../../public/img/report/single.png" class="reportImg" v-else>
+							<p class="reporTitle">云南省建设工程主要材料市场价格变动情况</p>
+							<p class="reporTime">{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}</p>
+						</li>
+					</ul>
+					<div class="noData" :style="noImg">
+						<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
+						<p class="noDatap1">暂时没有找到</p>
+						<p class="noDatap2">不要着急，要不再试试~</p>
+					</div>
+					<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" layout="prev, pager, next" 
+					class="reportPage" @current-change="get_data1">
+					</el-pagination>
+				</div>
+				<!-- 自定义报告(网格视图) -->
+				<div>
+					<el-badge value="new" class="item"><p class="reporTypeTitle">自定义报告</p></el-badge>
+					<ul class="gridUl">
+						<li class="gridListClass" v-for="item in customReport" :key="item.id">
+							<img src="../../../public/img/report/more1.png" class="reportIcon" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
+							<img src="../../../public/img/report/single1.png" class="reportIcon" v-else>
+							<div :class="item.materialClassID&&item.materialClassID.indexOf(',') != -1?'reportMateri':'reportMateri reportMateri1'">
+								{{item.materialClassID&&item.materialClassID.indexOf(',') != -1?item.materialName:'单材料-' + item.materialName}}
+							</div>
+							<div class="reporType" v-if="item.dataType == 1">月报</div>
+							<div class="reporType1" v-else-if="item.dataType == 2">季报</div>
+							<div class="reporType2" v-else>年报</div>
+							<a href="javascript:void(0)"><img src="../../../public/img/report/delete.png" class="deleteIcon"></a>
+							<p class="reportarea">{{item.areaName}}</p>
+							<p class="reporTitle1">{{item.title}}</p>
+							<p class="reporTime">{{item.createTime?item.createTime.split('T')[0]:''}}</p>
+						</li>
+					</ul>
+					<div class="noData" :style="noImgCustom">
+						<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
+						<p class="noDatap1">暂时没有找到</p>
+						<p class="noDatap2">不要着急，要不再试试~</p>
+					</div>
+					<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" layout="prev, pager, next" 
+					class="reportPage" @current-change="get_data2">
+					</el-pagination>
+				</div>
 			</div>
-			<el-pagination :page-size="pageSize" :total="elPageNum" :pager-count="5" :current-page="pageNum" :hide-on-single-page="true" layout="prev, pager, next"  class="reportPage" @current-change="get_data">
-      </el-pagination>
+			<div class="listView" :style="viewToggle1">
+				<!-- 月度智能报告(列表视图) -->
+				<div>
+					<el-badge value="new" class="item"><p class="reporTypeTitle">月度智能报告</p></el-badge>
+					<ul class="listUl">
+						<li class="lisTitle">
+							<span class="titleItem titleNum">编号</span>
+							<span class="titleItem titleT">报告标题</span>
+							<span class="titleItem titleTime">创建时间</span>
+							<span class="titleItem titleDo">操作</span>
+						</li>
+						<li class="listClass" v-for="(item,index) in systemReport" :key="index">
+							<span class="listItem listNum">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
+							<span class="listItem listT">
+								<a href="javascript:void(0)">
+									云南省建设工程主要材料市场价格变动情况{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}
+								</a>
+							</span>
+							<span class="listItem listTime">{{item.createTime?item.createTime.split('T')[0]:''}}</span>
+							<span class="listItem listDo"><a href="javascript:void(0)">查看报告></a></span>	
+						</li>
+					</ul>
+					<div class="noData" :style="noImg">
+						<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
+						<p class="noDatap1">暂时没有找到</p>
+						<p class="noDatap2">不要着急，要不再试试~</p>
+					</div>
+					<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" layout="prev, pager, next" 
+					class="reportPage" @current-change="get_data1">
+					</el-pagination>
+				</div>
+				<!-- 自定义报告(列表视图) -->
+				<div>
+					<el-badge value="new" class="item"><p class="reporTypeTitle">自定义报告</p></el-badge>
+					<ul class="listUl">
+						<li class="lisTitle">
+							<span class="titleItem titleNum_custom">编号</span>
+							<span class="titleItem titleT_custom">报告标题</span>
+							<span class="titleItem titleType_custom">类型</span>
+							<span class="titleItem titleTime_custom">创建时间</span>
+							<span class="titleItem titleDo_custom">操作</span>
+						</li>
+						<li class="listClass" v-for="(item,index) in customReport" :key="index">
+							<span class="listItem listNum_custom">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
+							<span class="listItem listT_custom">
+								<a href="javascript:void(0)">
+									{{item.title?item.title.substr(0,25)+'...':'-'}}
+								</a>
+							</span>
+							<span class="listItem listType_custom" v-if="item.dataType == 1">月度</span>
+							<span class="listItem listType_custom1" v-else-if="item.dataType == 2">季度</span>
+							<span class="listItem listType_custom2" v-else>年度</span>
+							<span class="listItem listTime_custom">{{item.createTime?item.createTime.split('T')[0]:'-'}}</span>
+							<span class="listItem listDo_custom"><a href="javascript:void(0)" class="toDetail">查看报告</a><a href="javascript:void(0)" class="deleteRe">删除</a></span>	
+						</li>
+					</ul>
+					<div class="noData" :style="noImgCustom">
+						<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
+						<p class="noDatap1">暂时没有找到</p>
+						<p class="noDatap2">不要着急，要不再试试~</p>
+					</div>
+					<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" layout="prev, pager, next" 
+					class="reportPage" @current-change="get_data2">
+					</el-pagination>
+				</div>
+			</div>
 		</div>
     </div>
-	</div>
+</div>
 </template>
 <script>
 export default {
 	data() {
 		return {
-			reportList:[],
-			reportIconn:'',
-			// type的值为是全部报告还是平台报告或者其他
+			// type切换网格视图或列表视图
 			type:0,
-			pageNum:1,
-			pageSize:13,
 			token:this.$store.state.login.token,
-			elPageNum:13,
-			imgVis:{
+			state2:'',
+			viewToggle:{
+				display:'block'
+			},
+			viewToggle1:{
+				display:'none'
+			},
+			systemReport:[],
+			customReport:[],
+			// reportIconn:'',
+			pageNum1:1,
+			pageSize1:14,
+			totalPage1:14,
+			pageNum2:1,
+			pageSize2:14,
+			totalPage2:14,
+			noImg:{
+				display:'none'
+			},
+			noImgCustom:{
 				display:'none'
 			},
 			dialogFormVisible: false,
@@ -146,12 +203,6 @@ export default {
 				width:'260px'
 			},
 			rules: {
-<<<<<<< HEAD
-				name: [
-					{required: true, message: '必须有报告内容'},
-				],
-=======
->>>>>>> 536b50aac3a2af76522fbf15bd130aac49161468
 				type: [
 					{required: true, message: '请选择报告类型', trigger: 'change'}
 				],
@@ -173,20 +224,60 @@ export default {
 	},
 	created(){
 		var data1 = {
-			pageNum:this.pageNum,
-			pageSize:this.pageSize,
-			token:this.token
+			pageNum:this.pageNum1,
+			pageSize:this.pageSize1,
+			token:this.token,
+			type:1,
+			dataType:1
 		}
+		var data2 = {
+			pageNum:this.pageNum2,
+			pageSize:this.pageSize2,
+			token:this.token,
+			type:2
+		}
+		// var data7 = {
+
+		// }
+		// 获取全部报告
+		// this.$api.get_reports(data1).then(v => {
+		// 	this.loading = false
+		// 	if(v.data.count != null){
+		// 		console.log(v.data.count)
+		// 		this.noImg.display = 'none'
+		// 		this.systemReport = v.data.list
+		// 		this.totalPage1 = v.data.count
+		// 	}else{
+		// 		this.noImg.display = 'block'
+		// 		this.systemReport = []
+		// 		this.totalPage1 = 0
+		// 	}
+		// })		
+		// 获取平台报告
 		this.$api.get_reports(data1).then(v => {
 			this.loading = false
 			if(v.data.count != null){
-				this.imgVis.display = 'none'
-				this.reportList = v.data.list
-				this.elPageNum = v.data.count
+				console.log(v.data.count)
+				this.noImg.display = 'none'
+				this.systemReport = v.data.list
+				this.totalPage1 = v.data.count
 			}else{
-				this.imgVis.display = 'block'
-				this.reportList = []
-				this.elPageNum = 0
+				this.noImg.display = 'block'
+				this.systemReport = []
+				this.totalPage1 = 0
+			}
+		})
+		// 获取自定义报告
+		this.$api.get_reports(data2).then(v => {
+			this.loading = false
+			if(v.data.count != null){
+				this.noImgCustom.display = 'none'
+				this.customReport = v.data.list
+				this.totalPage2 = v.data.count
+			}else{
+				this.noImgCustom.display = 'block'
+				this.customReport = []
+				this.totalPage2 = 0
 			}
 		})
 		this.$api.get_area().then(res => {
@@ -196,141 +287,79 @@ export default {
 			this.material = res.data
 		})
 	},
+	mounted() {
+    //   this.restaurants = this.loadAll();
+    },
 	methods:{
 		choose:function(status){
-			if(status == 0) {
-				//先重置pageNum 再获取全部的报告列表
-				this.pageNum = 1
+			if(status == 0){
 				this.type = 0
-				this.reportList = []
-				this.loading = true
-				var data2 = {
-					pageNum:this.pageNum,
-					pageSize:this.pageSize,
-					token:this.token
-				}
-				this.$api.get_reports(data2).then(v => {
-					this.loading = false
-					if(v.data.count != null){
-						this.imgVis.display = 'none'
-						this.reportList = v.data.list
-						this.elPageNum = v.data.count				
-					}else{
-						this.imgVis.display = 'block'
-						this.reportList = []
-						this.elPageNum = 0
-					}
-				})
-			} else if(status == 1) {
-				// 获取平台报告
-				this.pageNum = 1
+				this.viewToggle.display = 'block'
+				this.viewToggle1.display = 'none'
+			}else{
 				this.type = 1
-				this.reportList = []
-				this.loading = true
-				var data3 = {
-					pageNum:this.pageNum,
-					pageSize:this.pageSize,
-					type:this.type
-				}
-				this.$api.get_reports(data3).then(v => {
-					this.loading = false
-					if(v.data.count != null){
-						this.imgVis.display = 'none'
-						this.reportList = v.data.list
-						this.elPageNum = v.data.count						
-					}else{
-						this.imgVis.display = 'block'
-						this.reportList = []
-						this.elPageNum = 0
-					}
-				})
-
-			} else {
-				//获取我的报告
-				this.pageNum = 1
-				this.type = 2
-				this.reportList = []
-				this.loading = true
-				var data4 = {
-					pageNum:this.pageNum,
-					pageSize:this.pageSize,
-					token:this.token,
-					type:this.type
-				}
-				this.$api.get_reports(data4).then(v => {
-					this.loading = false
-					if(v.data.count != null){
-						this.imgVis.display = 'none'
-						this.reportList = v.data.list
-						this.elPageNum = v.data.count		
-					}else{
-						this.imgVis.display = 'none'
-						this.reportList = []
-						this.elPageNum = 0
-					}
-				})
+				this.viewToggle.display = 'none'
+				this.viewToggle1.display = 'block'
 			}
 		},
-		get_data(val) {
-			this.pageNum = val
+		// querySearch(queryString, cb) {
+		// 	var reports = this.systemReport
+		// 	var results = queryString ? reports.filter(this.createFilter(queryString)) : reports
+		// 	// 调用 callback 返回建议列表的数据
+		// 	cb(results)
+		// },
+		// createFilter(queryString) {
+		// 	return (restaurant) => {
+		// 		return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+		// 	}
+		// },
+		// handleSelect(item) {
+		// 	console.log(item)
+		// },
+		get_data1(val) {
+			this.pageNum1 = val
 			var data5 = {
 				pageNum:val,
-				pageSize: this.pageSize,
-				token:this.token
-			}
-			var data6 = {
-				pageNum:val,
-				pageSize:this.pageSize,
-				type:this.type
-			}
-			var data7 = {
-				pageNum:val,
-				pageSize:this.pageSize,
+				pageSize: this.pageSize1,
 				token:this.token,
-				type:this.type
+				type:1,
+				dataType:1
 			}
 			this.loading = true
-			//请求, 赋值reportList，因为需要有默认列表
-			if(this.type == 0){
-				this.$api.get_reports(data5).then(v => {
-					this.loading = false
-					if(v.data.count != null){
-						this.imgVis.display = 'none'
-						this.reportList = v.data.list
-						this.elPageNum = v.data.count
-					}else{
-						this.imgVis.display = 'block'
-						this.reportList = []
-						this.elPageNum = 0
-					}
-				})
-			}else if(this.type == 1){
-				this.$api.get_reports(data6).then(v => {
-					this.loading = false
-					if(v.data.count != null){
-						this.imgVis.display = 'none'
-						this.reportList = v.data.list
-						this.elPageNum = v.data.count
-					}else{
-						this.imgVis.display = 'block'
-						this.reportList = []
-						this.elPageNum = 0
-					}
-				})
-			}else{
-				this.$api.get_reports(data7).then(v => {
-					this.loading = false
-					if(v.data.count != null){
-						this.imgVis.display = 'none'
-						this.reportList = v.data.list
-						this.elPageNum = v.data.count
-					}else{
-						this.imgVis.display = 'block'
-						this.reportList = []
-						this.elPageNum = 0
-					}
-				})
+			this.$api.get_reports(data5).then(v => {
+				this.loading = false
+				if(v.data.count != null){
+					this.noImg.display = 'none'
+					this.systemReport = v.data.list
+					this.totalPage1 = v.data.count
+				}else{
+					this.noImg.display = 'block'
+					this.systemReport = []
+					this.totalPage1 = 0
+				}
+			})
+		},
+		get_data2(val){
+			this.pageNum2 = val
+			var data6 = {
+				pageNum:val,
+				pageSize:this.pageSize2,
+				token:this.token,
+				type:2
 			}
+			this.loading = true
+			this.$api.get_reports(data6).then(v => {
+				this.loading = false
+				if(v.data.count != null){
+					this.noImgCustom.display = 'none'
+					this.customReport = v.data.list
+					this.totalPage2 = v.data.count
+				}else{
+					this.noImgCustom.display = 'block'
+					this.customReport= []
+					this.totalPage2 = 0
+				}
+			})
 		},
 		toDetail(aa){
 			this.$router.push({name:'reportDetail',query:{id:aa}})
@@ -479,23 +508,47 @@ export default {
 	width 100%
 	position relative
 
+.search
+	width 460px
+	height 38px
+	background-color #fff
+	border-radius 8px
+	margin-left 150px
+
+
+.searchBox
+	width calc(100% - 58px)
+	border-radius 8px 0 0 8px
+	border-radius none
+.el-input__inner
+	border 1px red solid
+		// border 0 none
+		// border-bottom 1px solid #ccc
+		// border-radius 0px
+
 .reportContent
 	width 100%
 	height 100%
-	padding 20px 40px
-	margin-top 20px
+	padding 40px 20px
+	box-sizing border-box
 	font-size 14px
 	color rgba(51,51,51,1)
 	line-height 14px
 
-.reportContentUl
+.reporTypeTitle
+	font-size 20px
+	line-height 20px
+
+.gridUl
+	padding 20px 10px
+	box-sizing border-box
 	display flex
 	flex-direction row
 	flex-wrap wrap
 	justify-content flex-start
 
-.reportListClass
-	width 200px
+.gridListClass
+	width 208px
 	height 240px
 	background-color #ffffff
 	border-radius 8px
@@ -504,16 +557,314 @@ export default {
 	margin-bottom 20px
 	position relative
 	transition margin-top 0.2s
+	font-size 12px
+	color #fff
+	line-height 12px
 
-.reportListClass:hover
+.gridListClass:hover
 	background-color #E8EBF9
 	margin-top -10px
 
-.reportIcon
-	position absolute
-	top 44px
-	left 60px
+.gridListClass:hover .deleteIcon
 	display block
+.reportImg
+	width 100px
+	height 100px
+	display block
+	position absolute
+	top 30px
+	left 50%
+	margin-left -50px
+
+.reportIcon
+	width 100px
+	height 100px
+	display block
+	position absolute
+	top 40px
+	left 50%
+	margin-left -50px
+
+.deleteIcon
+	position absolute
+	right 10px
+	top 10px
+	width 20px
+	height 20px
+	display none
+
+.reportMateri
+	position absolute
+	left 10px
+	bottom 65px
+	max-width 170px
+	background-color #2B94FE
+	padding 0 6px
+	border-radius 4px
+	box-sizing border-box
+	line-height 18px
+	white-space nowrap
+	text-overflow ellipsis
+	overflow hidden
+
+.reportMateri1
+	background-color #FEAC2B!important
+
+.reporType
+	position absolute 
+	left 10px
+	top 10px
+	width 46px
+	height 18px
+	background #F83B5F
+	border 1px solid #D9193D
+	border-radius 9px
+	line-height 18px
+	text-align center
+
+.reporType1
+	position absolute 
+	left 10px
+	top 10px
+	width 46px
+	height 18px
+	background #643BF8
+	border 1px solid #4B22E0
+	border-radius 9px
+	line-height 18px
+	text-align center
+	
+.reporType2
+	position absolute 
+	left 10px
+	top 10px
+	width 46px
+	height 18px
+	background #52B4FF
+	border 1px solid #1184DC
+	border-radius 9px
+	line-height 18px
+	text-align center
+
+.reportarea
+	position absolute
+	right 10px
+	bottom 16px
+	width 70px
+	height 12px
+	color #8E9099
+	text-align right
+	overflow hidden
+	text-overflow: ellipsis
+	white-space nowrap
+
+.reporTitle
+	position absolute
+	left 0
+	bottom 47px
+	width 100%
+	height 40px
+	padding 0 14px 0 10px
+	box-sizing border-box
+	font-size 14px
+	color #333
+	line-height 20px
+	overflow hidden
+	text-overflow: ellipsis
+
+.reporTitle1
+	position absolute
+	left 0
+	bottom 40px
+	width 100%
+	height 14px
+	padding 0 14px 0 10px
+	box-sizing border-box
+	font-size 14px
+	color #333
+	line-height 14px
+	overflow hidden
+	text-overflow: ellipsis
+	white-space nowrap
+
+.reporTime
+	position absolute
+	left 0
+	bottom 16px
+	width 100%
+	height 14px
+	padding 0 14px 0 10px
+	box-sizing border-box
+	color #999999
+	overflow hidden
+	text-overflow: ellipsis
+	white-space nowrap
+
+.reportPage
+	padding 0
+	padding-right 80px
+	box-sizing border-box
+	margin-bottom 50px
+	text-align right
+
+.listUl
+	padding 20px 10px
+	box-sizing border-box
+	display flex
+	flex-direction column
+	flex-wrap wrap
+	justify-content flex-start
+	font-size 14px
+	text-align center
+
+.lisTitle
+	width 100%
+	height 36px
+	background-color #fff
+	border-radius 8px
+	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+	margin-bottom 10px
+	color #5C5D62
+	line-height 36px
+	display flex
+	flex-direction row
+	flex-wrap nowrap
+	justify-content flex-start
+
+.titleItem
+	display inline-block
+
+.titleNum
+	width 10%
+.titleT
+	width 45%
+.titleTime
+	width 35%
+.titleDo
+	width 10%
+
+.titleNum_custom
+	width 10%
+.titleT_custom
+	width 40%
+
+.titleType_custom
+	width 10%
+.titleTime_custom
+	width 24%
+.titleDo_custom
+	width 16%
+
+.listClass
+	width 100%
+	height 48px
+	background-color #fff
+	border-radius 8px
+	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+	margin-bottom 20px
+	line-height 48px
+	display flex
+	flex-direction row
+	flex-wrap nowrap
+	justify-content flex-start
+	transition background-color 0.1s
+
+.listClass:hover
+	background-color #D3D8F4
+
+.listItem
+	display inline-block
+	padding 0 6px
+	white-space nowrap
+	text-overflow ellipsis
+	overflow hidden
+
+.listNum
+	width 10%
+	color #8E9099
+.listT
+	width 45%
+	color #2C2D33
+	a
+		color #2c2d33
+	a:hover
+		color #7f94ff
+
+.listTime
+	width 35%
+	color #8E9099
+.listDo
+	width 10%
+	color #454EFF
+	a
+		color #454EFF
+	a:hover
+		color #7f94ff
+
+.listNum_custom
+	width 10%
+	color #8E9099
+.listT_custom
+	width 40%
+	color #2C2D33
+	a
+		color #2c2d33
+	a:hover
+		color #7f94ff
+
+.listType_custom
+	width 10%
+	color #F83B5F
+.listType_custom1
+	width 10%
+	color #643BF8
+.listType_custom2
+	width 10%
+	color #52B4FF
+
+.listTime_custom
+	width 24%
+	color #8E9099
+
+.listDo_custom
+	width 16%
+	color #454EFF
+	// border 1px red solid
+	a
+		padding 0 20px
+		// border 1px red solid
+.toDetail
+	border-right 1px solid #8E9099
+	box-sizing border-box
+	color #454EFF
+.toDetail:hover
+	color #7f94ff
+
+.deleteRe
+	color #FF7437
+.deleteRe:hover
+	color #fc9d74
+
+
+.noData
+	margin-bottom 50px
+	font-size 20px
+	line-height 20px
+	text-align center
+
+.noDatap2
+	margin-top 10px
+	font-size 14px
+	color #ccc
+	line-height 14px
+
+.noDataImg
+	width 200px
+	height 249px
+	display block
+	margin 0 auto
+	margin-top 50px
+	margin-bottom 10px
 
 .newReporTitle
 	position absolute
@@ -588,74 +939,9 @@ export default {
 .markDisplay
 	display none
 
-.reporType
-	position absolute
-	left 10px
-	bottom 65px
-	width 34px
-	height 16px
-	background-color #A037F8
-	border-radius 4px
-	font-size 12px
-	color #ffffff
-	line-height 16px
-	text-align center
 
-.reporType1
-	background-color #F8374E!important
 
-.reporTitle
-	position absolute
-	left 0
-	bottom 40px
-	width 100%
-	height 14px
-	overflow hidden
-	padding 0 14px 0 10px
-	box-sizing border-box
-	text-overflow: ellipsis
-	white-space nowrap
-.reporTime
-	position absolute
-	left 0
-	bottom 20px
-	width 100%
-	height 14px
-	padding 0 14px 0 10px
-	box-sizing border-box
-	font-size 12px
-	color #999999
-	overflow hidden
-	text-overflow: ellipsis
-	white-space nowrap
 
-.noData
-	font-size 20px
-	line-height 20px
-	text-align center
-
-.noDatap2
-	margin-top 10px
-	font-size 14px
-	color #ccc
-	line-height 14px
-.noDataImg
-	display block
-	margin 0 auto
-	margin-top 100px
-	margin-bottom 10px
-
-.reportPage
-	// border 1px red solid
-	padding 0!important
-	border-radius 8px
-	box-sizing border-box
-	margin-top 30px
-	margin-right 160px
-	text-align right
-
-// .createBtn
-// 	background-color #8B78FE
 </style>
 
 

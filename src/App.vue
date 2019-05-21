@@ -1,5 +1,5 @@
 <template>
-	<div id="app">
+	<div id="app" v-title data-title="云南省建设工程材料及设备价格监测系统">
 		<el-container class="el-container">
             <el-header class='header'>
                 <div class='left'>
@@ -25,7 +25,7 @@
                         background-color="#fff"
                         text-color="#8E9099"
                         router>
-                        <el-menu-item  :index="item.router" v-for='(item, index) in navList' :key='index'>
+                        <el-menu-item :index="item.router" v-for='(item, index) in navList' :key='index'>
                             <i :class="'iconfont navicon' + ' ' + item.icon" :style='item.icon=="icon-dingyue"?"font-size:20px;":""'></i>
                             <template slot="title" >
                                 <span style='margin-right:48px'>{{item.name}}</span>

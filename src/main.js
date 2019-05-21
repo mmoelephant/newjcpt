@@ -17,6 +17,12 @@ Vue.prototype.$api = api
 
 Vue.config.productionTip = false
 
+Vue.directive('title', {
+  inserted: function (el, binding) {
+    document.title = el.dataset.title
+  }
+})
+
 new Vue({
   router,
   store,
