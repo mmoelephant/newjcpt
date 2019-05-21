@@ -5,6 +5,18 @@
                 <div class='left'>
                     <img src='../public/img/loginlogo.png'>
                     <p>云南省建设工程材料及设备价格监测系统</p>
+					<div class='nav'>
+						<div :class='$route.path == "/ref"?"act":""' @click='$router.push("/ref")'>
+							<img src='../public/img/数据灰色.png' v-if='$route.path == "ref"'/>
+							<img src="../public/img/数据选中.png" alt="" v-else>
+							<p>数据查询</p>
+						</div>
+						<div :class='$route.path == "/reportIndex"?"act":""' @click='$router.push("/reportIndex")'>
+							<img v-if='$route.path == "reportIndex"'/>
+							<img src="" alt="" v-else>
+							<p>智能报告</p>
+						</div>
+					</div>
                 </div>
                 <div class='right'>
                     <p @click='$router.push("/")'>回到首页</p>
@@ -12,6 +24,7 @@
                     <p class='blue' @click='logout'>{{token&&token.length>0?'退出登录':'登录'}}</p>
                 </div>
             </el-header>
+<<<<<<< HEAD
             <el-container style='height:100%;'>
                 <el-aside width="200px" class='side'>
 					<div class='userinfo'>
@@ -38,6 +51,12 @@
                 <el-main class='main'>
                     <router-view ></router-view>
                 </el-main>
+=======
+            <el-container style='height:100%;flex-direction:column'>
+				<router-view></router-view>
+				<p class='ba'>云南省建设工程材料及设备价格监测系统</p>
+				<p class='ba'>滇公网安备 5301110011230  备案编号：滇ICP备16100321号  Copyright 2018-2019 版</p>
+>>>>>>> 42a109aef05b40ee76076e6ac3fa1bc61b41b037
             </el-container>
         </el-container>
 	</div>
@@ -63,11 +82,12 @@ export default {
                     name: '智能报告',
                     icon: 'icon-baogaoshoucang',
                     router: '/reportIndex'
-                }, {
-                    name: '数据订阅',
-                    icon: 'icon-dingyue',
-                    router: '/dataIndex'
 				}, 
+				// {
+                //     name: '数据订阅',
+                //     icon: 'icon-dingyue',
+                //     router: '/dataIndex'
+				// }, 
 				// {
                 //     name: '帮助中心',
                 //     icon: 'icon-bangzhu',
@@ -89,6 +109,9 @@ export default {
 		},
 		token() {
 			return this.$store.state.login.token
+		},
+		route() {
+			return this.$route.path
 		}
 	},
 	watch: {
@@ -97,6 +120,9 @@ export default {
 				console.log(val)
 			},
 			deep:true
+		},
+		route(val) {
+			console.log(val)
 		}
 	},
 	created() {
@@ -142,14 +168,17 @@ export default {
 		display flex
 		justify-content space-between
 		align-items center
-		padding 17px 80px !important
+		padding 0 80px !important
 		background #fff
-		height 68px !important
-		line-height 68px !important
+		height 78px !important
 		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.1)
+		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.1)
+		position relative
+		z-index 999
 		.left 
 			display flex
 			align-items center
+			height 100%
 			img 
 				height 34px
 				margin-right 6px
@@ -157,6 +186,31 @@ export default {
 				font-size 18px
 				font-weight bold
 				color font-color-black
+			.nav
+				display flex
+				align-items center
+				height 100%
+				margin-left 105px
+				div
+					text-align center
+					width 100px
+					height 100%
+					border-bottom 2px solid #fff
+					box-sizing border-box
+					padding 15px 0 10px 0
+					cursor pointer
+				img 
+					width 32px
+					margin 0
+				p
+					font-size 14px
+					font-weight 400
+					color #8E9099
+				.act
+					background #F6F7FE
+					border-bottom 2px solid #635EF9
+					p 
+						color #635EF9
 		.right 
 			display flex
 			align-items center
@@ -173,58 +227,15 @@ export default {
 				margin 0 16px
 			.blue 
 				color #7F94FF
-	.side
-		background-color #fff
-		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
-		height 100%
-	.userinfo
-		display flex
-		flex-direction column
-		align-items center
-		background #fff
-		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
-		padding-top 52px
-		img 
-			width 100px
-			height 100px
-			border-radius 50%
-		h1 
-			color font-color-dark
-			font-size 20px
-			margin-top 20px
-		p 
-			color font-color-grey
-			font-size 12px
-			margin-bottom 55px
-	.el-menu
-		border none !important
-		.iconfont
-			font-size 22px 
-			margin-right 15px
-		.el-menu-item
-			font-size 16px !important
-		.el-menu-item.is-active 
-			color #fff
-			background -webkit-linear-gradient(right,#61e0ff,#6439f8) /* Safari 5.1-6.0 */
-			background -o-linear-gradient(left,#61e0ff,#6439f8) /* Opera 11.1-12.0 */ 
-			background -moz-linear-gradient(left,#61e0ff,#6439f8) /* Firefox 3.6-15 */
-			background linear-gradient(to left,#61e0ff,#6439f8) /* 标准语法 */
-		.el-menu-item:hover 
-			background #B7BFFF !important
-			color #fff!important
-			.iconfont 
-				color #fff
-		.el-menu-item.is-active:hover 
-			background -webkit-linear-gradient(right,#61e0ff,#6439f8) !important/* Safari 5.1-6.0 */
-			background -o-linear-gradient(left,#61e0ff,#6439f8)!important /* Opera 11.1-12.0 */ 
-			background -moz-linear-gradient(left,#61e0ff,#6439f8)!important /* Firefox 3.6-15 */
-			background linear-gradient(to left,#61e0ff,#6439f8)!important /* 标准语法 */
-			.iconfont 
-				color #fff
-		.arrow
-			font-size 10px
-			color #fff
-	.main
-		padding 0 !important
-		overflow-x hidden !important
+	.ba 
+		width 100%
+		font-size 14px
+		font-family MicrosoftYaHei
+		font-weight 400
+		color #666
+		text-align center
+	.ba+.ba 
+		font-size 12px
+		color #999
+		margin 20px 0 80px 0
 </style>

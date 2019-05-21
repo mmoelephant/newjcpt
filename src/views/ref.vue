@@ -1,46 +1,77 @@
 <template>
     <div style='height:100%' v-loading.fullscreen.lock="loading">
+        <img src="" alt="">
         <div class="reportBtns">
-			<div :class="timetype == 0?'btnClass btnActive':'btnClass'" @click="timetype = 0"><span :class="timetype == 0?'dotClass dotActive':'dotClass'"></span>月度数据</div>
-			<div :class="timetype == 1?'btnClass btnActive':'btnClass'" @click="timetype = 1"><span :class="timetype == 1?'dotClass dotActive':'dotClass'"></span>季度数据</div>
-			<div :class="timetype == 2?'btnClass btnActive':'btnClass'" @click="timetype = 2"><span :class="timetype == 2?'dotClass dotActive':'dotClass'"></span>年度数据</div>
+			<div class='btnClass'>
+                <span class="dotClass"></span>
+                数据查询>
+                <span>各地区材料数据</span>
+            </div>
 		</div>
         <el-container style='height:100%;background:#F6F7FE;padding:20px 20px 40px 20px;box-sizing:border-box'>
             <el-aside width="320px" style='border-radius:4px;background:#fff;' class='cate'>
-                <div class='title'>
-                    <i></i>
-                    材料选择
+                <div :class='t==0?"title acttitle":"title"'  @click='t=0'>
+                    <div>
+                        <p class='c'></p>
+                        <span>各地材料数据</span>
+                    </div>
+                    
+                    <i class='iconfont icon-shang-copy'></i>
+                    
                 </div>
-                <el-tree :data="cateList" :props="defaultProps" @node-click="handleNodeClick" :indent='30'></el-tree>
+                <el-tree 
+                    :data="cateList" :props="defaultProps" @node-click="handleNodeClick" :indent='30'
+                    :style='t==0?"height:auto;transition:.4s;opacity:1":"height:0;background:#000;transition:.4s;opacity:0"'></el-tree>
+                <div :class='t==1?"title acttitle":"title"' @click='t =1'>
+                    <div>
+                        <p class='a'></p>                   
+                        <span>各地材料对比</span>
+                    </div>
+                    <i class='iconfont icon-shang-copy'></i>
+                </div>
+                <el-tree :data="areaList" :props="defaultProps" @node-click="handleNodeClick" :indent='30'
+                    :style='t==1?"height:auto;transition:.4s;opacity:1":"height:0;background:#000;transition:.4s;opacity:0"'></el-tree>
+
             </el-aside>
             <el-container class='charts-main'>
-                <div>
-                    <div class='title'>
-                        <i></i>
-                        详细数据
+                <div class='tooltip'>
+                    <div class='left'>
+                        <h1>云南省各地区材料数据</h1>
+                        <div class='tab'>
+                            <p :class='timetype ==0?"active":""' @click='timetype=0'>
+                                月度数据
+                            </p>
+                            <p :class='timetype ==1?"active":""' @click='timetype=1'>
+                                季度数据
+                            </p>
+                            <p :class='timetype ==2?"active":""' @click='timetype=2'>
+                                年度数据
+                            </p>
+                        </div>
+                        <div class='switch' @click='showcharts = !showcharts'>
+                            显示勾选地区对比图表
+                        </div>
                     </div>
-                    <div class='tooltip'>
-                        <div class='left'>
-                            <div class='tab'>
-                                <p :class='chosed_tab ==0?"active":""' @click='chosed_tab=0'>
-                                    地区对比
-                                </p>
-                                <p :class='chosed_tab ==1?"active":""' @click='chosed_tab=1'>
-                                    材料对比
-                                </p>
-                            </div>
-                            <div class='switch'>
-                                <span>图表</span>
-                                <el-switch
-                                    v-model="showcharts"
-                                    active-color="#7F94FF"
-                                    inactive-color="#E8EBF7">
-                                </el-switch>
-                            </div>
+                    
+                </div>  
+                <div class='table-box'>
+                    <div class='t'>
+                        <div>
+                            <p v-if='t==0'>各地区<span>"{{chosed_cate.name}}"</span>{{timetype==0?"月度":timetype==1?"季度":timetype==2?"年度":""}}数据表
+                                <span v-if='isnext' @click='back'>返回 ></span>
+                            </p>
+                            <p v-if='t==1'><span>"{{chosed_city.name}}"</span>材料价格对比
+                            </p>
+                            <ul>
+                                <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"' v-if='t == 0'>价格</li>
+                                <li :class='chosed_type=="zs"? "ac" :""' @click='chosed_type="zs"'>指数</li>
+                                <li :class='chosed_type=="tb"? "ac" :""' @click='chosed_type="tb"'>同比</li>
+                                <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
+                            </ul>
                         </div>
                         <div class='timer'>
                             <span>时间</span>
-                            <el-select v-model="time" placeholder="请选择" v-show='timetype==0'>
+                            <el-select v-model="time" placeholder="请选择查询时间" v-show='timetype==0'>
                                 <el-option
                                 v-for="item in monthoptions"
                                 :key="item.value"
@@ -48,7 +79,7 @@
                                 :value="item.value">
                                 </el-option>
                             </el-select>
-                            <el-select v-model="time" placeholder="请选择" v-show='timetype==1'>
+                            <el-select v-model="time" placeholder="请选择查询时间" v-show='timetype==1'>
                                 <el-option
                                 v-for="item in seasonoptions"
                                 :key="item.value"
@@ -56,7 +87,7 @@
                                 :value="item.value">
                                 </el-option>
                             </el-select>
-                            <el-select v-model="time" placeholder="请选择" v-show='timetype==2'>
+                            <el-select v-model="time" placeholder="请选择查询时间" v-show='timetype==2'>
                                 <el-option
                                 v-for="item in yearoptions"
                                 :key="item.value"
@@ -65,64 +96,52 @@
                                 </el-option>
                             </el-select>
                         </div>
-                    </div>  
-                    <div class='table-box'>
-                        <div class='t'>
-                            <p v-if='chosed_tab==0'>{{chosed_cate.name}}地区数据表
-                                <span v-if='isnext' @click='back'>返回 ></span>
-                            </p>
-                            <p v-if='chosed_tab==1'>云南省材料价格对比
-                                <span v-if='isnext' @click='back'>返回 ></span>
-                            </p>
-                            <ul>
-                                <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"'>价格</li>
-                                <li :class='chosed_type=="zs"? "ac" :""' @click='chosed_type="zs"'>指数</li>
-                                <li :class='chosed_type=="tb"? "ac" :""' @click='chosed_type="tb"'>同比</li>
-                                <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
-                            </ul>
-                        </div>
-                        <reftable 
-                            style='padding-top:56px'
-                            :tabledata='tabledata' 
-                            :type='chosed_tab' 
-                            :t_type='chosed_type'
-                            @checkList='checkList' 
-                            @choseitem='choseitem'
-                            :isnext='isnext'></reftable>
-                        <page-btn :disablepage="disablepage" @pagechange='pagechange' style='padding-top:20px;float:right'></page-btn>
                     </div>
+                    <reftable 
+                        style='padding-top:56px'
+                        :tabledata='tabledata' 
+                        :type='t' 
+                        :timeType='timetype'
+                        :t_type='chosed_type'
+                        @checkList='checkList' 
+                        @choseitem='choseitem'
+                        :isnext='isnext'></reftable>
+                    <page-btn :disablepage="disablepage" @pagechange='pagechange' style='padding-top:20px;float:right'></page-btn>
                 </div>
-                <div class='ch' v-show ='showcharts'>
-                    <h1>云南省材料价格对比柱状图</h1>
-                    <div class='tool'>
-                        <ul>   
-                            <li @click='change_charts="bar"' :class='change_charts=="bar"?"active":""'>
-                                <i class='iconfont icon-zhuzhuangtu'></i>
-                            </li>
-                            <li @click='change_charts="line"' :class='change_charts=="line"?"active":""'>
-                                <i class='iconfont icon-zhexian'></i>
-                            </li>
-                            <li @click='change_charts="mixin"' :class='change_charts=="mixin"?"active":""'>
-                                <i class='iconfont icon-zhuzhuangzhexian'></i>
-                            </li>
-                        </ul>
-                        <ul>
-                            <li @click='showcharts=false'>
-                                收起图表
-                            </li>
-                            <li @click='saveImg'>
-                                <i class='iconfont icon-xiazai'></i>
-                                下载
-                            </li>
-                        </ul>
-                    </div>
-                    <div id ='main'>
-
-                    </div>
-                </div>
-
             </el-container>
         </el-container>
+        <el-dialog
+            :visible.sync="showcharts"
+            width="60%">
+            <div class='ch' v-show ='showcharts'>
+                <h1>云南省材料价格对比柱状图</h1>
+                <div class='tool'>
+                    <ul>   
+                        <li @click='change_charts="bar"' :class='change_charts=="bar"?"active":""'>
+                            <i class='iconfont icon-zhuzhuangtu'></i>
+                        </li>
+                        <li @click='change_charts="line"' :class='change_charts=="line"?"active":""'>
+                            <i class='iconfont icon-zhexian'></i>
+                        </li>
+                        <li @click='change_charts="mixin"' :class='change_charts=="mixin"?"active":""'>
+                            <i class='iconfont icon-zhuzhuangzhexian'></i>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li @click='showcharts=false'>
+                            收起图表
+                        </li>
+                        <li @click='saveImg'>
+                            <i class='iconfont icon-xiazai'></i>
+                            下载
+                        </li>
+                    </ul>
+                </div>
+                <div id ='main'>
+
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -132,36 +151,66 @@ import pageBtn from '../components/page-btn'
 export default {
     data() {
         return {
+            t:0,//0 单材料多区域 1 多材料单区域
             cateList: [],//分类列表 左侧树状图
+            areaList:[{"id":"530100000000","name":"昆明","level":"2","pid":"53","geocode":"102.832891,24.880095"},{"id":"530300000000","name":"曲靖","level":"2","pid":"53","geocode":"103.796167,25.489999"},{"id":"530400000000","name":"玉溪","level":"2","pid":"53","geocode":"102.546543,24.352036"},{"id":"530500000000","name":"保山","level":"2","pid":"53","geocode":"99.161761,25.112046"},{"id":"530600000000","name":"昭通","level":"2","pid":"53","geocode":"103.717465,27.338257"},{"id":"530700000000","name":"丽江","level":"2","pid":"53","geocode":"100.227750,26.855047"},{"id":"530800000000","name":"普洱","level":"2","pid":"53","geocode":"100.966512,22.825065"},{"id":"530900000000","name":"临沧","level":"2","pid":"53","geocode":"100.079583,23.877573"},{"id":"532300000000","name":"楚雄","level":"2","pid":"53","geocode":"101.528068,25.045532"},{"id":"532500000000","name":"红河","level":"2","pid":"53","geocode":"103.374799,23.363130"},{"id":"532600000000","name":"文山","level":"2","pid":"53","geocode":"104.216248,23.400733"},{"id":"532800000000","name":"西双版纳","level":"2","pid":"53","geocode":"100.797777,22.007351"},{"id":"532900000000","name":"大理","level":"2","pid":"53","geocode":"100.267638,25.606486"},{"id":"533100000000","name":"德宏","level":"2","pid":"53","geocode":"98.584895,24.433353"},{"id":"533300000000","name":"怒江","level":"2","pid":"53","geocode":"98.853097,25.852547"},{"id":"533400000000","name":"迪庆","level":"2","pid":"53","geocode":"99.702234,27.818882"}],//区域列表，左侧树状图
             defaultProps: {
                 children: 'childrenList',
                 label: 'name'
+            },
+            chosed_city:{
+                name:'全省',
+                id:'53'
             },
             chosed_cate:{
                 // id:1,
                 // name:'钢材'
             },//选中的分类
             showcharts:false,//是否展示图
-            chosed_tab:0,//选择表格展示类型 0：区域比较 1：材料比较
+            t:0,//选择表格展示类型 0：区域比较 1：材料比较
             monthoptions:[{ //月度时间控件
-                value:13,
-                label: '近13个月'
+                value:3,
+                label: '近3个月'
+            },{ //月度时间控件
+                value:6,
+                label: '近6个月'
+            },{ //月度时间控件
+                value:9,
+                label: '近9个月'
+            },{ //月度时间控件
+                value:12,
+                label: '近12个月'
+            },{ //月度时间控件
+                value:15,
+                label: '近15个月'
             }],
             seasonoptions:[{//季度时间控件
-                value:9,
-                label: '近3个季度'
+                value:4,
+                label: '近4个季度'
             },
             {
-                value:18,
-                label: '近6个季度'
+                value:8,
+                label: '近8个季度'
+            },
+            {
+                value:12,
+                label: '近12个季度'
             }],
             yearoptions:[{//年度时间控件
-                value:2018,
-                label: '2018年'
+                value:2,
+                label: '近2年'
             },
             {
-                value:2019,
-                label: '2019年'
+                value:4,
+                label: '近4年'
+            },
+            {
+                value:8,
+                label: '近8年'
+            },
+            {
+                value:10,
+                label: '近10年'
             }],
             time:'',//选取的时间
             chosed_type:'price',//表格内容展示筛选 price:价格 zs：指数 tb：同比 hb：环比
@@ -169,7 +218,7 @@ export default {
             tabledata:[],//表格数据 
             chosed_area:{
                 area:53
-            }, // 选择的区域code 默认云南省
+            }, // 选择的区域code 默认云南省 用于图展示
             disablepage:-1, //传给分页组件的判定哪个按钮禁用 -1:左按钮 1：右按钮 0：不禁用 2:都禁用
             isnext:false,//是否是子表格
             checked:[],//选中作为图渲染的数据,
@@ -205,10 +254,9 @@ export default {
                 this.time = this.yearoptions[0].value
                 
             }
-            this.chosed_tab =0
         },
         time(val) {
-            if(this.chosed_tab == 0) {
+            if(this.t == 0) {
                 this.get_area_data()
             } else {
                 this.get_cate_data()
@@ -227,14 +275,13 @@ export default {
                 })
             }
         },
-        chosed_tab(val) {
-            this.isnext = false
-            this.chosed_area.area='53'
+        t(val) {
+            this.chosed_city = {id:'53', name:'全省'}
             this.chosed_cate=this.cateList[0]
-            this.showcharts=false
             if(val ==0) {
                 this.get_area_data()
             } else {
+                if(this.chosed_type =='price') this.chosed_type = 'zs'
                 this.get_cate_data()
             }
         },
@@ -251,7 +298,7 @@ export default {
     methods:{
         back() {
             this.isnext = false
-            if(this.chosed_tab ==0) {
+            if(this.t ==0) {
                 this.chosed_area = {
                     area:53
                 }
@@ -265,64 +312,18 @@ export default {
             let month = now.getMonth()
             let exmonth,exyear
             const y= now.getFullYear()
-            switch (this.time) {
-                case 13:
-                    exmonth = month+12-13+1
-                    exmonth = exmonth>9?exmonth:'0'+exmonth
-                    month = month>9?month:'0'+month
-                    return [(y-1)+'-'+exmonth,y+'-'+month]
-                    break;
-                case 9:
-                    if(month<4) {
-                        month = 3
-                        exmonth = 7
-                        exyear=y-1
-                    } else if(month<7) {
-                        month = 6
-                        exmonth = 10
-                        exyear=y-1
-                    } else if(month<10) {
-                        month = 9
-                        exmonth = 1
-                        exyear=y
-                    } else {
-                        month = 12
-                        exmonth = 4
-                        exyear=y
-                    }                   
-                    exmonth = exmonth>9?exmonth:'0'+exmonth
-                    month = month>9?month:'0'+month
-                    return [exyear+'-'+exmonth,y+'-'+month]
-                    break;
-                case 18:
-                    if(month<4) {
-                        month = 3
-                        exmonth = 9
-                        exyear=y-2
-                    } else if(month<7) {
-                        month = 6
-                        exmonth = 1
-                        exyear=y-1
-                    } else if(month<10) {
-                        month = 9
-                        exmonth = 4
-                        exyear=y-1
-                    } else {
-                        month = 12
-                        exmonth = 7
-                        exyear=y-1
-                    }                   
-                    exmonth = exmonth>9?exmonth:'0'+exmonth
-                    month = month>9?month:'0'+month
-                    return [exyear+'-'+exmonth,y+'-'+month]
-                    break;
-                case 2018:
-                    return['2018-01','2018-12']
-                    break;
-                case 2019:
-                    return['2019-01','2019-12']
-                    break;
+            if(this.timetype == 0) {
+                if (month>=this.time) {
+                    exmonth = month-this.time+1
+                    exyear = y
+                } else {
+                    exmonth = month+12-this.time+1
+                    exyear = y-1
+                }
             }
+            exmonth = exmonth>9?exmonth:'0'+exmonth
+            month = month>9?month:'0'+month
+            return [exyear+'-'+exmonth,y+'-'+month]
         },
         async get_cate() { //获取分类列表 左侧树渲染
             const res = await this.$api.get_cate({})
@@ -334,14 +335,20 @@ export default {
             this.loading = true
             this.tabledata =[]
             this.checked = []
-            const t_arr=this.formateTime()
-            const data = {
+            let data = {
                 id:this.chosed_cate.id,//选择的材料
-				startDate:t_arr[0],//时间区间
-                endDate:t_arr[1],
                 area:this.chosed_area.area
+            } 
+            if(this.timetype == 0) {
+                const t_arr=this.formateTime()
+                data.startDate = t_arr[0]
+                data.endDate=t_arr[1]
+            } else if(this.timetype == 1) {
+                data.quarterNumber = this.time.toString()
+            } else {
+                data.yearNumber = this.time.toString()
             }
-            const res = await this.$api.get_area_time_list(data)
+            const res = await this.$api.get_area_time_list(data,this.timetype)
             if(Object.keys(res.data.data).length>0) {
                 let keys = Object.keys(res.data.data)
                 keys.forEach(key => {
@@ -364,18 +371,25 @@ export default {
                 this.loading = false
             })
         },
-        async get_cate_data() { //获取材料的数据 目前只获取全省的材料的数据
+        async get_cate_data() { //获取材料的数据 
             this.loading = true
             this.tabledata = []
             this.checked = []
-            const t_arr=this.formateTime()
-            const data = {
-                // area:53,//this.chosed_area,//选择的地区,目前只有全省
-                pid:this.isnext?this.chosed_cate.mid:0,//选中的材料id
-                startDate:t_arr[0],//时间区间
-                endDate:t_arr[1]
+            
+            let data = {
+                area:this.chosed_city.id,//选择的地区,默认全省
+                pid:this.isnext?this.chosed_cate.mid:0,//选中的材料id               
             }
-            const res = await this.$api.get_cate_time_list(data)
+            if(this.timetype==0) {
+                const t_arr=this.formateTime()
+                data.startDate=t_arr[0]//时间区间
+                data.endDate=t_arr[1]
+            } else if(this.timetype ==1) {
+                data.quarterNumber = this.time
+            } else {
+                data.yearNumber = this.time
+            }
+            const res = await this.$api.get_cate_time_list(data,this.timetype)
             let keys = Object.keys(res.data.data)
             keys.forEach(key => {
                 this.tabledata.push(res.data.data[key])
@@ -396,12 +410,12 @@ export default {
         },
         handleNodeClick(data) { //选择材料
             this.checked = []
-            if(this.chosed_tab ==0) { //获取区域
+            if(this.t ==0) { //获取区域
                 this.chosed_cate = data
                 this.chosed_name = data.name
                 this.get_area_data()
             } else {
-                this.chosed_cate = data
+                this.chosed_city = data
                 this.get_cate_data()
             }
         },
@@ -420,25 +434,12 @@ export default {
                     item.map(t=> {
                         data.push(t.price) 
                     })
-                    if(this.chosed_tab==0) {
+                    if(this.t==0) {
                         legend.push(item[0].area_name)
                         y.push({data:data,type:'bar',name:item[0].area_name,
                         barMaxWidth:20,
                         itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[index] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }})
                     } else {
                         legend.push(item[0].name)
@@ -446,24 +447,11 @@ export default {
                         barMaxWidth:20,
                         itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[index] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: index<this.checked.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }})
                     }                    
                 })
             } else {// 获取全省的材料数据 用于初始化图表
-                if(this.chosed_tab ==0&&!this.isnext) { //第一级空选中 显示全省数据
+                if(this.t ==0&&!this.isnext) { //第一级空选中 显示全省数据
                     const t_arr=this.formateTime()
                     const data = {
                         id:this.chosed_cate.id,//选中的材料id
@@ -479,19 +467,6 @@ export default {
                         name:'全省',
                         itemStyle:{
                             color:this.color[0]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         },
                         barMaxWidth:20
                     })
@@ -514,26 +489,12 @@ export default {
                         defaultcate.map(t=> {
                             data.push(t.price) 
                         })
-                        if(this.chosed_tab==0) {
+                        if(this.t==0) {
                             legend.push(defaultcate[0].area_name)
                             y.push({data:data,type:'bar',name:defaultcate[0].area_name,
                             barMaxWidth:20,
                             itemStyle:{
                             color:this.color[0]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false,
-                            //     barMaxWidth:20,
-                            // }
                         }})
                         } else {
                             legend.push(defaultcate[0].name)
@@ -541,20 +502,6 @@ export default {
                             barMaxWidth:20,
                             itemStyle:{
                             color:this.color[0]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false,
-                            //     barMaxWidth:20
-                            // }
                         }})
                         }  
                     } catch(e) {
@@ -565,7 +512,6 @@ export default {
                 }
                 
             }       
-            console.log(y)   
             const option = {
                 tooltip : {
                     trigger: 'axis'
@@ -622,46 +568,20 @@ export default {
                     item.map(t=> {
                         data.push(t.price) 
                     })
-                    if(this.chosed_tab==0) {
+                    if(this.t==0) {
                         legend.push(item[0].area_name)
                         y.push({data:data,type:'line',name:item[0].area_name,itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[index] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }})
                     } else {
                         legend.push(item[0].name)
                         y.push({data:data,type:'line',name:item[0].name,itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[index] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }})
                     }                    
                 })
             } else {// 获取全省的材料数据 用于初始化图表
-                if(this.chosed_tab ==0&&!this.isnext) {
+                if(this.t ==0&&!this.isnext) {
                     const t_arr=this.formateTime()
                     const data = {
                         id:this.chosed_cate.id,//选中的材料id
@@ -677,19 +597,6 @@ export default {
                         name:'全省',
                         itemStyle:{
                             color:this.color[0]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }
                     })
                     arr.forEach(item => {
@@ -711,25 +618,12 @@ export default {
                         defaultcate.map(t=> {
                             data.push(t.price) 
                         })
-                        if(this.chosed_tab==0) {
+                        if(this.t==0) {
                             legend.push(defaultcate[0].area_name)
                             y.push({data:data,type:'bar',name:defaultcate[0].area_name,
                             barMaxWidth:20,
                             itemStyle:{
                             color:this.color[0]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }})
                         } else {
                             legend.push(defaultcate[0].name)
@@ -737,19 +631,6 @@ export default {
                             barMaxWidth:20,
                             itemStyle:{
                             color:this.color[0]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }})
                         }  
                     } catch(e) {
@@ -817,57 +698,15 @@ export default {
                         tb.push(t.tongbi)
                         hb.push(t.huanbi)
                     })
-                    if(this.chosed_tab==0) {
+                    if(this.t==0) {
                         legend.push(item[0].area_name)
                         y.push({data:data,type:'bar',name:item[0].area_name,
                         barMaxWidth:20,
                         itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[index] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }},
-                        //     {data:tb,type:'line',name:item[0].area_name,yAxisIndex:1,itemStyle:{
-                        //     color:this.color[index]
-                        //     // {
-                        //     //     type: 'linear',
-                        //     //     x: 0,
-                        //     //     y: 0,
-                        //     //     x2: 0,
-                        //     //     y2: 1,
-                        //     //     colorStops: [{
-                        //     //         offset: 0, color: this.color[index] // 0% 处的颜色
-                        //     //     }, {
-                        //     //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                        //     //     }],
-                        //     //     globalCoord: false
-                        //     // }
-                        // }},
                             {data:hb,type:'line',name:item[0].area_name,yAxisIndex:1,itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[index] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }})
                     } else {
                         legend.push(item[0].name)
@@ -875,57 +714,18 @@ export default {
                         barMaxWidth:20,
                         itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[index] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }},
                             {data:tb,type:'line',name:item[0].name,yAxisIndex:1,itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[index] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }},{
                             data:hb,type:'line',name:item[0].name,yAxisIndex:1,itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[index] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: index<this.color.length-1?this.color[index+1]:this.color[0] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }}
                         )
                     }                    
                 })
             } else {// 获取全省的材料数据 用于初始化图表
-                if(this.chosed_tab ==0&&!this.isnext) {
+                if(this.t ==0&&!this.isnext) {
                     const t_arr=this.formateTime()
                     const data = {
                         id:this.chosed_cate.id,//选中的材料id
@@ -942,47 +742,8 @@ export default {
                         barMaxWidth:20,
                         itemStyle:{
                             color:this.color[0]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }
                     })
-                    // y.push({//同比
-                    //     data:[],
-                    //     type:'line',
-                    //     name:'全省',
-                    //     yAxisIndex:1,
-                    //     emphasis:{
-                    //         label:{
-                    //             formatter:'{b}同比: {c}'
-                    //         }
-                    //     },itemStyle:{
-                    //         color:this.color[0]
-                    //         // {
-                    //         //     type: 'linear',
-                    //         //     x: 0,
-                    //         //     y: 0,
-                    //         //     x2: 0,
-                    //         //     y2: 1,
-                    //         //     colorStops: [{
-                    //         //         offset: 0, color: this.color[0] // 0% 处的颜色
-                    //         //     }, {
-                    //         //         offset: 1, color: this.color[1] // 100% 处的颜色
-                    //         //     }],
-                    //         //     globalCoord: false
-                    //         // }
-                    //     }
-                    // })
                      y.push({//环比
                         data:[],
                         type:'line',
@@ -994,25 +755,11 @@ export default {
                             }
                         },itemStyle:{
                             color:this.color[0]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }
                     })
                     arr.forEach(item => {
                         x.push(item.mdate.substr(0,7))
                         y[0].data.push(item.price)
-                        // y[1].data.push(item.tongbi)
                         y[1].data.push(item.huanbi)
                     })
                     legend=['全省']
@@ -1030,41 +777,15 @@ export default {
                         defaultcate.map(t=> {
                             data.push(t.price) 
                         })
-                        if(this.chosed_tab==0) {
+                        if(this.t==0) {
                             legend.push(defaultcate[0].area_name)
                             y.push({data:data,type:'bar',name:defaultcate[0].area_name,itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }})
                         } else {
                             legend.push(defaultcate[0].name)
                             y.push({data:data,type:'bar',name:defaultcate[0].name,itemStyle:{
                             color:this.color[index]
-                            // {
-                            //     type: 'linear',
-                            //     x: 0,
-                            //     y: 0,
-                            //     x2: 0,
-                            //     y2: 1,
-                            //     colorStops: [{
-                            //         offset: 0, color: this.color[0] // 0% 处的颜色
-                            //     }, {
-                            //         offset: 1, color: this.color[1] // 100% 处的颜色
-                            //     }],
-                            //     globalCoord: false
-                            // }
                         }})
                         }  
                     } catch(e) {
@@ -1140,15 +861,15 @@ export default {
         },
         choseitem(item) {
             //根据选择的item展示下一级表及图
-            this.isnext = true
-            if(this.chosed_tab ==0) { //获取区域
-                this.chosed_area = item// 把选取的区域赋值
-                this.get_area_data()
+            
+            if(this.t ==0) { //获取区域
+                // this.chosed_area = item// 把选取的区域赋值
+                // this.get_area_data()
             } else {
-                this.chosed_cate =item //把选取的材料赋值
-                this.get_cate_data()
+                // this.chosed_cate =item //把选取的材料赋值
+                // this.get_cate_data()
+                // this.isnext = true
             }
-
         },
         show_page() {
             this.boxwidth = $('#table').outerWidth()
@@ -1204,21 +925,79 @@ export default {
 </script>
 <style lang="stylus" scoped>
 @import '../style/color.stylus'
+.btnClass
+    width auto
+    padding-left 30px
+    display flex
+    align-items center
+    padding-right 37px
+    .dotClass
+        display block
+        position static
+        margin-right 6px
+    span
+        color #454EFF
 .title 
     display flex
     font-size 16px
-    color #7F94FF
-    margin-bottom 30px
+    color font-color-light-b
+    margin-bottom 10px
+    align-items center
+    justify-content space-between
+    height 58px
+    cursor pointer
+    padding 0 20px
+    div
+        display flex
+        align-items center
+    p 
+        width 30px
+        height 30px
+        flex-shrink 0
+        margin-right 10px
+        
+    .c
+        background url('../../public/img/1g.png') no-repeat
+        background-size 100% 100%
+    .a
+        background url('../../public/img/2g.png') no-repeat
+        background-size 100% 100%
     i 
-        display block
-        width 4px
-        height 22px
-        background #7F94FF
-        margin-right 9px
+        color font-color-light-b
+        font-size 12px
+.title:hover
+    background #F5F6FE
+    color #000
+    .c
+        background url('../../public/img/1b.png') no-repeat
+        background-size 100% 100%
+    .a
+        background url('../../public/img/2b.png') no-repeat
+        background-size 100% 100%
+    i 
+        color #000    
+.acttitle,.acttitle:hover
+    background -webkit-linear-gradient(right,#61e0ff,#6439f8) !important/* Safari 5.1-6.0 */
+    background -o-linear-gradient(left,#61e0ff,#6439f8)!important /* Opera 11.1-12.0 */ 
+    background -moz-linear-gradient(left,#61e0ff,#6439f8)!important /* Firefox 3.6-15 */
+    background linear-gradient(to left,#61e0ff,#6439f8)!important /* 标准语法 */
+    color #fff
+    .c
+        background url('../../public/img/1w.png') no-repeat
+        background-size 100% 100%
+    .a
+        background url('../../public/img/2w.png') no-repeat
+        background-size 100% 100%
+    i
+        color #fff
+    .iconfont:before
+        display inline-block
+        transform rotate(90deg)
+
 .cate
     box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
     border-radius 8px
-    padding 20px
+    // padding 0 20px
     .cate-list 
         height auto
         .active
@@ -1282,15 +1061,14 @@ export default {
             box-sizing border-box
             top 0
             left 0
+            >div
+                display flex
             p
                 font-size 20px
                 font-family MicrosoftYaHei-Bold
                 font-weight bold
-                span 
-                    font-size 16px
-                    color #fff
-                    text-decoration underline
-                    margin-left 26px
+                >span 
+                    color #7bfaff
                     font-weight 400
                     cursor pointer
             ul
@@ -1322,10 +1100,25 @@ export default {
         display flex
         justify-content space-between
         align-items center
-        
+        h1 
+            font-size 20px
+            font-weight bold
+            color rgba(96,100,253,1)
+            margin-right 50px
         .left , .tab
             display flex
             align-items center
+        .switch
+            width 180px
+            line-height 32px
+            border-radius 16px
+            text-align center
+            color #fff
+            background #6064FD
+            font-size 14px
+            cursor pointer
+        .switch:hover 
+            background rgba(127,148,255,1)
         .tab
             margin-right 48px
             p
@@ -1339,80 +1132,86 @@ export default {
                 font-size 12px
                 border 1px solid #D6D9E2
                 cursor pointer
-            p+p 
+            p+p
+                border-radius 0
+            p+p+p
                 border-radius 0px 4px 4px 0px
             .active 
                 background #7F94FF
                 border 1px solid #7F94FF
                 color #fff
-        .switch,.timer
-            span 
-                font-size 14px
-                color font-color-light-b
-                margin-right 10px
-            .el-input__inner
-                height 38px
+.timer
+    span 
+        font-size 14px
+        color #fff
+        margin-right 10px
+    .el-input__inner
+        height 38px
     
-    .ch 
-        h1 
-            width 300px
-            line-height 48px
-            margin 64px auto 28px auto
-            font-size 20px
-            font-family MicrosoftYaHei-Bold
-            font-weight bold
-            color #fff  
-            background main-color
-            border 1px solid rgba(108,125,255,1)
-            box-shadow 0px 8px 14px 0px rgba(39,30,237,0.14)
-            border-radius 24px
-            text-align center
-        #main 
+.ch 
+    h1 
+        width 300px
+        line-height 48px
+        margin 64px auto 28px auto
+        font-size 20px
+        font-family MicrosoftYaHei-Bold
+        font-weight bold
+        color #fff  
+        background main-color
+        border 1px solid rgba(108,125,255,1)
+        box-shadow 0px 8px 14px 0px rgba(39,30,237,0.14)
+        border-radius 24px
+        text-align center
+    #main 
+        width 100%
+        height 550px
+        div,canvas
             width 100%
-            height 550px
-        .tool
+            height 550px 
+        
+    .tool
+        display flex
+        justify-content space-between
+        align-items center
+        ul 
             display flex
-            justify-content space-between
             align-items center
-            ul 
-                display flex
-                align-items center
-                li
-                    width 50px
-                    height 50px
-                    background #7F94FF
-                    box-shadow 0px 6px 6px 0px rgba(127,148,255,0.24)
-                    border-radius 50%
-                    text-align center
-                    color #fff
-                    line-height 50px
-                    margin-right 20px
-                    cursor pointer
-                    .iconfont 
-                        font-size 26px
-                .active
-                    background #FB6371
-                    box-shadow 0px 6px 6px 0px rgba(251,99,113,0.24)
-                .active:hover
-                    background #FB6371
-                    box-shadow 0px 6px 6px 0px rgba(251,99,113,0.24)
-                li:hover
-                    background #AEBBFF
-                    box-shadow 0px 6px 6px 0px rgba(127,148,255,0.24)
-            ul+ul
-                li
-                    width 100px
-                    height 28px
-                    border 1px solid rgba(108,125,255,1)
-                    border-radius 14px
-                    font-size:14px
-                    color #7F94FF
-                    background #fff
-                    box-shadow none
-                    line-height 28px
-                li+li
-                    color #fff
-                    background #637CFB
-                    .iconfont 
-                        font-size 16px
+            li
+                width 50px
+                height 50px
+                background #7F94FF
+                box-shadow 0px 6px 6px 0px rgba(127,148,255,0.24)
+                border-radius 50%
+                text-align center
+                color #fff
+                line-height 50px
+                margin-right 20px
+                cursor pointer
+                .iconfont 
+                    font-size 26px
+            .active
+                background #FB6371
+                box-shadow 0px 6px 6px 0px rgba(251,99,113,0.24)
+            .active:hover
+                background #FB6371
+                box-shadow 0px 6px 6px 0px rgba(251,99,113,0.24)
+            li:hover
+                background #AEBBFF
+                box-shadow 0px 6px 6px 0px rgba(127,148,255,0.24)
+        ul+ul
+            li
+                width 100px
+                height 28px
+                border 1px solid rgba(108,125,255,1)
+                border-radius 14px
+                font-size:14px
+                color #7F94FF
+                background #fff
+                box-shadow none
+                line-height 28px
+            li+li
+                color #fff
+                background #637CFB
+                .iconfont 
+                    font-size 16px
 </style>
