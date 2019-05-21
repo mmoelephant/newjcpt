@@ -24,10 +24,15 @@
                     <p class='blue' @click='logout'>{{token&&token.length>0?'退出登录':'登录'}}</p>
                 </div>
             </el-header>
+<<<<<<< HEAD
             <el-container style='height:100%;flex-direction:column;'>
 				<router-view style="height:100%"></router-view>
 				<!-- <p class='ba'>云南省建设工程材料及设备价格监测系统</p>
 				<p class='ba'>滇公网安备 5301110011230  备案编号：滇ICP备16100321号  Copyright 2018-2019 版</p> -->
+=======
+            <el-container style='height:100%;flex-direction:column'>
+				<router-view></router-view>
+>>>>>>> 0f10fe31d153b42e72de870fd68dee1dd2fdb734
             </el-container>
         </el-container>
 	</div>
@@ -197,6 +202,7 @@ export default {
 				margin 0 16px
 			.blue 
 				color #7F94FF
+<<<<<<< HEAD
 	.ba 
 		width 100%
 		font-size 14px
@@ -209,3 +215,6 @@ export default {
 		color #999
 		margin 20px 0 80px 0
 </style>
+=======
+</style>
+>>>>>>> 0f10fe31d153b42e72de870fd68dee1dd2fdb734

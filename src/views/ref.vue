@@ -1,6 +1,5 @@
 <template>
     <div style='height:100%' v-loading.fullscreen.lock="loading">
-        <img src="" alt="">
         <div class="reportBtns">
 			<div class='btnClass'>
                 <span class="dotClass"></span>
@@ -8,7 +7,7 @@
                 <span>各地区材料数据</span>
             </div>
 		</div>
-        <el-container style='height:100%;background:#F6F7FE;padding:20px 20px 40px 20px;box-sizing:border-box'>
+        <el-container style='height:100%;background:#F6F7FE;padding:88px 20px 40px 20px;box-sizing:border-box'>
             <el-aside width="320px" style='border-radius:4px;background:#fff;' class='cate'>
                 <div :class='t==0?"title acttitle":"title"'  @click='t=0'>
                     <div>
@@ -51,52 +50,54 @@
                         <div class='switch' @click='showcharts = !showcharts'>
                             显示勾选地区对比图表
                         </div>
-                    </div>
-                    
+                    </div>                   
                 </div>  
                 <div class='table-box'>
-                    <div class='t'>
-                        <div>
-                            <p v-if='t==0'>各地区<span>"{{chosed_cate.name}}"</span>{{timetype==0?"月度":timetype==1?"季度":timetype==2?"年度":""}}数据表
-                                <span v-if='isnext' @click='back'>返回 ></span>
-                            </p>
-                            <p v-if='t==1'><span>"{{chosed_city.name}}"</span>材料价格对比
-                            </p>
-                            <ul>
-                                <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"' v-if='t == 0'>价格</li>
-                                <li :class='chosed_type=="zs"? "ac" :""' @click='chosed_type="zs"'>指数</li>
-                                <li :class='chosed_type=="tb"? "ac" :""' @click='chosed_type="tb"'>同比</li>
-                                <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
-                            </ul>
-                        </div>
-                        <div class='timer'>
-                            <span>时间</span>
-                            <el-select v-model="time" placeholder="请选择查询时间" v-show='timetype==0'>
-                                <el-option
-                                v-for="item in monthoptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                            <el-select v-model="time" placeholder="请选择查询时间" v-show='timetype==1'>
-                                <el-option
-                                v-for="item in seasonoptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                            <el-select v-model="time" placeholder="请选择查询时间" v-show='timetype==2'>
-                                <el-option
-                                v-for="item in yearoptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </div>
+                    <div class='t-box'>
+                        <div class='t'>
+                            <div>
+                                <p v-if='t==0'>各地区<span>"{{chosed_cate.name}}"</span>{{timetype==0?"月度":timetype==1?"季度":timetype==2?"年度":""}}数据表
+                                    <span v-if='isnext' @click='back'>返回 ></span>
+                                </p>
+                                <p v-if='t==1'><span>"{{chosed_city.name}}"</span>各材料{{timetype==0?"月度":timetype==1?"季度":timetype==2?"年度":""}}数据
+                                </p>
+                                <ul>
+                                    <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"' v-if='t == 0'>价格</li>
+                                    <li :class='chosed_type=="zs"? "ac" :""' @click='chosed_type="zs"'>指数</li>
+                                    <li :class='chosed_type=="tb"? "ac" :""' @click='chosed_type="tb"'>同比</li>
+                                    <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
+                                </ul>
+                            </div>
+                            <div class='timer'>
+                                <span>时间</span>
+                                <el-select v-model="time" placeholder="请选择查询时间" v-show='timetype==0'>
+                                    <el-option
+                                    v-for="item in monthoptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                                <el-select v-model="time" placeholder="请选择查询时间" v-show='timetype==1'>
+                                    <el-option
+                                    v-for="item in seasonoptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                                <el-select v-model="time" placeholder="请选择查询时间" v-show='timetype==2'>
+                                    <el-option
+                                    v-for="item in yearoptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div> 
                     </div>
+                    
                     <reftable 
                         style='padding-top:56px'
                         :tabledata='tabledata' 
@@ -104,10 +105,11 @@
                         :timeType='timetype'
                         :t_type='chosed_type'
                         @checkList='checkList' 
-                        @choseitem='choseitem'
                         :isnext='isnext'></reftable>
                     <page-btn :disablepage="disablepage" @pagechange='pagechange' style='padding-top:20px;float:right'></page-btn>
                 </div>
+                <p class='ba'>云南省建设工程材料及设备价格监测系统</p>
+				<p class='ba'>滇公网安备 5301110011230  备案编号：滇ICP备16100321号  Copyright 2018-2019 版</p>
             </el-container>
         </el-container>
         <el-dialog
@@ -127,7 +129,7 @@
                             <i class='iconfont icon-zhuzhuangzhexian'></i>
                         </li>
                     </ul>
-                    <ul>
+                    <!--ul>
                         <li @click='showcharts=false'>
                             收起图表
                         </li>
@@ -135,7 +137,7 @@
                             <i class='iconfont icon-xiazai'></i>
                             下载
                         </li>
-                    </ul>
+                    </ul-->
                 </div>
                 <div id ='main'>
 
@@ -153,7 +155,7 @@ export default {
         return {
             t:0,//0 单材料多区域 1 多材料单区域
             cateList: [],//分类列表 左侧树状图
-            areaList:[{"id":"530100000000","name":"昆明","level":"2","pid":"53","geocode":"102.832891,24.880095"},{"id":"530300000000","name":"曲靖","level":"2","pid":"53","geocode":"103.796167,25.489999"},{"id":"530400000000","name":"玉溪","level":"2","pid":"53","geocode":"102.546543,24.352036"},{"id":"530500000000","name":"保山","level":"2","pid":"53","geocode":"99.161761,25.112046"},{"id":"530600000000","name":"昭通","level":"2","pid":"53","geocode":"103.717465,27.338257"},{"id":"530700000000","name":"丽江","level":"2","pid":"53","geocode":"100.227750,26.855047"},{"id":"530800000000","name":"普洱","level":"2","pid":"53","geocode":"100.966512,22.825065"},{"id":"530900000000","name":"临沧","level":"2","pid":"53","geocode":"100.079583,23.877573"},{"id":"532300000000","name":"楚雄","level":"2","pid":"53","geocode":"101.528068,25.045532"},{"id":"532500000000","name":"红河","level":"2","pid":"53","geocode":"103.374799,23.363130"},{"id":"532600000000","name":"文山","level":"2","pid":"53","geocode":"104.216248,23.400733"},{"id":"532800000000","name":"西双版纳","level":"2","pid":"53","geocode":"100.797777,22.007351"},{"id":"532900000000","name":"大理","level":"2","pid":"53","geocode":"100.267638,25.606486"},{"id":"533100000000","name":"德宏","level":"2","pid":"53","geocode":"98.584895,24.433353"},{"id":"533300000000","name":"怒江","level":"2","pid":"53","geocode":"98.853097,25.852547"},{"id":"533400000000","name":"迪庆","level":"2","pid":"53","geocode":"99.702234,27.818882"}],//区域列表，左侧树状图
+            areaList:[{"id":"530100000000","name":"昆明","level":"2","pid":"53"},{"id":"530300000000","name":"曲靖","level":"2","pid":"53"},{"id":"530400000000","name":"玉溪","level":"2","pid":"53"},{"id":"530500000000","name":"保山","level":"2","pid":"53"},{"id":"530600000000","name":"昭通","level":"2","pid":"53"},{"id":"530700000000","name":"丽江","level":"2","pid":"53"},{"id":"530800000000","name":"普洱","level":"2","pid":"53"},{"id":"530900000000","name":"临沧","level":"2","pid":"53",},{"id":"532300000000","name":"楚雄","level":"2","pid":"53"},{"id":"532500000000","name":"红河","level":"2","pid":"53"},{"id":"532600000000","name":"文山","level":"2","pid":"53"},{"id":"532800000000","name":"西双版纳","level":"2","pid":"53"},{"id":"532900000000","name":"大理","level":"2","pid":"53"},{"id":"533100000000","name":"德宏","level":"2","pid":"53"},{"id":"533300000000","name":"怒江","level":"2","pid":"53"},{"id":"533400000000","name":"迪庆","level":"2","pid":"53"}],//区域列表，左侧树状图
             defaultProps: {
                 children: 'childrenList',
                 label: 'name'
@@ -352,7 +354,7 @@ export default {
             if(Object.keys(res.data.data).length>0) {
                 let keys = Object.keys(res.data.data)
                 keys.forEach(key => {
-                    this.tabledata.push(res.data.data[key])
+                    this.tabledata.push({data:res.data.data[key]})
                 })
                 if(this.showcharts) { //如果展示图表  渲染
                     if(this.change_charts=='bar') {
@@ -366,6 +368,13 @@ export default {
             } else {
                 this.tabledata = []
             }
+            delete data.area
+            const ap = await this.$api.get_yn_time_list(data)
+            let akeys = Object.keys(ap.data.data)
+            if(akeys.length>0) {
+                this.tabledata.unshift({data:ap.data.data[akeys[0]]})
+            }
+
             this.$nextTick(() =>{
                 this.show_page()
                 this.loading = false
@@ -392,7 +401,27 @@ export default {
             const res = await this.$api.get_cate_time_list(data,this.timetype)
             let keys = Object.keys(res.data.data)
             keys.forEach(key => {
-                this.tabledata.push(res.data.data[key])
+                let par = {
+                    pid:key,//选择的材料
+                    area:this.chosed_area.area
+                } 
+                if(this.timetype == 0) {
+                    const t_arr=this.formateTime()
+                    par.startDate = t_arr[0]
+                    par.endDate=t_arr[1]
+                } else if(this.timetype == 1) {
+                    par.quarterNumber = this.time.toString()
+                } else {
+                    par.yearNumber = this.time.toString()
+                }
+                let children=[]
+                this.$api.get_cate_time_list(par,this.timetype).then(r => {
+                    let sonkeys = Object.keys(r.data.data)
+                    sonkeys.map(sk => {
+                        children.push({data:r.data.data[sk]})
+                    })
+                })
+                this.tabledata.push({data:res.data.data[key],children:children,expand:false})
             })
             if(this.showcharts) {
                 if(this.change_charts=='bar') {
@@ -424,26 +453,26 @@ export default {
             if(this.checked && this.checked.length >0) {
                 this.checked.forEach((item,index) => {
                     let data =[]
-                    if(x.length<item.length) {
+                    if(x.length<item.data.length) {
                         x=[]
-                        item.map(t => {                       
+                        item.data.map(t => {                       
                             x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
                         })
                         
                     }
-                    item.map(t=> {
+                    item.data.map(t=> {
                         data.push(t.price) 
                     })
                     if(this.t==0) {
-                        legend.push(item[0].area_name)
-                        y.push({data:data,type:'bar',name:item[0].area_name,
+                        legend.push(item.data[0].area_name)
+                        y.push({data:data,type:'bar',name:item.data[0].area_name,
                         barMaxWidth:20,
                         itemStyle:{
                             color:this.color[index]
                         }})
                     } else {
-                        legend.push(item[0].name)
-                        y.push({data:data,type:'bar',name:item[0].name,
+                        legend.push(item.data[0].name)
+                        y.push({data:data,type:'bar',name:item.data[0].name,
                         barMaxWidth:20,
                         itemStyle:{
                             color:this.color[index]
@@ -479,26 +508,26 @@ export default {
                     let data=[]
                     try {
                         const defaultcate = this.tabledata[0]
-                        if(x.length<defaultcate.length) {
+                        if(x.length<defaultcate.data.length) {
                             x=[]
-                            defaultcate.map(t => {                       
+                            defaultcate.data.map(t => {                       
                                 x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
                             })
                             
                         }
-                        defaultcate.map(t=> {
+                        defaultcate.data.map(t=> {
                             data.push(t.price) 
                         })
                         if(this.t==0) {
-                            legend.push(defaultcate[0].area_name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,
+                            legend.push(defaultcate.data[0].area_name)
+                            y.push({data:data,type:'bar',name:defaultcate.data[0].area_name,
                             barMaxWidth:20,
                             itemStyle:{
                             color:this.color[0]
                         }})
                         } else {
-                            legend.push(defaultcate[0].name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].name,
+                            legend.push(defaultcate.data[0].name)
+                            y.push({data:data,type:'bar',name:defaultcate.data[0].name,
                             barMaxWidth:20,
                             itemStyle:{
                             color:this.color[0]
@@ -558,24 +587,24 @@ export default {
             if(this.checked && this.checked.length >0) {
                 this.checked.forEach((item,index) => {
                     let data =[]
-                    if(x.length<item.length) {
+                    if(x.length<item.data.length) {
                         x=[]
-                        item.map(t => {                       
+                        item.data.map(t => {                       
                             x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
                         })
                         
                     }
-                    item.map(t=> {
+                    item.data.map(t=> {
                         data.push(t.price) 
                     })
                     if(this.t==0) {
-                        legend.push(item[0].area_name)
-                        y.push({data:data,type:'line',name:item[0].area_name,itemStyle:{
+                        legend.push(item.data[0].area_name)
+                        y.push({data:data,type:'line',name:item.data[0].area_name,itemStyle:{
                             color:this.color[index]
                         }})
                     } else {
-                        legend.push(item[0].name)
-                        y.push({data:data,type:'line',name:item[0].name,itemStyle:{
+                        legend.push(item.data[0].name)
+                        y.push({data:data,type:'line',name:item.data[0].name,itemStyle:{
                             color:this.color[index]
                         }})
                     }                    
@@ -608,26 +637,26 @@ export default {
                     let data=[]
                     try {
                         const defaultcate = this.tabledata[0]
-                        if(x.length<defaultcate.length) {
+                        if(x.length<defaultcate.data.length) {
                             x=[]
-                            defaultcate.map(t => {                       
+                            defaultcate.data.map(t => {                       
                                 x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
                             })
                             
                         }
-                        defaultcate.map(t=> {
+                        defaultcate.data.map(t=> {
                             data.push(t.price) 
                         })
                         if(this.t==0) {
-                            legend.push(defaultcate[0].area_name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,
+                            legend.push(defaultcate.data[0].area_name)
+                            y.push({data:data,type:'bar',name:defaultcate.data[0].area_name,
                             barMaxWidth:20,
                             itemStyle:{
                             color:this.color[0]
                         }})
                         } else {
-                            legend.push(defaultcate[0].name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].name,
+                            legend.push(defaultcate.data[0].name)
+                            y.push({data:data,type:'bar',name:defaultcate.data[0].name,
                             barMaxWidth:20,
                             itemStyle:{
                             color:this.color[0]
@@ -686,39 +715,39 @@ export default {
             if(this.checked && this.checked.length >0) {
                 this.checked.forEach((item,index) => {
                     let data =[],tb=[],hb=[]
-                    if(x.length<item.length) {
+                    if(x.length<item.data.length) {
                         x=[]
-                        item.map(t => {                       
+                        item.data.map(t => {                       
                             x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
                         })
                         
                     }
-                    item.map(t=> {
+                    item.data.map(t=> {
                         data.push(t.price) 
                         tb.push(t.tongbi)
                         hb.push(t.huanbi)
                     })
                     if(this.t==0) {
-                        legend.push(item[0].area_name)
-                        y.push({data:data,type:'bar',name:item[0].area_name,
+                        legend.push(item.data[0].area_name)
+                        y.push({data:data,type:'bar',name:item.data[0].area_name,
                         barMaxWidth:20,
                         itemStyle:{
                             color:this.color[index]
                         }},
-                            {data:hb,type:'line',name:item[0].area_name,yAxisIndex:1,itemStyle:{
+                            {data:hb,type:'line',name:item.data[0].area_name,yAxisIndex:1,itemStyle:{
                             color:this.color[index]
                         }})
                     } else {
-                        legend.push(item[0].name)
-                        y.push({data:data,type:'bar',name:item[0].name,
+                        legend.push(item.data[0].name)
+                        y.push({data:data,type:'bar',name:item.data[0].name,
                         barMaxWidth:20,
                         itemStyle:{
                             color:this.color[index]
                         }},
-                            {data:tb,type:'line',name:item[0].name,yAxisIndex:1,itemStyle:{
+                            {data:tb,type:'line',name:item.data[0].name,yAxisIndex:1,itemStyle:{
                             color:this.color[index]
                         }},{
-                            data:hb,type:'line',name:item[0].name,yAxisIndex:1,itemStyle:{
+                            data:hb,type:'line',name:item.data[0].name,yAxisIndex:1,itemStyle:{
                             color:this.color[index]
                         }}
                         )
@@ -767,24 +796,24 @@ export default {
                     let data=[]
                     try {
                         const defaultcate = this.tabledata[0]
-                        if(x.length<defaultcate.length) {
+                        if(x.length<defaultcate.data.length) {
                             x=[]
-                            defaultcate.map(t => {                       
+                            defaultcate.data.map(t => {                       
                                 x.push(t.mdate?t.mdate.substr(0,7):t.asmdate.substr(0,7))
                             })
                             
                         }
-                        defaultcate.map(t=> {
+                        defaultcate.data.map(t=> {
                             data.push(t.price) 
                         })
                         if(this.t==0) {
-                            legend.push(defaultcate[0].area_name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].area_name,itemStyle:{
+                            legend.push(defaultcate.data[0].area_name)
+                            y.push({data:data,type:'bar',name:defaultcate.data[0].area_name,itemStyle:{
                             color:this.color[index]
                         }})
                         } else {
-                            legend.push(defaultcate[0].name)
-                            y.push({data:data,type:'bar',name:defaultcate[0].name,itemStyle:{
+                            legend.push(defaultcate.data[0].name)
+                            y.push({data:data,type:'bar',name:defaultcate.data[0].name,itemStyle:{
                             color:this.color[index]
                         }})
                         }  
@@ -859,21 +888,9 @@ export default {
             }
             //根据获取到的list重新渲染图表
         },
-        choseitem(item) {
-            //根据选择的item展示下一级表及图
-            
-            if(this.t ==0) { //获取区域
-                // this.chosed_area = item// 把选取的区域赋值
-                // this.get_area_data()
-            } else {
-                // this.chosed_cate =item //把选取的材料赋值
-                // this.get_cate_data()
-                // this.isnext = true
-            }
-        },
         show_page() {
             this.boxwidth = $('#table').outerWidth()
-            this.tablewidth = 190+($('.th p').length-1)*76
+            this.tablewidth = 190+($('.th p').length-1)*130
             let scroll = $('.ul').scrollLeft()
             let left = this.tablewidth-this.boxwidth-scroll
             if(scroll ==0 && left>0) {
@@ -925,6 +942,8 @@ export default {
 </script>
 <style lang="stylus" scoped>
 @import '../style/color.stylus'
+.reportBtns
+    position absolute
 .btnClass
     width auto
     padding-left 30px
@@ -1040,13 +1059,20 @@ export default {
     width 100%
     margin-left 20px
     height 100%
-    overflow-y scroll
     border-radius 8px       
     flex-direction column
     .table-box
+        overflow-y scroll
         width 100%
         margin-top 20px
         position relative
+        .t-box 
+            padding 20px
+            position absolute
+            width 100%
+            box-sizing border-box
+            top 0
+            left 0
         .t
             display flex
             justify-content space-between 
@@ -1056,11 +1082,8 @@ export default {
             background #6064FD
             border-radius 4px 4px 0px 0px
             color #fff
-            position absolute
             width 100%
             box-sizing border-box
-            top 0
-            left 0
             >div
                 display flex
             p
@@ -1141,6 +1164,7 @@ export default {
                 border 1px solid #7F94FF
                 color #fff
 .timer
+    align-items center
     span 
         font-size 14px
         color #fff
@@ -1152,7 +1176,7 @@ export default {
     h1 
         width 300px
         line-height 48px
-        margin 64px auto 28px auto
+        margin 28px auto 28px auto
         font-size 20px
         font-family MicrosoftYaHei-Bold
         font-weight bold
@@ -1164,10 +1188,10 @@ export default {
         text-align center
     #main 
         width 100%
-        height 550px
+        height 400px
         div,canvas
-            width 100%
-            height 550px 
+            // width 100%
+            height 400px
         
     .tool
         display flex
