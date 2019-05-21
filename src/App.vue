@@ -26,8 +26,6 @@
             </el-header>
             <el-container style='height:100%;flex-direction:column'>
 				<router-view></router-view>
-				<p class='ba'>云南省建设工程材料及设备价格监测系统</p>
-				<p class='ba'>滇公网安备 5301110011230  备案编号：滇ICP备16100321号  Copyright 2018-2019 版</p>
             </el-container>
         </el-container>
 	</div>
@@ -198,15 +196,4 @@ export default {
 				margin 0 16px
 			.blue 
 				color #7F94FF
-	.ba 
-		width 100%
-		font-size 14px
-		font-family MicrosoftYaHei
-		font-weight 400
-		color #666
-		text-align center
-	.ba+.ba 
-		font-size 12px
-		color #999
-		margin 20px 0 80px 0
 </style>

@@ -188,8 +188,12 @@ a
 .is-current>.el-tree-node__content, .is-current>.el-tree-node__content *
     background tag-color !important
     color #fff !important
+
 .el-tree-node__content
-    height 28px
+	height 28px
+	padding 0 13px!important
+    
+	
 .el-tree-node__content:hover 
     background-color #B7BFFF !important
     color #fff
@@ -209,3 +213,14 @@ a
     color #637CFB !important
 .el-tree-node__label
 	color #2C2D33
+.ba 
+	width 100%
+	font-size 14px
+	font-family MicrosoftYaHei
+	font-weight 400
+	color #666
+	text-align center
+.ba+.ba 
+	font-size 12px
+	color #999
+	margin 20px 0 20px 0

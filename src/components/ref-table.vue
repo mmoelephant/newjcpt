@@ -1,27 +1,42 @@
 <template>
   <div style='width:100%; ' class='ul'> 
     <div id='table' style='width:auto' >
-      <div class="th li">
+      <div class="th tli">
         <p>{{type==0?'区域':'材料'}}</p>
         <p v-for="(i,index) in time" :key="index">{{i}}</p>
       </div>
       <el-checkbox-group v-model="checked">    
-        <div v-for="(i,index) in tabledata" :key="index" class='li'>
-          <p>
-            <el-checkbox :label='i' v-if='type==0' class='label'>{{i[0].area_name?i[0].area_name.substr(0,2):''}}</el-checkbox>
-            <el-checkbox :label='i' v-if='type==1' class='label'>{{i[0].name?i[0].name.substr(0,6):''}}</el-checkbox>
-            <i class="iconfont icon-shang-copy" @click="chose_area(i[0])" v-if='!isnext'></i>
-          </p>
-          <p v-for='(num,a) in i' :key='a' >
-            <span v-if='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}</span>  
-            <span v-if='t_type=="zs"'>{{num.price ==0?"-":num.exponent?Number(num.exponent).toFixed(2):'-'}}</span>  
-            <span v-if='t_type=="tb"'>{{num.price==0?"-":num.tongbi?(Number(num.tongbi)*100).toFixed(2)+'%':'-'}}</span>  
-            <span v-if='t_type=="hb"'>{{num.price==0?"-":num.huanbi?(Number(num.huanbi)*100).toFixed(2)+'%':'-'}}</span>  
-          </p>
+        <div v-for="(i,index) in newdata" :key="index" class='li'>
+          <div>
+            <p>
+              <el-checkbox :label='i' v-if='type==0' class='label'>{{i.data[0].area_name?i.data[0].area_name.substr(0,2)+''+i.data[0].area_name.substr(-1,1):''}}</el-checkbox>
+              <el-checkbox :label='i' v-if='type==1' class='label'>{{i.data[0].name?i.data[0].name.substr(0,6):''}}</el-checkbox>
+              <i :class="i.expand?'iconfont icon-shang-copy rotate':'iconfont icon-shang-copy'" @click="chose_area(i)"></i>
+            </p>
+            <p v-for='(num,a) in i.data' :key='a' >
+              <span v-if='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}</span>  
+              <span v-if='t_type=="zs"'>{{num.price ==0?"-":num.exponent?Number(num.exponent).toFixed(2):'-'}}</span>  
+              <span v-if='t_type=="tb"'>{{num.price==0?"-":num.tongbi?(Number(num.tongbi)*100).toFixed(2)+'%':'-'}}</span>  
+              <span v-if='t_type=="hb"'>{{num.price==0?"-":num.huanbi?(Number(num.huanbi)*100).toFixed(2)+'%':'-'}}</span>  
+            </p>
+          </div>
+          
+          <div v-for="(c,ci) in i.children" :key="ci" :class='i.expand?"li cli":"hide"' >
+            <p>
+              <el-checkbox :label='c' v-if='type==0' class='label'>{{c.data[0].area_name?c.data[0].area_name.substr(0,2):''}}</el-checkbox>
+              <el-checkbox :label='c' v-if='type==1' class='label'>{{c.data[0].name?c.data[0].name.substr(0,6):''}}</el-checkbox>
+            </p>
+            <p v-for='(cs,csi) in c.data' :key='csi' >
+              <span v-if='t_type=="price"'>{{cs.price?Number(cs.price).toFixed(2):'-'}}</span>  
+              <span v-if='t_type=="zs"'>{{cs.price ==0?"-":cs.exponent?Number(cs.exponent).toFixed(2):'-'}}</span>  
+              <span v-if='t_type=="tb"'>{{cs.price==0?"-":cs.tongbi?(Number(cs.tongbi)*100).toFixed(2)+'%':'-'}}</span>  
+              <span v-if='t_type=="hb"'>{{cs.price==0?"-":cs.huanbi?(Number(cs.huanbi)*100).toFixed(2)+'%':'-'}}</span>  
+            </p>
+          </div>
         </div>
       </el-checkbox-group> 
     </div>
-    <p v-show='tabledata.length ==0'>暂无数据</p>
+    <p v-show='newdata.length ==0'>暂无数据</p>
   </div>
 
 </template>
@@ -32,7 +47,7 @@ export default {
       return {
         checked:[],
         time:[],
-        newdata:false
+        newdata:[]
       }
     },
     props:{
@@ -52,9 +67,6 @@ export default {
           type:Number
         }
     },
-    mounted() {
-      
-    },
     watch:{
       checked:{
         handler(val) {
@@ -63,9 +75,10 @@ export default {
       },
       tabledata:{
         handler(val) {
+          this.newdata = []
           this.time = []
           if(val.length >0) {
-            val[0].map(item => {
+            val[0].data.map(item => {
               if(this.timeType ==0) {
                 const d = item.mdate?item.mdate.toString().substr(0,7):item.asmdate.toString().substr(0,7)
                 this.time.push(d)
@@ -88,14 +101,23 @@ export default {
             })
           }
           this.checked = []
+          var objDeepCopy = function (source) {// 深度拷贝数组对象
+              var sourceCopy = source instanceof Array ? [] : {};
+              for (var item in source) {
+                  sourceCopy[item] = typeof source[item] === 'object' ? objDeepCopy(source[item]) : source[item];
+              }
+              return sourceCopy;
+          }
+          this.newdata=objDeepCopy(val)
         },
         deep:true
       }
     },
     methods:{
       chose_area(item) {
-        this.$emit('choseitem',item)
-      }
+        item.expand = !item.expand
+      },
+      
     }
 };
 </script>
@@ -104,12 +126,11 @@ export default {
 .ul 
   width 100%
   overflow-y auto
-  .li 
+  .tli,.li>div
     display flex
     align-items center
     height 32px
     box-sizing border-box
-    
     width auto
     p 
       width 190px
@@ -132,6 +153,10 @@ export default {
   i 
     cursor: pointer
     flex-shrink 0
+  .rotate:before
+    display inline-block
+    transform rotate(90deg)
+    transition .3s
   .el-checkbox-group
     width auto
     .li
@@ -144,24 +169,44 @@ export default {
         .iconfont 
           font-size 10px
           color: #637CFB
-        
-
         border none
-      
-
       p+p 
         justify-content center
         padding 0
-    .li:nth-child(even) 
-      background #F3F4FE
-      p
+    .li:nth-child(odd)
         background #F3F4FE
-    
-
-    .li:nth-child(odd) 
-      background #DFE1F4
-      p
+        p
+          background #F3F4FE
+        .li:nth-child(odd) 
+          background #F3F4FE
+          p
+            background #F3F4FE
+        .li:nth-child(even) 
+          background #DFE1F4
+          p
+            background #DFE1F4
+    .li:nth-child(even) 
         background #DFE1F4
+        p
+          background #DFE1F4
+        .li:nth-child(odd) 
+          background #DFE1F4
+          p
+            background #DFE1F4
+        .li:nth-child(even) 
+          background #F3F4FE
+          p
+            background #F3F4FE
+    .cli
+        transition .3s
+        p 
+          padding-left 40px
+        p+p 
+          padding-left 0
+    .hide
+      height 0
+      transition .3s
+      overflow hidden
 .label
     width 100%
 </style>
