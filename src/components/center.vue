@@ -108,7 +108,7 @@ export default {
                         // symbol: function(par) {
                         //     console.log(par)
                         // },//'image://https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo_top_86d58ae1.png',
-                        symbolSize:30,
+                        symbolSize:20,
                         silent:true,
                         symbolOffset:['100%', '-120%']
                     },
