@@ -85,8 +85,14 @@ const api = {
 				return service1.post('/PageMaterialController/getMaterialsInfoByYear',data)
 			}
 		},
-		get_yn_time_list(data) {
-			return service1.post('/PageMaterialController/getMaterialsInfoByProvinceAreaEncapsulation',data)
+		get_yn_time_list(data,type) {
+			if(type == 0) {
+				return service1.post('/PageMaterialController/getMaterialsInfoByProvinceAreaEncapsulation',data)
+			} else if(type==1) {
+				return service1.post('/PageMaterialController/getMaterialsInfoByProvinceAreaQuarter',data)
+			} else {
+				return service1.post('/PageMaterialController/getMaterialsInfoByProvinceAreaYear',data)
+			}
 		},
     get_area(data) {
 		return service1.post('/PageAreaController/getAreaList', {pid:53})

@@ -6,14 +6,14 @@
                     <img src='../public/img/loginlogo.png'>
                     <p>云南省建设工程材料及设备价格监测系统</p>
 					<div class='nav'>
-						<div :class='$route.path == "/ref"?"act":""' @click='$router.push("/ref")'>
-							<img src='../public/img/数据灰色.png' v-if='$route.path == "ref"'/>
-							<img src="../public/img/数据选中.png" alt="" v-else>
+						<div :class='route == "/ref"?"act":""' @click='$router.push("/ref")'>
+							<img src='../public/img/数据选中.png' v-if='route == "/ref"'/>
+							<img src="../public/img/数据灰色.png" alt="" v-if='route !="/ref"'>
 							<p>数据查询</p>
 						</div>
-						<div :class='$route.path == "/reportIndex"?"act":""' @click='$router.push("/reportIndex")'>
-							<img v-if='$route.path == "reportIndex"'/>
-							<img src="" alt="" v-else>
+						<div :class='route == "/reportIndex"?"act":""' @click='$router.push("/reportIndex")'>
+							<img v-show='route == "/reportIndex"' src='../public/img/报告选中.png'/>
+							<img src="../public/img/报告灰.png" alt="" v-show='route != "/reportIndex"'>
 							<p>智能报告</p>
 						</div>
 					</div>
@@ -21,13 +21,39 @@
                 <div class='right'>
                     <p @click='$router.push("/")'>回到首页</p>
                     <i></i>
-                    <p class='blue' @click='logout'>{{token&&token.length>0?'退出登录':'登录'}}</p>
+                    <p class='blue' @mouseenter="show=true" @mouseleave="show=false">{{token&&token.length>0?'设置中心':'登录'}}</p>
+					<div class='set' v-show='show' @mouseenter="show=true" @mouseleave="show=false">
+						<p @click='goset'>账户设置</p>
+						<p @click='logout'>退出登录</p>
+					</div>
                 </div>
             </el-header>
             <el-container style='height:100%;flex-direction:column'>
 				<router-view></router-view>
+				<p class='ba'>云南省建设工程材料及设备价格监测系统</p>
+				<p class='ba'>滇公网安备 5301110011230  备案编号：滇ICP备16100321号  Copyright 2018-2019 版权所有 昆明行列科技有限公司</p>
             </el-container>
         </el-container>
+		<el-dialog
+			title="账户设置"
+			:visible.sync="dialogVisible"
+			width="30%">
+			<el-form :model="formInline" style='width:50%;padding-top:50px;margin:0 auto' label-width="40px">
+				<el-form-item label="姓名">
+					<el-input v-model="formInline.name"></el-input>
+				</el-form-item>
+				<el-form-item label="地区">
+					<el-input v-model="formInline.location"></el-input>
+				</el-form-item>
+				<el-form-item label="单位">
+					<el-input v-model="formInline.unit"></el-input>
+				</el-form-item>
+			</el-form>
+			<span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="save">保存修改</el-button>
+				<el-button @click="dialogVisible= false">取消</el-button>
+			</span>
+		</el-dialog>
 	</div>
 </template>
 
@@ -68,7 +94,10 @@ export default {
                 }
             ],
 			mainHeight: 0,
-			defaultimg:'this.src="'+ require('../public/img/head.png') +'"'
+			defaultimg:'this.src="'+ require('../public/img/head.png') +'"',
+			show:false,
+			dialogVisible:false,
+			formInline:{}
         };
 	},
 	computed:{
@@ -119,7 +148,34 @@ export default {
             sessionStorage.removeItem('token')
 			sessionStorage.removeItem('user')
 			this.$router.push('login')
-		}
+		},
+		hh() {
+			if(this.token&&this.token.length>0) {
+				this.show = !this.show
+			} else {
+				this.$router.push('/login')
+			}
+		},
+		goset() {
+			this.formInline = {
+				name: this.$store.state.login.userInfo.name,
+				location: this.$store.state.login.userInfo.location,
+				unit: this.$store.state.login.userInfo.unit
+			}
+			this.dialogVisible = true
+		},
+		async save() {
+			const res = await this.$api.updata_user(this.formLabel)
+			if(res.data.user) {
+                this.$store.commit('login/SET_USER_INFO', res.data.user)
+                sessionStorage.setItem('user', JSON.stringify(res.data.user))
+                this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                });
+            }
+		},
+
 	}
 }
 </script>
@@ -136,7 +192,7 @@ export default {
 		display flex
 		justify-content space-between
 		align-items center
-		padding 0 80px !important
+		padding 0 30px !important
 		background #fff
 		height 78px !important
 		box-shadow 0px 8px 14px 0px rgba(33,58,233,0.1)
@@ -182,6 +238,7 @@ export default {
 		.right 
 			display flex
 			align-items center
+			position relative
 			p 
 				font-size 14px
 				font-weight 400
@@ -195,4 +252,23 @@ export default {
 				margin 0 16px
 			.blue 
 				color #7F94FF
+			.set
+				position absolute
+				top 20px
+				left 55px
+				width 120px
+				background #fff
+				border 1px solid rgba(237,240,242,1)
+				box-shadow 0px 6px 10px 0px rgba(70,74,78,0.12)
+				border-radius 4px
+				color #8E9099
+				font-size 14px
+				text-align center
+				line-height 42px
+				p:hover
+					background #EFF2FC
+					color #637CFB
+
+
+
 </style>

@@ -1,13 +1,7 @@
 <template>
     <div style='height:100%' v-loading.fullscreen.lock="loading">
-        <div class="reportBtns">
-			<div class='btnClass'>
-                <span class="dotClass"></span>
-                数据查询>
-                <span>各地区材料数据</span>
-            </div>
-		</div>
-        <el-container style='height:100%;background:#F6F7FE;padding:88px 20px 40px 20px;box-sizing:border-box'>
+        
+        <el-container style='height:100%;background:#F6F7FE;padding:0 20px 0 0;box-sizing:border-box'>
             <el-aside width="320px" style='border-radius:4px;background:#fff;' class='cate'>
                 <div :class='t==0?"title acttitle":"title"'  @click='t=0'>
                     <div>
@@ -20,7 +14,7 @@
                 </div>
                 <el-tree 
                     :data="cateList" :props="defaultProps" @node-click="handleNodeClick" :indent='30'
-                    :style='t==0?"height:auto;transition:.4s;opacity:1":"height:0;background:#000;transition:.4s;opacity:0"'></el-tree>
+                    v-show='t==0'></el-tree>
                 <div :class='t==1?"title acttitle":"title"' @click='t =1'>
                     <div>
                         <p class='a'></p>                   
@@ -28,11 +22,21 @@
                     </div>
                     <i class='iconfont icon-shang-copy'></i>
                 </div>
-                <el-tree :data="areaList" :props="defaultProps" @node-click="handleNodeClick" :indent='30'
-                    :style='t==1?"height:auto;transition:.4s;opacity:1":"height:0;background:#000;transition:.4s;opacity:0"'></el-tree>
-
+                <ul class='alist' 
+                    v-show='t==1'>
+                    <li v-for='a in areaList' :key='a.id' 
+                        @click='handleNodeClick(a)'
+                        :class='chosed_city ==a?"ac":""'>{{a.name}}</li>
+                </ul>
             </el-aside>
             <el-container class='charts-main'>
+                <div class="reportBtns">
+                    <div class='btnClass'>
+                        <span class="dotClass"></span>
+                        数据查询>
+                        <span>各地区材料数据</span>
+                    </div>
+                </div>
                 <div class='tooltip'>
                     <div class='left'>
                         <h1>云南省各地区材料数据</h1>
@@ -47,8 +51,8 @@
                                 年度数据
                             </p>
                         </div>
-                        <div class='switch' @click='showcharts = !showcharts'>
-                            显示勾选地区对比图表
+                        <div class='switch' @click='show_c(showcharts)'>
+                            显示勾选{{t==0?'地区':'材料'}}对比图表
                         </div>
                     </div>                   
                 </div>  
@@ -97,8 +101,12 @@
                             </div>
                         </div> 
                     </div>
-                    
+                    <div style='width:100%;height:100%;padding-top:56px;overflow:hidden;display:flex'
+                        v-show='loading'>
+                        <img src="../../public/img/table.png" alt="" style='width:100%;min-height: 577px;max-height:577px'>
+                    </div>
                     <reftable 
+                        v-show='!loading'
                         style='padding-top:56px'
                         :tabledata='tabledata' 
                         :type='t' 
@@ -108,15 +116,14 @@
                         :isnext='isnext'></reftable>
                     <page-btn :disablepage="disablepage" @pagechange='pagechange' style='padding-top:20px;float:right'></page-btn>
                 </div>
-                <p class='ba'>云南省建设工程材料及设备价格监测系统</p>
-				<p class='ba'>滇公网安备 5301110011230  备案编号：滇ICP备16100321号  Copyright 2018-2019 版</p>
             </el-container>
         </el-container>
         <el-dialog
             :visible.sync="showcharts"
             width="60%">
             <div class='ch' v-show ='showcharts'>
-                <h1>云南省材料价格对比柱状图</h1>
+                <h1 v-show='t==0'>云南省{{chosed_cate.name}}价格对比柱状图</h1>
+                <h1 v-show='t==1'>{{chosed_city.name}}材料价格对比柱状图</h1>
                 <div class='tool'>
                     <ul>   
                         <li @click='change_charts="bar"' :class='change_charts=="bar"?"active":""'>
@@ -207,6 +214,10 @@ export default {
                 label: '近4年'
             },
             {
+                value:6,
+                label: '近6年'
+            },
+            {
                 value:8,
                 label: '近8年'
             },
@@ -221,7 +232,7 @@ export default {
             chosed_area:{
                 area:53
             }, // 选择的区域code 默认云南省 用于图展示
-            disablepage:-1, //传给分页组件的判定哪个按钮禁用 -1:左按钮 1：右按钮 0：不禁用 2:都禁用
+            disablepage:2, //传给分页组件的判定哪个按钮禁用 -1:左按钮 1：右按钮 0：不禁用 2:都禁用
             isnext:false,//是否是子表格
             checked:[],//选中作为图渲染的数据,
             mycharts:null,
@@ -339,7 +350,6 @@ export default {
             this.checked = []
             let data = {
                 id:this.chosed_cate.id,//选择的材料
-                area:this.chosed_area.area
             } 
             if(this.timetype == 0) {
                 const t_arr=this.formateTime()
@@ -350,6 +360,15 @@ export default {
             } else {
                 data.yearNumber = this.time.toString()
             }
+            const ap = await this.$api.get_yn_time_list(data, this.timetype)
+            console.log(ap)
+            let akeys = Object.keys(ap.data.data)
+            if(akeys.length>0) {
+                this.tabledata.push({data:ap.data.data[akeys[0]]})
+            }else {
+                this.tabledata = []
+            }   
+            data.area=this.chosed_area.area
             const res = await this.$api.get_area_time_list(data,this.timetype)
             if(Object.keys(res.data.data).length>0) {
                 let keys = Object.keys(res.data.data)
@@ -365,15 +384,7 @@ export default {
                         this.init_barline()
                     }
                 }
-            } else {
-                this.tabledata = []
-            }
-            delete data.area
-            const ap = await this.$api.get_yn_time_list(data)
-            let akeys = Object.keys(ap.data.data)
-            if(akeys.length>0) {
-                this.tabledata.unshift({data:ap.data.data[akeys[0]]})
-            }
+            }          
 
             this.$nextTick(() =>{
                 this.show_page()
@@ -547,7 +558,8 @@ export default {
                 },
                 legend: {
                     data:legend,
-                    bottom:0
+                    bottom:0,
+                    type:'scroll',
                 },
                 toolbox: {
                     show : false,
@@ -724,8 +736,8 @@ export default {
                     }
                     item.data.map(t=> {
                         data.push(t.price) 
-                        tb.push(t.tongbi)
-                        hb.push(t.huanbi)
+                        // tb.push(t.tongbi)
+                        // hb.push(t.huanbi)
                     })
                     if(this.t==0) {
                         legend.push(item.data[0].area_name)
@@ -734,7 +746,10 @@ export default {
                         itemStyle:{
                             color:this.color[index]
                         }},
-                            {data:hb,type:'line',name:item.data[0].area_name,yAxisIndex:1,itemStyle:{
+                            {
+                                data:data,type:'line',name:item.data[0].area_name,
+                                // yAxisIndex:1,
+                                itemStyle:{
                             color:this.color[index]
                         }})
                     } else {
@@ -744,12 +759,19 @@ export default {
                         itemStyle:{
                             color:this.color[index]
                         }},
-                            {data:tb,type:'line',name:item.data[0].name,yAxisIndex:1,itemStyle:{
+                            {   
+                                data:data,
+                                // data:tb,
+                                type:'line',
+                                name:item.data[0].name,
+                                yAxisIndex:1,
+                                itemStyle:{
                             color:this.color[index]
-                        }},{
-                            data:hb,type:'line',name:item.data[0].name,yAxisIndex:1,itemStyle:{
-                            color:this.color[index]
-                        }}
+                        }},
+                        // {
+                        //     data:hb,type:'line',name:item.data[0].name,yAxisIndex:1,itemStyle:{
+                        //     color:this.color[index]
+                        // }}
                         )
                     }                    
                 })
@@ -859,9 +881,9 @@ export default {
                     {
                         type : 'value'
                     },
-                    {
-                        type:'value'
-                    }
+                    // {
+                    //     type:'value'
+                    // }
                 ],
                 series :y
             }
@@ -888,9 +910,20 @@ export default {
             }
             //根据获取到的list重新渲染图表
         },
+        show_c(status) {
+            if(status) {
+                this.showcharts = !status
+                return
+            }
+            if(this.checked && this.checked.length >0) {
+                this.showcharts = !status
+            } else {
+                this.$message.error('没有勾选数据')
+            }
+        },
         show_page() {
-            this.boxwidth = $('#table').outerWidth()
-            this.tablewidth = 190+($('.th p').length-1)*130
+            this.boxwidth = $('.t-box').width()
+            this.tablewidth = 220+($('.right .head p').length)*130
             let scroll = $('.ul').scrollLeft()
             let left = this.tablewidth-this.boxwidth-scroll
             if(scroll ==0 && left>0) {
@@ -907,6 +940,7 @@ export default {
             let scroll = $('.ul').scrollLeft()
             let left = this.tablewidth - this.boxwidth -scroll
             const that = this
+            console.log(scroll,left, scroll-this.boxwidth)
             if(type == -1) {
                 if(scroll>this.boxwidth) {
                     $('.ul').animate({
@@ -942,20 +976,6 @@ export default {
 </script>
 <style lang="stylus" scoped>
 @import '../style/color.stylus'
-.reportBtns
-    position absolute
-.btnClass
-    width auto
-    padding-left 30px
-    display flex
-    align-items center
-    padding-right 37px
-    .dotClass
-        display block
-        position static
-        margin-right 6px
-    span
-        color #454EFF
 .title 
     display flex
     font-size 16px
@@ -1015,7 +1035,7 @@ export default {
 
 .cate
     box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
-    border-radius 8px
+    border-radius 0 !important
     // padding 0 20px
     .cate-list 
         height auto
@@ -1061,6 +1081,9 @@ export default {
     height 100%
     border-radius 8px       
     flex-direction column
+    padding-top 78px
+    box-sizing border-box
+    position relative
     .table-box
         overflow-y scroll
         width 100%
@@ -1073,6 +1096,7 @@ export default {
             box-sizing border-box
             top 0
             left 0
+            z-index 99
         .t
             display flex
             justify-content space-between 
@@ -1117,8 +1141,27 @@ export default {
         // min-height 100%
         max-height auto
         height auto
-        margin-bottom 20px
+        // margin-bottom 20px
         border-radius 8px
+    .reportBtns
+        position absolute
+        top 20px
+        background rgba(0,0,0,0)
+        box-shadow none
+        padding 0
+    .btnClass
+        width 280px
+        padding-left 30px
+        display flex
+        align-items center
+        padding-right 37px
+        margin-left 0
+        .dotClass
+            display block
+            position static
+            margin-right 6px
+        span
+            color #454EFF
     .tooltip 
         display flex
         justify-content space-between
@@ -1173,10 +1216,14 @@ export default {
         height 38px
     
 .ch 
+    display flex
+    flex-direction column
     h1 
-        width 300px
+        // width 300px
+        width auto
+        padding 0 20px
         line-height 48px
-        margin 28px auto 28px auto
+        margin 0 auto
         font-size 20px
         font-family MicrosoftYaHei-Bold
         font-weight bold
@@ -1197,6 +1244,7 @@ export default {
         display flex
         justify-content space-between
         align-items center
+        padding-left 60px
         ul 
             display flex
             align-items center
@@ -1238,4 +1286,16 @@ export default {
                 background #637CFB
                 .iconfont 
                     font-size 16px
+
+.alist
+    height 28px
+    line-height 28px   
+    font-size 14px
+    color #2c2d33
+    li
+        padding 0 30px
+        cursor pointer
+    .ac 
+        background #7F94FF
+        color #fff
 </style>

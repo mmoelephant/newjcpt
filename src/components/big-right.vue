@@ -384,7 +384,8 @@ export default {
                     axisLabel:{
                         color: '#fff', 
                         fontSize:10,
-                        interval:0
+                        interval:0,
+                        rotate:60
                     },
                 }
                 ],
@@ -439,7 +440,7 @@ export default {
                         }
                     },
                     data:y,
-                    barWidth:14,
+                    barMaxWidth:14,
                     barGap:'40%'
                 }]
             }
@@ -499,7 +500,7 @@ export default {
         display flex
         align-items center
         padding 0 px2vh(26)
-        line-height px2vh(66)
+        height px2vh(66)
         i 
             display block
             width 8px
@@ -512,7 +513,7 @@ export default {
             font-family MicrosoftYaHei-Bold
             font-weight bold
             color #fff
-            line-height px2vh(66)
+            // line-height px2vh(66)
         .fontb
             font-size px2vw(32)
             font-weight bold
