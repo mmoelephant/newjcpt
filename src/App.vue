@@ -28,7 +28,7 @@
 					</div>
                 </div>
             </el-header>
-            <el-container style='height:100%;flex-direction:column'>
+            <el-container style='height:100%;flex-direction:column;overflow:auto'>
 				<router-view></router-view>
 				<p class='ba'>云南省建设工程材料及设备价格监测系统</p>
 				<p class='ba'>滇公网安备 5301110011230  备案编号：滇ICP备16100321号  Copyright 2018-2019 版权所有 昆明行列科技有限公司</p>
