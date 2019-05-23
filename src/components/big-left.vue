@@ -201,7 +201,7 @@ export default {
             width 100%
             li 
                 width 100%
-                padding 15px 105px 13px 76px
+                padding 15px px2vw(105) 13px px2vw(76)
                 box-sizing border-box
                 img 
                     width 10px
@@ -216,9 +216,13 @@ export default {
                         font-family MicrosoftYaHei-Bold
                         font-weight bold
                         color #fff
+                        text-overflow ellipsis
+                        // width 50%
                     .p 
                         color #95979C
                         font-size 14px
+                        width 50%
+                        text-overflow ellipsis
             .el-progress-bar__outer
                 background-color #4D6084 !important
                 border-radius 0 !important

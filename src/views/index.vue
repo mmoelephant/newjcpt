@@ -61,6 +61,7 @@ export default {
 		background url('../../public/img/bgb.png') no-repeat
 		background-size 100% 100%
 		font-family "MicrosoftYaHei"
+		z-index 999
 		// overflow scroll
 	.b-t
 		width 100% 

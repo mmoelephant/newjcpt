@@ -74,6 +74,11 @@ let routes = [
     name: 'help',
     component: () => import('../views/help/help.vue')
   },
+  {
+    path: '*',
+    name: 'index',
+    component: () => import('../views/index.vue')
+  },
 ]
 routes.push(...rout)
 let router = new Router({
