@@ -10,7 +10,7 @@
 								<el-checkbox v-show='type==0' class='label' :label='i'>1</el-checkbox>
 								<el-checkbox v-show='type==1' class='label' :label='i'>1</el-checkbox>
 								<p v-show='type==0' @click='i.expand = !i.expand'>{{i.data[0].area_name?i.data[0].area_name.substr(0,2)+''+i.data[0].area_name.substr(-1,1):''}}</p>
-								<p v-show='type==1' @click='i.expand = !i.expand'>{{i.data[0].name?i.data[0].name:''}}</p>
+								<p v-show='type==1' @click='i.expand = !i.expand' style='cursor:pointer'>{{i.data[0].name?i.data[0].name:''}}</p>
 							</div>
 							<i :class="i.expand?'iconfont icon-shang-copy rotate':'iconfont icon-shang-copy'" @click="chose_area(i)"  v-show='type==1'></i>
 						</div>
@@ -20,7 +20,7 @@
 									<el-checkbox v-show='type==0' class='label' :label='c'>1</el-checkbox>
 									<el-checkbox v-show='type==1' class='label' :label='c'>1</el-checkbox>
 									<p v-show='type==0' @click='i.expand = !i.expand'>{{c.data[0].area_name?c.data[0].area_name.substr(0,2)+''+c.data[0].area_name.substr(-1,1):''}}</p>
-									<p v-show='type==1' @click='i.expand = !i.expand'>{{c.data[0].name?c.data[0].name:''}}</p>
+									<p v-show='type==1' @click='i.expand = !i.expand' style='cursor:pointer'>{{c.data[0].name?c.data[0].name:''}}</p>
 
 								</div>
 							</div>
@@ -280,4 +280,6 @@ export default {
 	overflow hidden
 img 
 	margin-left 10px
+.el-checkbox
+	margin-right 10px
 </style>
