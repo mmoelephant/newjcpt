@@ -3,9 +3,9 @@
 	<!-- <router-view v-if='$route.name == "reportDetail"'></router-view> -->
 	<div class="intellReport">
 		<div class="inteLeft">
-			<div :class="bigType == 0 ?'all allOn':'all'" @click="toggleBig(0)">全部报告</div>
-			<div :class="bigType == 1 ?'month monthOn':'month'" @click="toggleBig(1)">月度智能报告</div>
-			<div :class="bigType == 2 ?'custom customOn':'custom'" @click="toggleBig(2)">自定义报告</div>
+			<a href="javascript:void(0)"><div :class="bigType == 0 ?'all allOn':'all'" @click="toggleBig(0)">全部报告</div></a>
+			<a href="javascript:void(0)"><div :class="bigType == 1 ?'month monthOn':'month'" @click="toggleBig(1)">月度智能报告</div></a>
+			<a href="javascript:void(0)"><div :class="bigType == 2 ?'custom customOn':'custom'" @click="toggleBig(2)">自定义报告</div></a>
 		</div>
 		<div class="inteRight">
 			<div class="reportBtns">
@@ -19,7 +19,7 @@
 					<!-- <el-autocomplete class="searchBox" v-model="state2" autocomplete clearable :fetch-suggestions="querySearch" placeholder="请输入需要检索的报告标题" :trigger-on-focus="false" @select="handleSelect">
 					</el-autocomplete> -->
 					<a href="javascript:void(0)" @click="goSearch"><div class="searchIcon"></div></a>
-					<ul class="seaResult">
+					<ul class="seaResult" :style="resultBox">
 						<li class="resultItem" v-for="item in allReport" :key="item.id" @click="chooseResult(item.title)">
 							<a href="javascript:void(0)">{{item.title}}</a>
 						</li>
@@ -389,6 +389,9 @@ export default {
 			resultVis:{
 				display:'none'
 			},
+			resultBox:{
+				display:'none'
+			},
 			searchTip:{
 				display:'none'
 			},
@@ -587,22 +590,27 @@ export default {
 			console.log(this.searContent)
 			this.resultReport = []
 			this.allReport=[]
+			this.resultBox.display = 'none'
 			if(this.searContent != ''){
 				this.reReport.map(item => {
 					if(item.title.indexOf(this.searContent) != -1){
 						this.allReport.push(item)
+						this.resultBox.display = 'block'
 					}
 				})
 			}else{
 				this.allReport = []
+				this.resultBox.display = 'none'
 			}
 		},
 		chooseResult(zz){
 			this.searContent = zz
 			this.allReport = []
+			this.resultBox.display = 'none'
 		},
 		goSearch(){
 			this.allReport = []
+			this.resultBox.display = 'none'
 			this.resultReport = []
 			this.allVis.display = 'none'
 			this.resultVis.display = 'block'
@@ -641,6 +649,7 @@ export default {
 			this.resultVis.display = 'none'
 			this.resultReport = []
 			this.allReport = []
+			this.resultBox.display = 'none'
 			this.searchTip.display = 'none'
 			this.noImgResult.display = 'none'
 			this.searContent = ''
@@ -1204,6 +1213,9 @@ export default {
 	width 200px
 	height 100%
 	background-color #fff
+	position fixed
+	top 78px
+	left 0
 
 .all
 	width 100%
@@ -1213,7 +1225,6 @@ export default {
 	box-sizing border-box
 	margin-bottom 10px
 	font-size 16px
-	// font-weight bold
 	color #8E9099
 	line-height 58px
 
@@ -1273,6 +1284,7 @@ export default {
 	background url(../../../public/img/report/custom_white.png) no-repeat 15px 15px,linear-gradient(-90deg,rgba(97,224,255,1) 0%,rgba(100,57,248,1) 100%) 
 	color white
 
+
 .customOn:hover
 	background url(../../../public/img/report/custom_white.png) no-repeat 15px 15px,linear-gradient(-90deg,rgba(97,224,255,1) 0%,rgba(100,57,248,1) 100%) 
 	color white
@@ -1280,6 +1292,7 @@ export default {
 
 .inteRight
 	width calc(100% - 200px)
+	margin-left 200px
 
 .searchTip
 	margin-bottom 30px
