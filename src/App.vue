@@ -165,14 +165,16 @@ export default {
 			this.dialogVisible = true
 		},
 		async save() {
-			const res = await this.$api.updata_user(this.formLabel)
+			this.formInline.token = this.token
+			const res = await this.$api.updata_user(this.formInline)
 			if(res.data.user) {
                 this.$store.commit('login/SET_USER_INFO', res.data.user)
                 sessionStorage.setItem('user', JSON.stringify(res.data.user))
                 this.$message({
                     message: '修改成功',
                     type: 'success'
-                });
+				});
+				this.dialogVisible=false
             }
 		},
 
