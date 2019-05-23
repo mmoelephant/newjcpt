@@ -22,11 +22,11 @@ Vue.directive('title', {
   }
 })
 
-Vue.directive('title', {
-  inserted: function (el, binding) {
-    document.title = el.dataset.title
-  }
-})
+// Vue.directive('title', {
+//   inserted: function (el, binding) {
+//     document.title = el.dataset.title
+//   }
+// })
 
 new Vue({
   router,

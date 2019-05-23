@@ -1,7 +1,7 @@
 <template>
 <div v-loading.fullscreen="loading">
-	<router-view v-if='$route.name == "reportDetail"'></router-view>
-	<div class="intellReport" v-else>
+	<!-- <router-view v-if='$route.name == "reportDetail"'></router-view> -->
+	<div class="intellReport">
 		<div class="inteLeft">
 			<div :class="bigType == 0 ?'all allOn':'all'" @click="toggleBig(0)">全部报告</div>
 			<div :class="bigType == 1 ?'month monthOn':'month'" @click="toggleBig(1)">月度智能报告</div>
@@ -15,17 +15,25 @@
 					<span :class="type == 1?'view2 viewActive':'view2'" @click="choose(1)">列表显示</span>
 				</div>
 				<div class="search">
-					<!-- <el-autocomplete class="searchBox" v-model="state2" :fetch-suggestions="querySearch" placeholder="请输入内容" :trigger-on-focus="false" @select="handleSelect">
+					<input class="searchBox" placeholder="请输入需要检索的报告标题" v-model="searContent" @input="searChange">
+					<!-- <el-autocomplete class="searchBox" v-model="state2" autocomplete clearable :fetch-suggestions="querySearch" placeholder="请输入需要检索的报告标题" :trigger-on-focus="false" @select="handleSelect">
 					</el-autocomplete> -->
+					<a href="javascript:void(0)" @click="goSearch"><div class="searchIcon"></div></a>
+					<ul class="seaResult">
+						<li v-for="item in allReport" :key="item.id" @click="chooseResult(item.title)">
+							<a href="javascript:void(0)">{{item.title}}</a>
+						</li>
+					</ul>
 				</div>
 			</div>
 			<div class="reportContent">
+				<div class="searchTip" :style="searchTip">搜索<span class="keyWord">{{'“' + searContent + '”'}}</span>结果如下：<a href="javascript:void(0)" class="goback" @click="goback">返回</a></div>
 				<div class="gridView" :style="viewToggle">
 					<!-- 月度智能报告(网格视图) -->
-					<div :class="bigType == 2?'systemVis':''">
+					<div :class="bigType == 2?'systemVis':''" :style="allVis">
 						<el-badge value="new"><p class="reporTypeTitle">月度智能报告</p></el-badge>
 						<ul class="gridUl">
-							<li class="gridListClass" v-for="item in systemReport" :key="item.id">
+							<li class="gridListClass" v-for="item in systemReport" :key="item.id" @click="toDetail_system(item.id)">
 								<img src="../../../public/img/report/more.png" class="reportImg" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
 								<img src="../../../public/img/report/single.png" class="reportImg" v-else>
 								<p class="reporTitle">云南省建设工程主要材料市场价格变动情况</p>
@@ -42,23 +50,24 @@
 						</el-pagination>
 					</div>
 					<!-- 自定义报告(网格视图) -->
-					<div :class="bigType == 1?'customVis':''">
+					<div :class="bigType == 1?'customVis':''" :style="allVis">
 						<el-badge value="new"><p class="reporTypeTitle">自定义报告</p></el-badge>
-						<div :class="bigType == 2?'newRe':'newRe1'">新建智能报告</div>
+						<div :class="bigType == 2?'newRe':'newRe1'" @click="openDialog"><a href="javascript:void(0)">新建自定义报告</a></div>
 						<ul class="gridUl">
 							<li class="gridListClass" v-for="item in customReport" :key="item.id">
-								<img src="../../../public/img/report/more1.png" class="reportIcon" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
-								<img src="../../../public/img/report/single1.png" class="reportIcon" v-else>
-								<div :class="item.materialClassID&&item.materialClassID.indexOf(',') != -1?'reportMateri':'reportMateri reportMateri1'">
+								<img src="../../../public/img/report/more1.png" class="reportIcon" 
+								v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1" @click="toDetail(item.id)">
+								<img src="../../../public/img/report/single1.png" class="reportIcon" v-else @click="toDetail(item.id)">
+								<div :class="item.materialClassID&&item.materialClassID.indexOf(',') != -1?'reportMateri':'reportMateri reportMateri1'" @click="toDetail(item.id)">
 									{{item.materialClassID&&item.materialClassID.indexOf(',') != -1?item.materialName:'单材料-' + item.materialName}}
 								</div>
-								<div class="reporType" v-if="item.dataType == 1">月报</div>
-								<div class="reporType1" v-else-if="item.dataType == 2">季报</div>
-								<div class="reporType2" v-else>年报</div>
-								<a href="javascript:void(0)"><img src="../../../public/img/report/delete.png" class="deleteIcon"></a>
-								<p class="reportarea">{{item.areaName}}</p>
-								<p class="reporTitle1">{{item.title}}</p>
-								<p class="reporTime">{{item.createTime?item.createTime.split('T')[0]:''}}</p>
+								<div class="reporType" v-if="item.dataType == 1" @click="toDetail(item.id)">月报</div>
+								<div class="reporType1" v-else-if="item.dataType == 2" @click="toDetail(item.id)">季报</div>
+								<div class="reporType2" v-else @click="toDetail(item.id)">年报</div>
+								<a href="javascript:void(0)" @click="deleteRe(item.id)"><img src="../../../public/img/report/delete.png" class="deleteIcon"></a>
+								<p class="reportarea" @click="toDetail(item.id)">{{item.areaName}}</p>
+								<p class="reporTitle1" @click="toDetail(item.id)">{{item.title}}</p>
+								<p class="reporTime" @click="toDetail(item.id)">{{item.createTime?item.createTime.split('T')[0]:''}}</p>
 							</li>
 						</ul>
 						<div class="noData" :style="noImgCustom">
@@ -73,7 +82,7 @@
 				</div>
 				<div class="listView" :style="viewToggle1">
 					<!-- 月度智能报告(列表视图) -->
-					<div :class="bigType == 2?'systemVis':''">
+					<div :class="bigType == 2?'systemVis':''" :style="allVis">
 						<el-badge value="new"><p class="reporTypeTitle">月度智能报告</p></el-badge>
 						<ul class="listUl">
 							<li class="lisTitle">
@@ -84,13 +93,13 @@
 							</li>
 							<li class="listClass" v-for="(item,index) in systemReport" :key="index">
 								<span class="listItem listNum">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
-								<span class="listItem listT">
+								<span class="listItem listT" @click="toDetail_system(item.id)">
 									<a href="javascript:void(0)">
 										云南省建设工程主要材料市场价格变动情况{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}
 									</a>
 								</span>
 								<span class="listItem listTime">{{item.createTime?item.createTime.split('T')[0]:''}}</span>
-								<span class="listItem listDo"><a href="javascript:void(0)">查看报告></a></span>	
+								<span class="listItem listDo"><a href="javascript:void(0)" @click="toDetail_system(item.id)">查看报告></a></span>	
 							</li>
 						</ul>
 						<div class="noData" :style="noImg">
@@ -103,20 +112,30 @@
 						</el-pagination>
 					</div>
 					<!-- 自定义报告(列表视图) -->
-					<div :class="bigType == 1?'customVis':''">
+					<div :class="bigType == 1?'customVis':''" :style="allVis">
 						<el-badge value="new"><p class="reporTypeTitle">自定义报告</p></el-badge>
-						<div :class="bigType == 2?'newRe':'newRe1'">新建智能报告</div>
+						<div :class="bigType == 2?'newRe':'newRe1'" @click="openDialog"><a href="javascript:void(0)">新建自定义报告</a></div>
 						<ul class="listUl">
 							<li class="lisTitle">
 								<span class="titleItem titleNum_custom">编号</span>
 								<span class="titleItem titleT_custom">报告标题</span>
-								<span class="titleItem titleType_custom">类型</span>
-								<span class="titleItem titleTime_custom">创建时间</span>
+								<span class="titleItem titleType_custom">类型
+									<span class="filterDo">
+										<a href="javascript:void(0)" class="lift" title="升序" @click="lift(0)"></a>
+										<a href="javascript:void(0)" class="down" title="降序" @click="down(0)"></a>
+									</span>
+								</span>
+								<span class="titleItem titleTime_custom">创建时间
+									<span class="filterDo" style="margin-left:32px">
+										<a href="javascript:void(0)" class="lift" title="升序" @click="lift(1)"></a>
+										<a href="javascript:void(0)" class="down" title="降序" @click="down(1)"></a>
+									</span>
+								</span>
 								<span class="titleItem titleDo_custom">操作</span>
 							</li>
 							<li class="listClass" v-for="(item,index) in customReport" :key="index">
 								<span class="listItem listNum_custom">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
-								<span class="listItem listT_custom">
+								<span class="listItem listT_custom" @click="toDetail(item.id)">
 									<a href="javascript:void(0)">
 										{{item.title?item.title.substr(0,25)+'...':'-'}}
 									</a>
@@ -126,9 +145,9 @@
 								<span class="listItem listType_custom2" v-else>年度</span>
 								<span class="listItem listTime_custom">{{item.createTime?item.createTime.split('T')[0]:'-'}}</span>
 								<span class="listItem listDo_custom">
-									<a href="javascript:void(0)" class="toDetail">查看报告</a>
+									<a href="javascript:void(0)" class="toDetail" @click="toDetail(item.id)">查看报告</a>
 									<a href="javascript:void(0)" class="deleteRe" @click="deleteRe(item.id)">删除</a>
-									</span>	
+								</span>	
 							</li>
 						</ul>
 						<div class="noData" :style="noImgCustom">
@@ -140,9 +159,210 @@
 						class="reportPage" @current-change="get_data2">
 						</el-pagination>
 					</div>
+					<div :style="resultVis">
+						<ul class="listUl">
+							<li class="lisTitle">
+								<span class="titleItem titleNum">编号</span>
+								<span class="titleItem titleT">报告标题</span>
+								<span class="titleItem titleTime">创建时间</span>
+								<span class="titleItem titleDo">操作</span>
+							</li>
+							<li class="listClass" v-for="(item,index) in resultReport" :key="index">
+								<span class="listItem listNum">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
+								<span class="listItem listT" @click="toDetail_system(item.id)" v-if="item.type == 1">
+									<a href="javascript:void(0)">
+										{{item.title.substr(0,item.title.indexOf(searContent))}}
+										<span style="color:#F2342B">{{searContent}}</span>
+										{{item.title.substr(item.title.indexOf(searContent) + searContent.length)}}
+										{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}
+										<!-- 云南省建设工程主要材料市场价格变动情况{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}} -->
+									</a>
+								</span>
+								<span class="listItem listT" @click="toDetail(item.id)" v-if="item.type == 2">
+									<a href="javascript:void(0)">
+										<!-- {{item.title}} -->
+										{{item.title.substr(0,item.title.indexOf(searContent))}}
+										<span style="color:#F2342B">{{searContent}}</span>
+										{{item.title.substr(item.title.indexOf(searContent) + searContent.length).slice(0,10)}}...
+									</a>
+								</span>
+								<span class="listItem listTime">{{item.createTime?item.createTime.split('T')[0]:''}}</span>
+								<span class="listItem listDo" v-if="item.type == 1"><a href="javascript:void(0)" @click="toDetail_system(item.id)">查看报告></a></span>	
+								<span class="listItem listDo" v-if="item.type == 2"><a href="javascript:void(0)" @click="toDetail(item.id)">查看报告></a></span>	
+							</li>
+						</ul>
+						<div class="noData" :style="noImgResult">
+							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
+							<p class="noDatap1">暂时没有找到</p>
+							<p class="noDatap2">不要着急，要不再试试~</p>
+						</div>
+						<el-pagination :page-size="pageSize3" :total="totalPage3" :pager-count="5" :current-page="pageNum3" :hide-on-single-page="true" layout="prev, pager, next" 
+						class="reportPage" @current-change="get_data3">
+						</el-pagination>
+					</div>
 				</div>
 			</div>
 		</div>
+		<el-dialog title="新建自定义报告" :visible.sync="dialogFormVisible" width="620px">
+			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+				<el-form-item label="报告名称" prop="name">
+					{{ruleForm.name}}
+				</el-form-item>
+				<el-form-item label="报告类型" prop="type">
+					<el-select v-model="ruleForm.type" placeholder="请选择报告类型" @change="changeType" :style="ruleFormClass">
+						<el-option v-for="item in reType" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
+					</el-select>
+				</el-form-item>
+  				<el-form-item label="时间选择" prop="timeInterval">
+  					<el-select v-model="ruleForm.timeInterval" :placeholder="word" :style="season" @change="changeTime" v-if='ruleForm.type==2'>
+  						<el-option v-for="item in seasons" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
+  					</el-select>
+					<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy-MM' range-separator="至" 
+					:placeholder="word" v-if="ruleForm.type == 1 || ruleForm.type == ''">
+					</el-date-picker>
+					<el-date-picker v-model="ruleForm.timeInterval" :style="timePicker" @change="changeTime" :type="timeRange" value-format='yyyy' 
+					:placeholder="word" v-if='ruleForm.type == 3'>
+					</el-date-picker>
+  				</el-form-item>
+  				<el-form-item label="材料类型" prop="materialType">
+					<el-select v-model="ruleForm.materialType" multiple placeholder="请选择材料类型" @change="changeMateri" :style="ruleFormClass">
+						<el-option class="matetiBig" v-for="item in material" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
+  					</el-select>
+  				</el-form-item>
+  				<el-form-item label="对比地区" prop="compareRegion">
+  					<el-select v-model="ruleForm.compareRegion" multiple placeholder="请选择对比地区" @change="changeRegion" :style="ruleFormClass">
+  						<el-option v-for="item in regions" :key="item.id" :label="item.name" :value="item.id">{{item.name}}</el-option>
+  					</el-select>
+  				</el-form-item>
+  				<el-form-item>
+  					<el-button type="primary" @click="submitForm('ruleForm')" class="newNow">立即创建</el-button>
+  					<el-button @click="cancleNewReport('ruleForm')">取消</el-button>
+  				</el-form-item>
+			</el-form>
+		</el-dialog>
+		<el-dialog :visible.sync="detailDialog1" width="1000px" height="1000px">
+			<p class="reTitle">{{reTitle}}</p>
+			<div class="dataItem" v-for="(item,index) in reportDetailList" :key="index" >
+				<p class="graphName" v-if='item.mm =="暂无数据"'>暂无数据</p>
+				<p class="titleItem1" v-if='item.mm !="暂无数据"'>
+					<span class="titleDot"></span>
+					{{item.title}}
+				</p>
+				<p class="contentItem" v-if='item.mm !="暂无数据"'>
+					<span v-if="time1.length == 1">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
+					<span v-else-if="time1.length == 4">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
+					<span v-else>{{item.title?item.title.substr(0,7):'-'}} 云南省 {{item.maName}}价格</span>
+					{{item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}} 元/吨 
+					指数{{item.mmYn[index].exponent?item.mmYn[index].exponent.toFixed(2):''}}点 
+					环比下降{{item.mmYn[index].hb?Number(item.mmYn[index].hb.toFixed(5)) * 100:'-'}}%，
+					同比下降{{item.mmYn[index].tb?Number(item.mmYn[index].tb.toFixed(5)) * 100:'-'}}%。
+				</p>
+				<table class="tableBox" border="1" v-if='item.mm !="暂无数据"'>
+					<thead>
+						<tr>
+							<th rowspan="2">地区</th>
+							<th colspan="5">{{item.maName}} 单位：元/立方米</th>
+						</tr>
+						<!--季度-->
+						<tr v-if="time1.length == 1">
+							<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年' + item.title.substr(5,4)}}</th>
+							<th v-if="time1 == 1">{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年第四季度'}}</th>
+							<th v-else-if="time1 == 2">{{item.title.substr(0,5) + '第一季度'}}</th>
+							<th v-else-if="time1 == 3">{{item.title.substr(0,5) + '第二季度'}}</th>
+							<th v-else>{{item.title.substr(0,5) + '第三季度'}}</th>
+							<th>{{item.title.substr(0,9)}}</th>
+							<th>同比增长率(%)</th>
+							<th>环比增长率(%)</th>
+						</tr>
+						<!--年度-->
+						<tr v-else-if="time1.length == 4">
+							<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年'}}</th>
+							<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年'}}</th>
+							<th>{{item.title.substr(0,5)}}</th>
+							<th>同比增长率(%)</th>
+							<th>环比增长率(%)</th>
+						</tr>
+						<!--月度-->
+						<tr v-else>
+							<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年' + item.title.substr(5,2)}}</th>
+							<th>{{item.title.substr(5,1) == '1'?(parseInt(item.title.substr(0,4)) - 1).toString() + '年12月':item.title.substr(0,5) + (parseInt(item.title.substr(5,2)) - 1).toString() + '月'}}</th>
+							<th>{{item.title.substr(0,7)}}</th>
+							<th>同比增长率(%)</th>
+							<th>环比增长率(%)</th>
+						</tr>
+					</thead>
+					<tbody v-for="(aa,index2) in item.mm" :key="index2">
+						<tr>
+							<td>{{aa.areaName?aa.areaName:'-'}}</td>
+							<td>{{aa.tbPrice?aa.tbPrice.toFixed(2):'-'}}</td>
+							<td>{{aa.hbPrice?aa.hbPrice.toFixed(2):'-'}}</td>
+							<td>{{aa.price?aa.price.toFixed(2):'-'}}</td>
+							<td>{{aa.tb?Number(aa.tb.toFixed(5)) * 100:'-'}}%</td>
+							<td>{{aa.hb?Number(aa.hb.toFixed(5)) * 100:'-'}}%</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td>{{item.mmYn[index].areaName}}</td>
+							<td>{{item.mmYn[index].tbPrice?item.mmYn[index].tbPrice.toFixed(2):'-'}}</td>
+							<td>{{item.mmYn[index].hbPrice?item.mmYn[index].hbPrice.toFixed(2):'-'}}</td>
+							<td>{{item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}}</td>
+							<td>{{item.mmYn[index].tb?Number(item.mmYn[index].tb.toFixed(5)) * 100:'-'}}%</td>
+							<td>{{item.mmYn[index].hb?Number(item.mmYn[index].hb.toFixed(5)) * 100:"-"}}%</td>
+						</tr>
+					</tfoot>
+				</table>
+				<div :id="'main'+index" style="width: 600px;height:400px;margin:30px auto 20px;" v-if="item.mm != '暂无数据'"></div>
+				<div :id="'main1'+index" style="width: 600px;height:400px;margin:30px auto 20px;" v-if="item.mm != '暂无数据'"></div>
+			</div>
+		</el-dialog>
+
+		<el-dialog :visible.sync="detailDialog" width="1000px">
+			<p class="reTitle">{{detailTitle}}</p>
+			<div>
+				<p class="graphName" v-if='noDataMsg !="查询成功"'>暂无数据</p>
+				<p style="margin-top:20px" v-if='noDataMsg =="查询成功"'>
+					<span class="titleDot"></span>
+					据对16个州、市建设工程7大类26小类主要材料市场价格的监测显示，{{time3}}与{{time2}}相比，{{riseNum}}类材料价格上涨，{{descendNum}}类下降，{{unbiasedNum}}类持平。
+				</p>
+				 <!-- v-if="item.mm != '暂无数据'"  -->
+				<p class="graphName" v-if='noDataMsg =="查询成功"'>{{detailTitle.split('省')[1]}}</p>
+				<table class="tableBox" border="1" v-if='noDataMsg =="查询成功"'>
+					<thead>
+						<tr>
+							<th>材料名称</th>
+							<th>单位</th>
+							<th>本期价格（元）</th>
+							<th>比上期价格涨跌(元)</th>
+							<th>涨跌幅(%)</th>
+						</tr>
+					</thead>
+					<tbody v-for="(item,index) in reportDetailList1" :key="index">
+						<tr>
+							<td style="font-weight:bold;text-align:left;text-indent:10px" colspan="5">{{item.mmB[0].maName}}</td>
+						</tr>
+						<tr v-for="(item1,index1) in item.mm" :key="index1">
+							<td style="text-indent:2px;text-align:left;text-indent:30px">{{item1.maName}}</td>
+							<td>{{item1.munit}}</td>
+							<td>{{item1.price?item1.price.toFixed(2):'-'}}</td>
+							<td>{{item1.hbPrice?item1.hbPrice.toFixed(2):'-'}}</td>
+							<td>{{item1.hbPrice?(((item1.hbPrice - item1.price) / item1.price).toFixed(5)) * 100:'0'}}</td>	
+						</tr>
+					</tbody>
+					<tfoot class="tableFoot">
+						<tr>
+							<td colspan="5">注：上期为{{time2}}</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<div class="notes" v-if="noDataMsg =='查询成功'">
+				<p class="noTitle">附注：</p>
+				<p>1.建设工程主要材料市场价格，是指材料的市场综合采购参考价，即材料在指定范围内和对应时间区间的市场综合平均价格。</p>
+				<p>2.建设工程主要材料的检测内容包括7大类26小类材料的价格。</p>
+				<p>3.发布日期：每月1日</p>
+			</div>
+		</el-dialog>
     </div>
 </div>
 </template>
@@ -155,6 +375,7 @@ export default {
 			// type切换网格视图或列表视图
 			type:0,
 			token:this.$store.state.login.token,
+			searContent:'',
 			state2:'',
 			viewToggle:{
 				display:'block'
@@ -162,19 +383,36 @@ export default {
 			viewToggle1:{
 				display:'none'
 			},
+			allVis:{
+				display:''
+			},
+			resultVis:{
+				display:'none'
+			},
+			searchTip:{
+				display:'none'
+			},
+			reReport:[],
+			allReport:[],
+			resultReport:[],
 			systemReport:[],
 			customReport:[],
-			// reportIconn:'',
 			pageNum1:1,
 			pageSize1:14,
 			totalPage1:14,
 			pageNum2:1,
 			pageSize2:14,
 			totalPage2:14,
+			pageNum3:1,
+			pageSize3:14,
+			totalPage3:14,
 			noImg:{
 				display:'none'
 			},
 			noImgCustom:{
+				display:'none'
+			},
+			noImgResult:{
 				display:'none'
 			},
 			dialogFormVisible: false,
@@ -197,24 +435,20 @@ export default {
 				timeInterval: '',
 				materialType:'',
 				compareRegion:'',
-				desc: ''
 			},
 			ruleFormClass:{
-				width:'260px'
+				width:'360px'
 			},
 			timeRange:'month',
 			timeType:1,
 			word:'请选择月份',
-			startWord:'开始季度',
-			endWord:'结束季度',
-			dd:'',
 			season:{
 				display:'none',
-				width:'260px'
+				width:'360px'
 			},
 			timePicker:{
 				display:'',
-				width:'260px'
+				width:'360px'
 			},
 			rules: {
 				type: [
@@ -228,12 +462,27 @@ export default {
 				],
 				compareRegion: [
 					{required: true, message: '请选择对比地区', trigger: 'focus'}
-				],
-				desc: [
-					{required: false, message: '请填写备注', trigger: 'blur'}
 				]
 			},
-			loading:true
+			loading:true,
+			detailDialog1:false,
+			detailDialog:false,
+			reTitle:'',
+			detailTitle:'云南省建设工程主要材料市场价格变动情况',
+			reportDetailList:[],
+			reportDetailList1:[],
+			time1:'',
+			time2:'',
+			time3:'',
+			riseNum:0,
+			descendNum:0,
+			unbiasedNum:0,
+			noDataMsg:'',
+			materiProp:{
+				value: 'id',
+				label:'name',
+				children: 'childrenList'
+			}
 		}
 	},
 	created(){
@@ -250,28 +499,23 @@ export default {
 			token:this.token,
 			type:2
 		}
-		// var data7 = {
-
-		// }
+		var data15 = {
+			token:this.token
+		}
 		// 获取全部报告
-		// this.$api.get_reports(data1).then(v => {
-		// 	this.loading = false
-		// 	if(v.data.count != null){
-		// 		console.log(v.data.count)
-		// 		this.noImg.display = 'none'
-		// 		this.systemReport = v.data.list
-		// 		this.totalPage1 = v.data.count
-		// 	}else{
-		// 		this.noImg.display = 'block'
-		// 		this.systemReport = []
-		// 		this.totalPage1 = 0
-		// 	}
-		// })		
+		this.$api.get_reports(data15).then(v => {
+			console.log(v)
+			this.loading = false
+			if(v.data.count != null){
+				this.reReport = v.data.list
+			}else{
+				this.reReport = []
+			}
+		})		
 		// 获取平台报告
 		this.$api.get_reports(data1).then(v => {
 			this.loading = false
 			if(v.data.count != null){
-				console.log(v.data.count)
 				this.noImg.display = 'none'
 				this.systemReport = v.data.list
 				this.totalPage1 = v.data.count
@@ -298,11 +542,15 @@ export default {
 			this.regions = res.data
 		})
 		this.$api.get_cate().then(res => {
-			this.material = res.data
+			console.log(res)
+			res.data.map( item=> {
+				item.childrenList.map(aa => {
+					this.material.push(aa)
+				})
+			})
 		})
 	},
 	mounted() {
-    //   this.restaurants = this.loadAll();
     },
 	methods:{
 		toggleBig:function(aa){
@@ -327,6 +575,68 @@ export default {
 				this.viewToggle.display = 'none'
 				this.viewToggle1.display = 'block'
 			}
+		},
+		searChange(){
+			console.log(this.searContent)
+			this.resultReport = []
+			if(this.searContent != ''){
+				this.reReport.map(item => {
+					if(item.title.indexOf(this.searContent) != -1){
+						this.allReport.push(item)
+					}
+				})
+			}else{
+				this.allReport = []
+			}
+		},
+		chooseResult(zz){
+			this.searContent = zz
+			this.allReport = []
+		},
+		goSearch(){
+			this.allReport = []
+			this.resultReport = []
+			this.allVis.display = 'none'
+			this.resultVis.display = 'block'
+			this.type = 1
+			this.viewToggle.display = 'none'
+			this.viewToggle1.display = 'block'
+			this.loading = true
+			var data17 = {
+				pageNum:this.pageNum3,
+				pageSize:this.pageSize3,
+				token:this.token,
+				title:this.searContent	
+			}
+			this.$api.get_reports(data17).then(v => {
+				console.log(v)
+				this.loading = false
+				if(v.data.count != null){
+					this.searchTip.display = 'block'
+					this.noImgResult.display = 'none'
+					this.resultReport = v.data.list
+					this.totalPage3 = v.data.count
+				}else{
+					this.searchTip.display = 'none'
+					this.noImgResult.display = 'block'
+					this.resultReport = []
+					this.totalPage3 = 0
+				}
+			})
+		},
+		goback(){
+			this.loading = true
+			this.type = 0
+			this.viewToggle.display = 'block'
+			this.viewToggle1.display = 'none'
+			this.allVis.display = 'block'
+			this.resultVis.display = 'none'
+			this.resultReport = []
+			this.allReport = []
+			this.searchTip.display = 'none'
+			this.noImgResult.display = 'none'
+			this.searContent = ''
+			this.loading = false
 		},
 		// querySearch(queryString, cb) {
 		// 	var reports = this.systemReport
@@ -387,19 +697,338 @@ export default {
 				}
 			})
 		},
+		get_data3(val){
+			this.pageNum3 = val
+			var data18 = {
+				pageNum:val,
+				pageSize:this.pageSize3,
+				token:this.token,
+			}
+			this.loading = true
+			this.$api.get_reports(data18).then(v => {
+				this.loading = false
+				if(v.data.count != null){
+					this.noImgResult.display = 'none'
+					this.resultReport = v.data.list
+					this.totalPage3 = v.data.count
+				}else{
+					this.noImgResult.display = 'block'
+					this.resultReport= []
+					this.totalPage3 = 0
+				}
+			})
+		},
 		deleteRe(dd){
 			var data9 = {
 				id:dd
 			}
-			this.$api.delete_report(data9).then(v => {
-				console.log(v)
+			var data10 = {
+				pageNum:this.pageNum2,
+				pageSize:this.pageSize2,
+				token:this.token,
+				type:2
+			}
+			var data12 = {
+				pageSize:14,
+				token:this.token,
+				type:2
+			}
+			this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			}).then(() => {
+				this.$api.delete_report(data9).then(v => {
+					if(v.data.msg == 'success'){
+						this.$api.get_reports(data10).then(v => {
+							if(v.data.count != null){
+								this.noImgCustom.display = 'none'
+								this.customReport = v.data.list
+								this.totalPage2 = v.data.count
+								this.$message({
+									type: 'success',
+									message: '删除成功!'
+								})
+							}else{
+								this.$api.get_reports(data12).then(v => {
+									if(v.data.count != null){
+										this.noImgCustom.display = 'none'
+										this.customReport = v.data.list
+										this.totalPage2 = v.data.count
+										this.$message({
+											type:'success',
+											message:'删除成功！'
+										})
+									}else{
+										this.noImgCustom.display = 'block'
+										this.customReport = []
+										this.totalPage2 = 0
+										this.$message({
+											type:'info',
+											message:'获取失败！'
+										})
+									}
+								})
+							}
+						})
+					}else{
+						this.$message({
+							type: 'error',
+							message: '删除失败!'
+						})
+					}
+				})
+			}).catch(() => {
+				this.$message({
+					type: 'info',
+					message: '已取消删除'
+				})
 			})
 		},
 		toDetail(aa){
-			this.$router.push({name:'reportDetail',query:{id:aa}})
+			this.detailDialog1 = true
+			var data13 = {
+				id:aa,
+				token:this.token
+			}
+			this.$api.get_reports_detail(data13).then(v =>{
+				console.log(v)
+				this.reTitle = v.data.data.title
+				this.reportDetailList = v.data.data.mapList
+				this.time1 = v.data.data.timeInterval
+				this.$nextTick(() => {
+					this.reportDetailList.forEach((item,index) => {
+						this.drawGraph(item,index)
+						this.drawGraph1(item,index)
+					})
+				
+				})
+			})
 		},
-		dialogForm(){
+		toDetail_system(cc){
+			this.detailDialog = true
+			var data14 = {
+				id:cc,
+				token:this.token
+			}
+			this.$api.get_reports_detail(data14).then(v =>{
+				console.log(v)
+				this.reportDetailList1 = v.data.data.dataList
+				this.detailTitle = '云南省建设工程主要材料市场价格变动情况' + '(' + v.data.data.year.toString() + '年' + v.data.data.month.toString() + '月' + ')'
+				this.time3 = v.data.data.year.toString() + '年' + v.data.data.month.toString() + '月'
+				this.riseNum = v.data.data.rise
+				this.descendNum = v.data.data.descend
+				this.unbiasedNum = v.data.data.unbiased
+				this.noDataMsg = v.data.msg
+				if( v.data.data.month == 1){
+					this.time2 = (v.data.data.year - 1).toString() + '年12月'
+				}else{
+					this.time2 = v.data.data.year.toString() + '年' + (v.data.data.month - 1).toString() + '月'
+				}
+			})
+		},
+		drawGraph(aa,bb){
+			if(aa.mm=='暂无数据') return 
+			let x = [],y = []
+			const mycharts = this.$echarts.init(document.getElementById('main'+bb))
+			aa.mm.forEach(item => {
+				x.push(item.areaName)
+				y.push(item.price)
+			})
+			var option = {
+				// title:{
+				// 	text:aa.title
+				// },
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'cross',
+						crossStyle: {
+							color: '#999'
+						}
+					}
+				},
+				toolbox: {
+					feature: {
+						dataView: {show: true, readOnly: false},
+						magicType: {show: true, type: ['line', 'bar']},
+						restore: {show: true},
+						saveAsImage: {show: true}
+					}
+				},
+				legend: {
+					data:['价格']
+				},
+				xAxis: [
+					{
+						type: 'category',
+						data: x,
+						axisPointer: {
+							type: 'shadow'
+						}
+					}
+				],
+				yAxis: [
+					{
+						type: 'value',
+						// name: '价格',
+						min: 0,
+						max: 6000,
+						interval: 1000,
+						axisLabel: {
+							formatter: '{value}'
+						}
+					}
+				],
+				series:[
+					{
+					name:'价格',
+					type:'bar',
+					color: ['#637CFB','#FE9B78'],
+					data:y,
+					barWidth:30
+					},
+				]
+			}
+			mycharts.setOption(option,true)
+		},
+		drawGraph1(aa,bb){
+			if(aa.mm=='暂无数据') return
+			let x = [],y =[],z=[]
+			const mycharts1 = this.$echarts.init(document.getElementById('main1'+bb))
+			aa.mm.forEach(item => {
+				x.push(item.areaName)
+				y.push(item.tbPrice)
+				z.push(item.hbPrice)
+			})
+			var option = {
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'cross',
+						crossStyle: {
+							color: '#999'
+						}
+					}
+				},
+				toolbox: {
+					feature: {
+						dataView: {show: true, readOnly: false},
+						magicType: {show: true, type: ['line', 'bar']},
+						restore: {show: true},
+						saveAsImage: {show: true}
+					}
+				},
+				legend: {
+					data:['同比价格','环比价格']
+				},
+				xAxis: [
+					{
+						type: 'category',
+						data: x,
+						axisPointer: {
+							type: 'shadow'
+						}
+					}
+				],
+				yAxis: [
+					{
+						type: 'value',
+						// name: '价格',
+						min: 0,
+						max: 6000,
+						interval: 1000,
+						axisLabel: {
+							formatter: '{value}'
+						}
+					}
+				],
+				series:[
+					{
+					name:'同比价格',
+					type:'line',
+					color:['#637CFB'],
+					data:y,
+					},
+					{
+					name:'环比价格',
+					type:'line',
+					color:['#FE9B78'],
+					data:z,
+					}
+				]
+			}
+			mycharts1.setOption(option,true)
+		},
+		lift(aa){
+			var data22 = {
+				pageNum:this.pageNum2,
+				pageSize:this.pageSize2,
+				token:this.token,
+				type:2,
+				orderType:aa,
+				orderWay:1
+			}
+			this.loading = true
+			this.$api.get_reports(data22).then(v => {
+				console.log(v)
+				this.loading = false
+				if(v.data.count != null){
+					this.noImgCustom.display = 'none'
+					this.customReport = v.data.list
+					this.totalPage2 = v.data.count
+					this.$message({
+						type:'success',
+						message:'排序成功'
+					})
+				}else{
+					this.noImgCustom.display = 'block'
+					this.customReport = []
+					this.totalPage2 = 0	
+					this.$message({
+						type:'error',
+						message:'暂未获取到数据'
+					})
+				}
+				// v.data.list
+			})
+		},
+		down(aa){
+			var data22 = {
+				pageNum:this.pageNum2,
+				pageSize:this.pageSize2,
+				token:this.token,
+				type:2,
+				orderType:aa,
+				orderWay:0
+			}
+			this.loading = true
+			this.$api.get_reports(data22).then(v => {
+				console.log(v)
+				this.loading = false
+				if(v.data.count != null){
+					this.noImgCustom.display = 'none'
+					this.customReport = v.data.list
+					this.totalPage2 = v.data.count
+					this.$message({
+						type:'success',
+						message:'排序成功'
+					})
+				}else{
+					this.noImgCustom.display = 'block'
+					this.customReport = []
+					this.totalPage2 = 0	
+					this.$message({
+						type:'error',
+						message:'暂未获取到数据'
+					})
+				}
+				// v.data.list
+			})
+		},
+		openDialog(){
 			this.dialogFormVisible = true
+			console.log(this.ruleForm.type)
 		},
 		ruleFormName(){
 			let cate_list =[]
@@ -418,7 +1047,6 @@ export default {
 					}
 				})
 			})
-			
 			if(this.timeType == 1){
 				this.ruleForm.name = this.ruleForm.timeInterval.split('-')[0] + '年' + this.ruleForm.timeInterval.split('-')[1] + '月' + area_list.toString() + cate_list.toString() + '月度数据报告'
 			}else if(this.timeType == 2){
@@ -436,21 +1064,21 @@ export default {
 		changeType(vv){
 			if(vv == 1){
 				this.season.display = 'none'
-				this.timePicker.display = ''
+				// this.timePicker.display = ''
 				this.timeRange = 'month'
 				this.word = '请选择月份'
 				this.ruleForm.timeInterval = ''
 				this.timeType = 1	
 			}else if(vv == 2){
 				this.season.display = ''
-				this.timePicker.display = 'none'
-				this.timeRange = 'monthrange'
+				// this.timePicker.display = 'none'
+				// this.timeRange = 'monthrange'
 				this.word = '请选择季度'
 				this.ruleForm.timeInterval = ''
 				this.timeType = 2
 			}else{
 				this.season.display = 'none'
-				this.timePicker.display = ''
+				// this.timePicker.display = ''
 				this.timeRange = 'year'
 				this.word = '请选择年份'
 				this.ruleForm.timeInterval = ''
@@ -465,14 +1093,6 @@ export default {
 		},
 		changeRegion(){
 			this.ruleFormName()
-		},
-		toReportDetail(reportId){
-			this.$router.push({
-				path:'reportDetail',
-				query:{
-					reportId:reportId
-				}
-			})
 		},
 		openTip(){
 			this.$message({
@@ -497,19 +1117,40 @@ export default {
 						type:2,
 						dataType:this.ruleForm.type,
 						token:this.token,
-						mark:this.ruleForm.desc,
 						timeInterval:this.ruleForm.timeInterval,
 						materialClassID:this.ruleForm.materialType.toString(),
 						contrastRegionID:this.ruleForm.compareRegion.toString(),
 						name:this.ruleForm.name
 					}
+					var data11 = {
+						pageNum:this.pageNum2,
+						pageSize:this.pageSize2,
+						token:this.token,
+						type:2
+					}
 					this.$api.add_report(data8).then(v =>{
-						// console.log(v)
 						if(v.data.msg == 'success'){
 							this.dialogFormVisible = false
 							this.$refs[formName].resetFields()
-							this.get_data()
-							this.openTip()
+							this.$api.get_reports(data11).then(v => {
+								if(v.data.count != null){
+									this.noImgCustom.display = 'none'
+									this.customReport = v.data.list
+									this.totalPage2 = v.data.count
+									this.$message({
+										type: 'success',
+										message: '创建成功!'
+									})
+								}else{
+									this.noImgCustom.display = 'block'
+									this.customReport= []
+									this.totalPage2 = 0
+									this.$message({
+										type: 'info',
+										message: '重新加载失败!'
+									})
+								}
+							})
 						}else{
 							this.dialogFormVisible = false
 							this.$refs[formName].resetFields()
@@ -526,12 +1167,12 @@ export default {
 			this.dialogFormVisible = false
 			this.$refs[formName].resetFields();
 		},
-		get_img(type) {
-			if(type.indexOf(",") != -1) {
-				return'../../../public/img/report/more.png'
-			}
-			return '../../../public/img/report/bg_'+type+'.png'
-		},
+		// get_img(type) {
+		// 	if(type.indexOf(",") != -1) {
+		// 		return'../../../public/img/report/more.png'
+		// 	}
+		// 	return '../../../public/img/report/bg_'+type+'.png'
+		// },
     }
 	}
 // }
@@ -542,13 +1183,11 @@ export default {
 	width 100%
 	height 100%
 	overflow auto
-	// border 1px red solid
 	display flex
 	flex-direction row
 	flex-wrap wrap
 	justify-content flex-start
-	// position relative
-	// z-index -1
+
 .inteLeft
 	width 200px
 	height 100%
@@ -629,23 +1268,78 @@ export default {
 
 .inteRight
 	width calc(100% - 200px)
+
+.searchTip
+	margin-bottom 30px
+	font-size 20px
+
+.keyWord
+	color #F2342B
+
+.goback
+	margin-left 20px
+	color #454EFF
+	text-decoration underline
+
+.goback:hover
+	margin-left 20px
+	color #676efe
+
 .search
 	width 460px
 	height 38px
 	background-color #fff
 	border-radius 8px
-	margin-left 150px
-
+	margin-left 10%
+	display flex
+	flex-direction row
+	flex-wrap nowrap
+	justify-content flex-start
+	position relative
 
 .searchBox
 	width calc(100% - 58px)
+	height 38px
+	padding-left 15px
+	box-sizing border-box
+	border none
 	border-radius 8px 0 0 8px
-	border-radius none
-.el-input__inner
-	border 1px red solid
-		// border 0 none
-		// border-bottom 1px solid #ccc
-		// border-radius 0px
+
+
+.searchIcon
+	width 58px
+	height 38px
+	border-radius 0px 8px 8px 0px
+	background #FF7437 url(../../../public/img/report/search.png) no-repeat center
+
+.seaResult
+	width calc(100% - 64px)
+	max-height 120px
+	overflow auto
+	background-color #fff
+	position absolute
+	left 0
+	top 40px
+	z-index 2
+	li
+		width 100%
+		height 32px
+		font-size 14px
+		line-height 32px
+		text-align left
+		white-space nowrap
+		text-overflow ellipsis
+		overflow hidden
+		border-bottom 1px #eee solid
+		box-sizing border-box
+		a
+			width 100%
+			height 32px
+			padding-left 10px
+			color #000
+			white-space nowrap
+			text-overflow ellipsis
+			overflow hidden
 
 .reportContent
 	width 100%
@@ -662,7 +1356,6 @@ export default {
 .newRe
 	width 154px
 	height 24px
-	// background-color 
 	background #8B78FE url(../../../public/img/report/add.png) no-repeat 10px 
 	border 1px solid #6C56F5
 	border-radius 24px
@@ -673,6 +1366,8 @@ export default {
 	position absolute
 	top 182px
 	left 380px
+	a
+		color #fff
 
 .newRe:hover
 	background-color #9f8ffe
@@ -899,8 +1594,38 @@ export default {
 
 .titleType_custom
 	width 10%
+	position relative
+
 .titleTime_custom
 	width 24%
+	position relative
+
+.filterDo
+	position absolute
+	top 0
+	left 50%
+	margin-left 16px
+
+.lift
+	display block
+	width 18px
+	height 18px
+	// border 1px green solid
+	// box-sizing border-box
+	background url(../../../public/img/report/normal.png) no-repeat left bottom
+
+.lift:hover
+	background url(../../../public/img/report/hover.png) no-repeat left bottom
+
+.down
+	display block
+	width 20px
+	height 18px
+	background url(../../../public/img/report/normal1.png) no-repeat left top
+
+.down:hover
+	background url(../../../public/img/report/hover1.png) no-repeat left top
+ 
 .titleDo_custom
 	width 16%
 
@@ -978,10 +1703,11 @@ export default {
 .listDo_custom
 	width 16%
 	color #454EFF
-	// border 1px red solid
 	a
-		padding 0 20px
+		padding 0 12px
 		// border 1px red solid
+		// box-sizing border-box
+
 .toDetail
 	border-right 1px solid #8E9099
 	box-sizing border-box
@@ -993,7 +1719,6 @@ export default {
 	color #FF7437
 .deleteRe:hover
 	color #fc9d74
-
 
 .noData
 	margin-bottom 50px
@@ -1015,80 +1740,52 @@ export default {
 	margin-top 50px
 	margin-bottom 10px
 
-.newReporTitle
-	position absolute
-	left 0
-	bottom 55px
-	width 100%
+.reTitle
 	font-size 16px
 	font-weight bold
-	color #ffffff
-	line-height 16px
+	line-height 30px
 	text-align center
- 
-.newReport
-	width 200px
-	height 240px
-	background-color #8B78FE
-	background-image url('../../../public/img/newReport.png')
-	background-repeat no-repeat
-	background-position center 56px
-	border-radius 8px
-	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
-	margin-right 20px
-	margin-bottom 20px
-	position relative
-	transition background-color 0.5s
 
-.newReport:hover
-	background-color #A99BFF
+.graphName
+	font-weight bold
+	text-align center
+	margin-top 30px
 
-.newReport1
-	display block
-
-.newReport2
-	display none
-
-.newNow
-	background #9A7CFF
-	transition background 0.5s
-
-.newNow:hover
-	background #C7B7FF
-// .reportDialogClass
-// 	height 620px
-// 	border 1px red solid
-// 	font-size 18px
-// 	font-family MicrosoftYaHei
-	
-.markClass
-	position absolute
-	left 10px
-	top 10px
-	width 72px
-	height 20px
-	background-color #7F94FF
-	padding-left 24px
-	border 1px solid rgba(108,125,255,1)
+.titleItem1
+	font-size 14px
+	font-weight bold
+	line-height 28px
 	box-sizing border-box
-	border-radius 10px
-	font-size 12px
-	color #ffffff
-	line-height 16px
+	margin-top 30px
+.titleDot
+	width 8px
+	height 8px
+	display inline-block
+	background #7F94FF
+	border-radius 50%
+	margin-right 4px
+	line-height 28px
 
-.icon-beizhu
-	position absolute
-	left 7px
-	top 1px
-	width 12px
-	height 12px
-	display block
-	font-size 12px
-	
-.markDisplay
-	display none
+.tableBox
+	width 100%
+	border 1px #ccc solid
+	border-collapse collapse
+	margin-top 20px
+	font-size 14px
+	text-align center
+.tableFoot
+	text-align left
+	td
+		padding-left 30px
+		text-align left
 
-
+.notes
+	margin-top 20px
+	.noTitle
+		font-weight bold
+	p
+		font-size 14px
+		line-height 24px
 
 
 </style>
