@@ -204,7 +204,7 @@
 			</div>
 		</div>
 		<el-dialog title="新建自定义报告" :visible.sync="dialogFormVisible" width="620px">
-			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" style="padding:20px">
 				<el-form-item label="报告名称" prop="name">
 					{{ruleForm.name}}
 				</el-form-item>
@@ -317,9 +317,9 @@
 			</div>
 		</el-dialog>
 
-		<el-dialog :visible.sync="detailDialog" width="1000px">
+		<el-dialog :visible.sync="detailDialog" width="1000px" >
 			<p class="reTitle">{{detailTitle}}</p>
-			<div>
+			<div class="dataItem">
 				<p class="graphName" v-if='noDataMsg !="查询成功"'>暂无数据</p>
 				<p style="margin-top:20px" v-if='noDataMsg =="查询成功"'>
 					<span class="titleDot"></span>
@@ -579,6 +579,7 @@ export default {
 		searChange(){
 			console.log(this.searContent)
 			this.resultReport = []
+			this.allReport=[]
 			if(this.searContent != ''){
 				this.reReport.map(item => {
 					if(item.title.indexOf(this.searContent) != -1){
@@ -1179,6 +1180,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+
+.el-dialog__body
+	padding 20px !important
 .intellReport
 	width 100%
 	height 100%
@@ -1746,6 +1750,9 @@ export default {
 	line-height 30px
 	text-align center
 
+.dataItem
+	padding 20px
+
 .graphName
 	font-weight bold
 	text-align center
@@ -1780,7 +1787,8 @@ export default {
 		text-align left
 
 .notes
-	margin-top 20px
+	// margin-top 20px
+	padding 20px
 	.noTitle
 		font-weight bold
 	p
