@@ -28,6 +28,11 @@ const formser = axios.create({ //hg
 	withCredentials: false,
 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 })
+// const formser = axios.create({ //hg
+// 	baseURL: '/api',
+// 	withCredentials: false,
+// 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+// })
 
 service.interceptors.response.use(
     response => {
