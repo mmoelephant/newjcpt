@@ -254,8 +254,8 @@
 					<span v-else>{{item.title?item.title.substr(0,7):'-'}} 云南省 {{item.maName}}价格</span>
 					{{item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}} 元/吨 
 					指数{{item.mmYn[index].exponent?item.mmYn[index].exponent.toFixed(2):''}}点 
-					环比下降{{item.mmYn[index].hb?Number(item.mmYn[index].hb.toFixed(5)) * 100:'-'}}%，
-					同比下降{{item.mmYn[index].tb?Number(item.mmYn[index].tb.toFixed(5)) * 100:'-'}}%。
+					环比下降{{item.mmYn[index].hb?(Number(item.mmYn[index].hb.toFixed(5)) * 100).toFixed(2):'-'}}%，
+					同比下降{{item.mmYn[index].tb?(Number(item.mmYn[index].tb.toFixed(5)) * 100).toFixed(2):'-'}}%。
 				</p>
 				<table class="tableBox" border="1" v-if='item.mm !="暂无数据"'>
 					<thead>
@@ -297,8 +297,8 @@
 							<td>{{aa.tbPrice?aa.tbPrice.toFixed(2):'-'}}</td>
 							<td>{{aa.hbPrice?aa.hbPrice.toFixed(2):'-'}}</td>
 							<td>{{aa.price?aa.price.toFixed(2):'-'}}</td>
-							<td>{{aa.tb?Number(aa.tb.toFixed(5)) * 100:'-'}}%</td>
-							<td>{{aa.hb?Number(aa.hb.toFixed(5)) * 100:'-'}}%</td>
+							<td>{{aa.tb?(Number(aa.tb.toFixed(5)) * 100).toFixed(2):'-'}}%</td>
+							<td>{{aa.hb?(Number(aa.hb.toFixed(5)) * 100).toFixed(2):'-'}}%</td>
 						</tr>
 					</tbody>
 					<tfoot>
@@ -307,8 +307,8 @@
 							<td>{{item.mmYn[index].tbPrice?item.mmYn[index].tbPrice.toFixed(2):'-'}}</td>
 							<td>{{item.mmYn[index].hbPrice?item.mmYn[index].hbPrice.toFixed(2):'-'}}</td>
 							<td>{{item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}}</td>
-							<td>{{item.mmYn[index].tb?Number(item.mmYn[index].tb.toFixed(5)) * 100:'-'}}%</td>
-							<td>{{item.mmYn[index].hb?Number(item.mmYn[index].hb.toFixed(5)) * 100:"-"}}%</td>
+							<td>{{item.mmYn[index].tb?(Number(item.mmYn[index].tb.toFixed(5)) * 100).toFixed(2):'-'}}%</td>
+							<td>{{item.mmYn[index].hb?(Number(item.mmYn[index].hb.toFixed(5)) * 100).toFixed(2):"-"}}%</td>
 						</tr>
 					</tfoot>
 				</table>
@@ -346,7 +346,7 @@
 							<td>{{item1.munit}}</td>
 							<td>{{item1.price?item1.price.toFixed(2):'-'}}</td>
 							<td>{{item1.hbPrice?item1.hbPrice.toFixed(2):'-'}}</td>
-							<td>{{item1.hbPrice?(((item1.hbPrice - item1.price) / item1.price).toFixed(5)) * 100:'0'}}</td>	
+							<td>{{item1.hbPrice?((((item1.hbPrice - item1.price) / item1.price).toFixed(5)) * 100).toFixed(2):'0'}}</td>	
 						</tr>
 					</tbody>
 					<tfoot class="tableFoot">
