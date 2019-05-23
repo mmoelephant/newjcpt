@@ -630,7 +630,7 @@ export default {
 			this.type = 0
 			this.viewToggle.display = 'block'
 			this.viewToggle1.display = 'none'
-			this.allVis.display = 'block'
+			this.allVis.display = ''
 			this.resultVis.display = 'none'
 			this.resultReport = []
 			this.allReport = []
@@ -638,6 +638,7 @@ export default {
 			this.noImgResult.display = 'none'
 			this.searContent = ''
 			this.loading = false
+			this.bigType = 0
 		},
 		// querySearch(queryString, cb) {
 		// 	var reports = this.systemReport
@@ -1367,9 +1368,9 @@ export default {
 	color #fff
 	line-height 24px
 	text-align center
-	position absolute
-	top 182px
-	left 380px
+	position relative
+	top -20px
+	left 180px
 	a
 		color #fff
 
