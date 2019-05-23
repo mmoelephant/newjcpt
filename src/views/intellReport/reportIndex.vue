@@ -1,5 +1,5 @@
 <template>
-<div v-loading.fullscreen="loading">
+<div v-loading.fullscreen="loading" style="height:100%">
 	<!-- <router-view v-if='$route.name == "reportDetail"'></router-view> -->
 	<div class="intellReport">
 		<div class="inteLeft">
@@ -20,7 +20,7 @@
 					</el-autocomplete> -->
 					<a href="javascript:void(0)" @click="goSearch"><div class="searchIcon"></div></a>
 					<ul class="seaResult">
-						<li v-for="item in allReport" :key="item.id" @click="chooseResult(item.title)">
+						<li class="resultItem" v-for="item in allReport" :key="item.id" @click="chooseResult(item.title)">
 							<a href="javascript:void(0)">{{item.title}}</a>
 						</li>
 					</ul>
@@ -31,7 +31,7 @@
 				<div class="gridView" :style="viewToggle">
 					<!-- 月度智能报告(网格视图) -->
 					<div :class="bigType == 2?'systemVis':''" :style="allVis">
-						<el-badge value="new"><p class="reporTypeTitle">月度智能报告</p></el-badge>
+						<el-badge value="new" :hidden="newHidden"><p class="reporTypeTitle">月度智能报告</p></el-badge>
 						<ul class="gridUl">
 							<li class="gridListClass" v-for="item in systemReport" :key="item.id" @click="toDetail_system(item.id)">
 								<img src="../../../public/img/report/more.png" class="reportImg" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
@@ -51,7 +51,7 @@
 					</div>
 					<!-- 自定义报告(网格视图) -->
 					<div :class="bigType == 1?'customVis':''" :style="allVis">
-						<el-badge value="new"><p class="reporTypeTitle">自定义报告</p></el-badge>
+						<el-badge value="new" :hidden="newHidden"><p class="reporTypeTitle">自定义报告</p></el-badge>
 						<div :class="bigType == 2?'newRe':'newRe1'" @click="openDialog"><a href="javascript:void(0)">新建自定义报告</a></div>
 						<ul class="gridUl">
 							<li class="gridListClass" v-for="item in customReport" :key="item.id">
@@ -83,7 +83,7 @@
 				<div class="listView" :style="viewToggle1">
 					<!-- 月度智能报告(列表视图) -->
 					<div :class="bigType == 2?'systemVis':''" :style="allVis">
-						<el-badge value="new"><p class="reporTypeTitle">月度智能报告</p></el-badge>
+						<el-badge value="new" :hidden="newHidden"><p class="reporTypeTitle">月度智能报告</p></el-badge>
 						<ul class="listUl">
 							<li class="lisTitle">
 								<span class="titleItem titleNum">编号</span>
@@ -113,7 +113,7 @@
 					</div>
 					<!-- 自定义报告(列表视图) -->
 					<div :class="bigType == 1?'customVis':''" :style="allVis">
-						<el-badge value="new"><p class="reporTypeTitle">自定义报告</p></el-badge>
+						<el-badge value="new" :hidden="newHidden"><p class="reporTypeTitle">自定义报告</p></el-badge>
 						<div :class="bigType == 2?'newRe':'newRe1'" @click="openDialog"><a href="javascript:void(0)">新建自定义报告</a></div>
 						<ul class="listUl">
 							<li class="lisTitle">
@@ -397,6 +397,8 @@ export default {
 			resultReport:[],
 			systemReport:[],
 			customReport:[],
+			new:'new',
+			newHidden:false,
 			pageNum1:1,
 			pageSize1:14,
 			totalPage1:14,
@@ -505,16 +507,18 @@ export default {
 		// 获取全部报告
 		this.$api.get_reports(data15).then(v => {
 			console.log(v)
-			this.loading = false
 			if(v.data.count != null){
 				this.reReport = v.data.list
 			}else{
 				this.reReport = []
 			}
+			this.$nextTick(() => {
+				this.loading = false
+			})
 		})		
 		// 获取平台报告
 		this.$api.get_reports(data1).then(v => {
-			this.loading = false
+			// this.loading = false
 			if(v.data.count != null){
 				this.noImg.display = 'none'
 				this.systemReport = v.data.list
@@ -527,7 +531,7 @@ export default {
 		})
 		// 获取自定义报告
 		this.$api.get_reports(data2).then(v => {
-			this.loading = false
+			// this.loading = false
 			if(v.data.count != null){
 				this.noImgCustom.display = 'none'
 				this.customReport = v.data.list
@@ -560,9 +564,11 @@ export default {
 			}else if(aa == 1){
 				this.bigType = 1
 				this.navigiOn = '月度智能报告'
+				this.newHidden = true
 			}else{
 				this.bigType = 2
 				this.navigiOn = '自定义报告'
+				this.newHidden = true
 			}
 		},
 		choose:function(status){
@@ -618,7 +624,7 @@ export default {
 					this.resultReport = v.data.list
 					this.totalPage3 = v.data.count
 				}else{
-					this.searchTip.display = 'none'
+					this.searchTip.display = 'block'
 					this.noImgResult.display = 'block'
 					this.resultReport = []
 					this.totalPage3 = 0
@@ -638,7 +644,7 @@ export default {
 			this.noImgResult.display = 'none'
 			this.searContent = ''
 			this.loading = false
-			this.bigType = 0
+			// this.bigType = 0
 		},
 		// querySearch(queryString, cb) {
 		// 	var reports = this.systemReport
@@ -1206,7 +1212,7 @@ export default {
 	box-sizing border-box
 	margin-bottom 10px
 	font-size 16px
-	font-weight bold
+	// font-weight bold
 	color #8E9099
 	line-height 58px
 
@@ -1230,7 +1236,7 @@ export default {
 	box-sizing border-box
 	margin-bottom 10px
 	font-size 16px
-	font-weight bold
+	// font-weight bold
 	color #8E9099
 	line-height 58px
 
@@ -1254,7 +1260,7 @@ export default {
 	box-sizing border-box
 	margin-bottom 10px
 	font-size 16px
-	font-weight bold
+	// font-weight bold
 	color #8E9099
 	line-height 58px
 
@@ -1324,27 +1330,48 @@ export default {
 	background-color #fff
 	position absolute
 	left 0
-	top 40px
+	top 45px
 	z-index 2
-	li
+	border 1px solid rgba(237,240,242,1)
+	box-shadow 0px 6px 10px 0px rgba(70,74,78,0.12)
+
+.resultItem
+	width 100%
+	height 42px
+	font-size 13px
+	line-height 42px
+	text-align left
+	white-space nowrap
+	text-overflow ellipsis
+	overflow hidden
+	border-bottom 1px #f3f3f3 solid
+	box-sizing border-box
+	a
 		width 100%
-		height 32px
-		font-size 14px
-		line-height 32px
-		text-align left
+		height 42px
+		padding-left 10px
+		color #333
 		white-space nowrap
 		text-overflow ellipsis
 		overflow hidden
-		border-bottom 1px #eee solid
-		box-sizing border-box
-		a
-			width 100%
-			height 32px
-			padding-left 10px
-			color #000
-			white-space nowrap
-			text-overflow ellipsis
-			overflow hidden
+
+.resultItem:hover
+	background-color #f3f3f3
+
+.seaResult::-webkit-scrollbar
+	width 4px
+	height 10px
+
+.seaResult::-webkit-scrollbar-thumb
+	border-radius 5px
+	-webkit-box-shadow inset 0 0 5px rgba(0,0,0,0.2)
+	background rgba(0,0,0,0.2)
+
+.seaResult::-webkit-scrollbar-track
+	-webkit-box-shadow inset 0 0 5px rgba(0,0,0,0)
+	border-radius 0
+	background rgba(0,0,0,0)
+
 
 .reportContent
 	width 100%
@@ -1726,6 +1753,7 @@ export default {
 	color #fc9d74
 
 .noData
+	margin-left -160px
 	margin-bottom 50px
 	font-size 20px
 	line-height 20px
