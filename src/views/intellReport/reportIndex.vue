@@ -561,6 +561,7 @@ export default {
 			if(aa == 0){
 				this.bigType = 0
 				this.navigiOn = '全部报告'
+				this.newHidden = false
 			}else if(aa == 1){
 				this.bigType = 1
 				this.navigiOn = '月度智能报告'
