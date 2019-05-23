@@ -1,6 +1,5 @@
 <template>
-    <div style='height:100%' v-loading.fullscreen.lock="loading">
-        
+    <div style='height:100%' v-loading.fullscreen.lock="loading">        
         <el-container style='height:100%;background:#F6F7FE;padding:0 20px 0 0;box-sizing:border-box'>
             <el-aside width="320px" style='border-radius:4px;background:#fff;' class='cate'>
                 <div :class='t==0?"title acttitle":"title"'  @click='t=0'>
@@ -581,12 +580,22 @@ export default {
                 xAxis : [
                     {
                         type : 'category',
-                        data : x
+                        data : x,
+                        name:'时间',
+                        nameTextStyle:{
+                            fontSize:14,
+                            color:'#6064FD'
+                        }
                     }
                 ],
                 yAxis : [
                     {
-                        type : 'value'
+                        type : 'value',
+                        name:'价格',
+                        nameTextStyle:{
+                            fontSize:14,
+                            color:'#6064FD'
+                        }
                     }
                 ],
                 series :y
@@ -709,12 +718,22 @@ export default {
                 xAxis : [
                     {
                         type : 'category',
-                        data : x
+                        data : x,
+                        name:"时间",
+                        nameTextStyle:{
+                            fontSize:14,
+                            color:'#6064FD'
+                        }
                     }
                 ],
                 yAxis : [
                     {
-                        type : 'value'
+                        type : 'value',
+                        name:"价格",
+                        nameTextStyle:{
+                            fontSize:14,
+                            color:'#6064FD'
+                        }
                     }
                 ],
                 series :y
@@ -874,12 +893,22 @@ export default {
                 xAxis : [
                     {
                         type : 'category',
-                        data : x
+                        data : x,
+                        name:'时间',
+                        nameTextStyle:{
+                            fontSize:14,
+                            color:'#6064FD'
+                        }
                     }
                 ],
                 yAxis : [
                     {
-                        type : 'value'
+                        type : 'value',
+                        name:'价格',
+                        nameTextStyle:{
+                            fontSize:14,
+                            color:'#6064FD'
+                        }
                     },
                     // {
                     //     type:'value'
@@ -1036,6 +1065,9 @@ export default {
 .cate
     box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
     border-radius 0 !important
+    position fixed
+    z-index 99
+    height 100%
     // padding 0 20px
     .cate-list 
         height auto
@@ -1077,13 +1109,15 @@ export default {
 .charts-main
     min-height 100%
     width 100%
-    margin-left 20px
+    // margin-left 20px
     height 100%
     border-radius 8px       
     flex-direction column
     padding-top 78px
     box-sizing border-box
     position relative
+    padding-left 330px
+    box-sizing border-box
     .table-box
         overflow-y scroll
         width 100%
@@ -1149,6 +1183,7 @@ export default {
         background rgba(0,0,0,0)
         box-shadow none
         padding 0
+        width auto
     .btnClass
         width 280px
         padding-left 30px
@@ -1295,7 +1330,10 @@ export default {
     li
         padding 0 30px
         cursor pointer
-    .ac 
+    li:hover
+        background #b7bfff 
+        color #fff
+    .ac,.ac:hover 
         background #7F94FF
         color #fff
 </style>

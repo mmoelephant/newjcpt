@@ -7,13 +7,11 @@
                     <p>云南省建设工程材料及设备价格监测系统</p>
 					<div class='nav'>
 						<div :class='route == "/ref"?"act":""' @click='$router.push("/ref")'>
-							<img src='../public/img/数据选中.png' v-if='route == "/ref"'/>
-							<img src="../public/img/数据灰色.png" alt="" v-if='route !="/ref"'>
+							<i class='c'></i>
 							<p>数据查询</p>
 						</div>
 						<div :class='route == "/reportIndex"?"act":""' @click='$router.push("/reportIndex")'>
-							<img v-show='route == "/reportIndex"' src='../public/img/报告选中.png'/>
-							<img src="../public/img/报告灰.png" alt="" v-show='route != "/reportIndex"'>
+							<i class='c1'></i>
 							<p>智能报告</p>
 						</div>
 					</div>
@@ -217,6 +215,17 @@ export default {
 				align-items center
 				height 100%
 				margin-left 105px
+				div:hover
+					background #f6f7fe
+					border-bottom 2px solid #f6f7fe
+					p 
+						color #2c2d33
+					.c 
+						background url('../public/img/数据黑.png') no-repeat
+						background-size 100% 100%
+					.c1 
+						background url('../public/img/报告黑.png') no-repeat
+						background-size 100% 100%
 				div
 					text-align center
 					width 100px
@@ -225,16 +234,34 @@ export default {
 					box-sizing border-box
 					padding 15px 0 10px 0
 					cursor pointer
-				img 
+					margin-right 10px
+					.c 
+						background url('../public/img/数据灰色.png') no-repeat
+						background-size 100% 100%
+					.c1 
+						background url('../public/img/报告灰.png') no-repeat
+						background-size 100% 100%
+				
+				i 
 					width 32px
 					margin 0
+					display block
+					height 34px
+					margin 0 auto
+				
 				p
 					font-size 14px
 					font-weight 400
 					color #8E9099
-				.act
+				.act,.act:hover
 					background #F6F7FE
 					border-bottom 2px solid #635EF9
+					.c 
+						background url('../public/img/数据选中.png') no-repeat
+						background-size 100% 100%
+					.c1 
+						background url('../public/img/报告选中.png') no-repeat
+						background-size 100% 100%
 					p 
 						color #635EF9
 		.right 
