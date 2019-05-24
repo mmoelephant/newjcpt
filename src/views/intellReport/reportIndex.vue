@@ -16,8 +16,6 @@
 				</div>
 				<div class="search">
 					<input class="searchBox" placeholder="请输入需要检索的报告标题" v-model="searContent" @input="searChange">
-					<!-- <el-autocomplete class="searchBox" v-model="state2" autocomplete clearable :fetch-suggestions="querySearch" placeholder="请输入需要检索的报告标题" :trigger-on-focus="false" @select="handleSelect">
-					</el-autocomplete> -->
 					<a href="javascript:void(0)" @click="goSearch"><div class="searchIcon"></div></a>
 					<ul class="seaResult" :style="resultBox">
 						<li class="resultItem" v-for="item in allReport" :key="item.id" @click="chooseResult(item.title)">
@@ -27,7 +25,9 @@
 				</div>
 			</div>
 			<div class="reportContent">
-				<div class="searchTip" :style="searchTip">搜索<span class="keyWord">{{'“' + searContent + '”'}}</span>结果如下：<a href="javascript:void(0)" class="goback" @click="goback">返回</a></div>
+				<div class="searchTip" :style="searchTip">搜索
+					<span class="keyWord">{{'“' + searContent + '”'}}</span>结果如下：<a href="javascript:void(0)" class="goback" @click="goback">返回</a>
+				</div>
 				<div class="gridView" :style="viewToggle">
 					<!-- 月度智能报告(网格视图) -->
 					<div :class="bigType == 2?'systemVis':''" :style="allVis">
@@ -37,7 +37,14 @@
 								<img src="../../../public/img/report/more.png" class="reportImg" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
 								<img src="../../../public/img/report/single.png" class="reportImg" v-else>
 								<p class="reporTitle">云南省建设工程主要材料市场价格变动情况</p>
-								<p class="reporTime">{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,1) + '月':'-'}}</p>
+								<p class="reporTime">
+									<span v-if="item.timeInterval.length == 6">
+										{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,1) + '月':'-'}}
+									</span>
+									<span v-else>
+										{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,2) + '月':'-'}}
+									</span>
+								</p>
 							</li>
 						</ul>
 						<ul class="lazyUl" :style="lazyUlVis">
@@ -61,10 +68,14 @@
 						<div :class="bigType == 2?'newRe':'newRe1'" @click="openDialog"><a href="javascript:void(0)">新建自定义报告</a></div>
 						<ul class="gridUl">
 							<li class="gridListClass" v-for="item in customReport" :key="item.id">
-								<img src="../../../public/img/report/more1.png" class="reportIcon" 
-								v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1" @click="toDetail(item.id)">
-								<img src="../../../public/img/report/single1.png" class="reportIcon" v-else @click="toDetail(item.id)">
-								<div :class="item.materialClassID&&item.materialClassID.indexOf(',') != -1?'reportMateri':'reportMateri reportMateri1'" @click="toDetail(item.id)">
+								<a href="javascript:void(0)" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1" @click="toDetail(item.id)">
+									<img src="../../../public/img/report/more1.png" class="reportIcon">
+								</a>
+								<a href="javascript:void(0)" v-else @click="toDetail(item.id)">
+									<img src="../../../public/img/report/single1.png" class="reportIcon">
+								</a>
+								<div :class="item.materialClassID&&item.materialClassID.indexOf(',') != -1?'reportMateri':'reportMateri reportMateri1'" 
+								@click="toDetail(item.id)">
 									{{item.materialClassID&&item.materialClassID.indexOf(',') != -1?item.materialName:'单材料-' + item.materialName}}
 								</div>
 								<div class="reporType" v-if="item.dataType == 1" @click="toDetail(item.id)">月报</div>
@@ -73,7 +84,7 @@
 								<a href="javascript:void(0)" @click="deleteRe(item.id)"><img src="../../../public/img/report/delete.png" class="deleteIcon"></a>
 								<p class="reportarea" @click="toDetail(item.id)">{{item.areaName}}</p>
 								<p class="reporTitle1" @click="toDetail(item.id)">{{item.title}}</p>
-								<p class="reporTime" @click="toDetail(item.id)">{{item.createTimeStr?item.createTimeStr:''}}</p>
+								<p class="reporTime" @click="toDetail(item.id)">{{item.createTimeStr?item.createTimeStr:'-'}}</p>
 							</li>
 						</ul>
 						<ul class="lazyUl" :style="lazyUlVis1">
@@ -87,8 +98,8 @@
 							<p class="noDatap1">暂时没有找到</p>
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
-						<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" layout="prev, pager, next" 
-						class="reportPage" @current-change="get_data2">
+						<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" 
+						layout="prev, pager, next" class="reportPage" @current-change="get_data2">
 						</el-pagination>
 					</div>
 				</div>
@@ -107,10 +118,16 @@
 								<span class="listItem listNum">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
 								<span class="listItem listT" @click="toDetail_system(item.id)">
 									<a href="javascript:void(0)">
-										云南省建设工程主要材料市场价格变动情况{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,1) + '月':'-'}}
+										云南省建设工程主要材料市场价格变动情况
+										<span v-if="item.timeInterval.length == 6">
+											{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,1) + '月':'-'}}
+										</span>
+										<span v-else>
+											{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,2) + '月':'-'}}
+										</span>
 									</a>
 								</span>
-								<span class="listItem listTime">{{item.createTimeStr?item.createTimeStr:''}}</span>
+								<span class="listItem listTime">{{item.createTimeStr?item.createTimeStr:'-'}}</span>
 								<span class="listItem listDo"><a href="javascript:void(0)" @click="toDetail_system(item.id)">查看报告></a></span>	
 							</li>
 						</ul>
@@ -119,8 +136,8 @@
 							<p class="noDatap1">暂时没有找到</p>
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
-						<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" layout="prev, pager, next" 
-						class="reportPage" @current-change="get_data1">
+						<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" 
+						layout="prev, pager, next" class="reportPage" @current-change="get_data1">
 						</el-pagination>
 					</div>
 					<!-- 自定义报告(列表视图) -->
@@ -167,8 +184,8 @@
 							<p class="noDatap1">暂时没有找到</p>
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
-						<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" layout="prev, pager, next" 
-						class="reportPage" @current-change="get_data2">
+						<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" 
+						layout="prev, pager, next" class="reportPage" @current-change="get_data2">
 						</el-pagination>
 					</div>
 					<div :style="resultVis">
@@ -186,13 +203,14 @@
 										{{item.title.substr(0,item.title.indexOf(searContent))}}
 										<span style="color:#F2342B">{{searContent}}</span>
 										{{item.title.substr(item.title.indexOf(searContent) + searContent.length)}}
-										{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,1) + '月':'-'}}
-										<!-- 云南省建设工程主要材料市场价格变动情况{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}} -->
+										<span v-if="item.timeInterval.length == 6">
+											{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,1) + '月':'-'}}
+										</span>
+										<span v-else>{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,2) + '月':'-'}}</span>
 									</a>
 								</span>
 								<span class="listItem listT" @click="toDetail(item.id)" v-if="item.type == 2">
 									<a href="javascript:void(0)">
-										<!-- {{item.title}} -->
 										{{item.title.substr(0,item.title.indexOf(searContent))}}
 										<span style="color:#F2342B">{{searContent}}</span>
 										{{item.title.substr(item.title.indexOf(searContent) + searContent.length).slice(0,10)}}...
@@ -208,8 +226,8 @@
 							<p class="noDatap1">暂时没有找到</p>
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
-						<el-pagination :page-size="pageSize3" :total="totalPage3" :pager-count="5" :current-page="pageNum3" :hide-on-single-page="true" layout="prev, pager, next" 
-						class="reportPage" @current-change="get_data3">
+						<el-pagination :page-size="pageSize3" :total="totalPage3" :pager-count="5" :current-page="pageNum3" :hide-on-single-page="true" 
+						layout="prev, pager, next" class="reportPage" @current-change="get_data3">
 						</el-pagination>
 					</div>
 				</div>
