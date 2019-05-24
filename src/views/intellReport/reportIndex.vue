@@ -86,7 +86,7 @@
 						<el-badge value="new" :hidden="newHidden"><p class="reporTypeTitle">月度智能报告</p></el-badge>
 						<ul class="listUl">
 							<li class="lisTitle">
-								<span class="titleItem titleNum">编号</span>
+								<span class="titleItem titleNum">序号</span>
 								<span class="titleItem titleT">报告标题</span>
 								<span class="titleItem titleTime">创建时间</span>
 								<span class="titleItem titleDo">操作</span>
@@ -117,7 +117,7 @@
 						<div :class="bigType == 2?'newRe':'newRe1'" @click="openDialog"><a href="javascript:void(0)">新建自定义报告</a></div>
 						<ul class="listUl">
 							<li class="lisTitle">
-								<span class="titleItem titleNum_custom">编号</span>
+								<span class="titleItem titleNum_custom">序号</span>
 								<span class="titleItem titleT_custom">报告标题</span>
 								<span class="titleItem titleType_custom">类型
 									<span class="filterDo">
@@ -251,7 +251,9 @@
 				<p class="contentItem" v-if='item.mm !="暂无数据"'>
 					<span v-if="time1.length == 1">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
 					<span v-else-if="time1.length == 4">{{item.title?item.title.substr(0,9):'-'}} 云南省 {{item.maName}}价格</span>
-					<span v-else>{{item.title?item.title.substr(0,7):'-'}} 云南省 {{item.maName}}价格</span>
+					<span v-else>
+						<span v-if="item.title.indexOf('月') == 6">{{item.title?item.title.substr(0,7):'-'}}</span>
+						<span v-else>{{item.title?item.title.substr(0,8):'-'}}</span> 云南省 {{item.maName}}价格</span>
 					{{item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}} 元/吨 
 					指数{{item.mmYn[index].exponent?item.mmYn[index].exponent.toFixed(2):''}}点 
 					环比下降{{item.mmYn[index].hb?(Number(item.mmYn[index].hb.toFixed(5)) * 100).toFixed(2):'-'}}%，
@@ -261,15 +263,15 @@
 					<thead>
 						<tr>
 							<th rowspan="2">地区</th>
-							<th colspan="5">{{item.maName}} 单位：元/立方米</th>
+							<th colspan="5">{{item.maName}} 单位：{{item.mm[0].munit}}</th>
 						</tr>
 						<!--季度-->
 						<tr v-if="time1.length == 1">
 							<th>{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年' + item.title.substr(5,4)}}</th>
-							<th v-if="time1 == 1">{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年第四季度'}}</th>
-							<th v-else-if="time1 == 2">{{item.title.substr(0,5) + '第一季度'}}</th>
-							<th v-else-if="time1 == 3">{{item.title.substr(0,5) + '第二季度'}}</th>
-							<th v-else>{{item.title.substr(0,5) + '第三季度'}}</th>
+							<th v-if="time1 == 1">{{(parseInt(item.title.substr(0,4)) - 1).toString() + '年第4季度'}}</th>
+							<th v-else-if="time1 == 2">{{item.title.substr(0,5) + '第1季度'}}</th>
+							<th v-else-if="time1 == 3">{{item.title.substr(0,5) + '第2季度'}}</th>
+							<th v-else>{{item.title.substr(0,5) + '第3季度'}}</th>
 							<th>{{item.title.substr(0,9)}}</th>
 							<th>同比增长率(%)</th>
 							<th>环比增长率(%)</th>
@@ -343,10 +345,10 @@
 						</tr>
 						<tr v-for="(item1,index1) in item.mm" :key="index1">
 							<td style="text-indent:2px;text-align:left;text-indent:30px">{{item1.maName}}</td>
-							<td>{{item1.munit}}</td>
+							<td>{{item1.munit?item1.munit:'-'}}</td>
 							<td>{{item1.price?item1.price.toFixed(2):'-'}}</td>
-							<td>{{item1.hbPrice?item1.hbPrice.toFixed(2):'-'}}</td>
-							<td>{{item1.hbPrice?((((item1.hbPrice - item1.price) / item1.price).toFixed(5)) * 100).toFixed(2):'0'}}</td>	
+							<td>{{item1.hbPrice?(item1.price -item1.hbPrice).toFixed(2):'-'}}</td>
+							<td>{{item1.hb?(item1.hb.toFixed(5) * 100).toFixed(2):'-'}}</td>	
 						</tr>
 					</tbody>
 					<tfoot class="tableFoot">
@@ -395,6 +397,9 @@ export default {
 			searchTip:{
 				display:'none'
 			},
+			// pageVis:{
+			// 	display:'none'
+			// },
 			reReport:[],
 			allReport:[],
 			resultReport:[],
