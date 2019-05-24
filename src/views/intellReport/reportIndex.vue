@@ -216,7 +216,7 @@
 										{{item.title.substr(item.title.indexOf(searContent) + searContent.length).slice(0,10)}}...
 									</a>
 								</span>
-								<span class="listItem listTime">{{item.createTimeStr?item.createTimeStr:''}}</span>
+								<span class="listItem listTime">{{item.createTimeStr?item.createTimeStr:'-'}}</span>
 								<span class="listItem listDo" v-if="item.type == 1"><a href="javascript:void(0)" @click="toDetail_system(item.id)">查看报告></a></span>	
 								<span class="listItem listDo" v-if="item.type == 2"><a href="javascript:void(0)" @click="toDetail(item.id)">查看报告></a></span>	
 							</li>
@@ -357,7 +357,6 @@
 					<span class="titleDot"></span>
 					据对16个州、市建设工程7大类26小类主要材料市场价格的监测显示，{{time3}}与{{time2}}相比，{{riseNum}}类材料价格上涨，{{descendNum}}类下降，{{unbiasedNum}}类持平。
 				</p>
-				 <!-- v-if="item.mm != '暂无数据'"  -->
 				<p class="graphName" v-if='noDataMsg =="查询成功"'>{{detailTitle.split('省')[1]}}</p>
 				<table class="tableBox" border="1" v-if='noDataMsg =="查询成功"'>
 					<thead>
