@@ -37,8 +37,14 @@
 								<img src="../../../public/img/report/more.png" class="reportImg" v-if="item.materialClassID&&item.materialClassID.indexOf(',') != -1">
 								<img src="../../../public/img/report/single.png" class="reportImg" v-else>
 								<p class="reporTitle">云南省建设工程主要材料市场价格变动情况</p>
-								<p class="reporTime">{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}</p>
+								<p class="reporTime">{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,1) + '月':'-'}}</p>
 							</li>
+						</ul>
+						<ul class="lazyUl" :style="lazyUlVis">
+							<li class="lazyLi"></li><li class="lazyLi"></li><li class="lazyLi"></li><li class="lazyLi"></li>
+							<li class="lazyLi"></li><li class="lazyLi"></li><li class="lazyLi"></li><li class="lazyLi"></li>
+							<li class="lazyLi"></li><li class="lazyLi"></li><li class="lazyLi"></li><li class="lazyLi"></li>
+							<li class="lazyLi"></li><li class="lazyLi"></li>
 						</ul>
 						<div class="noData" :style="noImg">
 							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
@@ -67,8 +73,14 @@
 								<a href="javascript:void(0)" @click="deleteRe(item.id)"><img src="../../../public/img/report/delete.png" class="deleteIcon"></a>
 								<p class="reportarea" @click="toDetail(item.id)">{{item.areaName}}</p>
 								<p class="reporTitle1" @click="toDetail(item.id)">{{item.title}}</p>
-								<p class="reporTime" @click="toDetail(item.id)">{{item.createTime?item.createTime.split('T')[0]:''}}</p>
+								<p class="reporTime" @click="toDetail(item.id)">{{item.createTimeStr?item.createTimeStr:''}}</p>
 							</li>
+						</ul>
+						<ul class="lazyUl" :style="lazyUlVis1">
+							<li class="lazyLi1"></li><li class="lazyLi1"></li><li class="lazyLi1"></li><li class="lazyLi1"></li>
+							<li class="lazyLi1"></li><li class="lazyLi1"></li><li class="lazyLi1"></li><li class="lazyLi1"></li>
+							<li class="lazyLi1"></li><li class="lazyLi1"></li><li class="lazyLi1"></li><li class="lazyLi1"></li>
+							<li class="lazyLi1"></li><li class="lazyLi1"></li>
 						</ul>
 						<div class="noData" :style="noImgCustom">
 							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
@@ -95,10 +107,10 @@
 								<span class="listItem listNum">{{index < 9 ?"YD00" + (index + 1):"YD0" + (index+1)}}</span>
 								<span class="listItem listT" @click="toDetail_system(item.id)">
 									<a href="javascript:void(0)">
-										云南省建设工程主要材料市场价格变动情况{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}
+										云南省建设工程主要材料市场价格变动情况{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,1) + '月':'-'}}
 									</a>
 								</span>
-								<span class="listItem listTime">{{item.createTime?item.createTime.split('T')[0]:''}}</span>
+								<span class="listItem listTime">{{item.createTimeStr?item.createTimeStr:''}}</span>
 								<span class="listItem listDo"><a href="javascript:void(0)" @click="toDetail_system(item.id)">查看报告></a></span>	
 							</li>
 						</ul>
@@ -143,7 +155,7 @@
 								<span class="listItem listType_custom" v-if="item.dataType == 1">月度</span>
 								<span class="listItem listType_custom1" v-else-if="item.dataType == 2">季度</span>
 								<span class="listItem listType_custom2" v-else>年度</span>
-								<span class="listItem listTime_custom">{{item.createTime?item.createTime.split('T')[0]:'-'}}</span>
+								<span class="listItem listTime_custom">{{item.createTimeStr?item.createTimeStr:'-'}}</span>
 								<span class="listItem listDo_custom">
 									<a href="javascript:void(0)" class="toDetail" @click="toDetail(item.id)">查看报告</a>
 									<a href="javascript:void(0)" class="deleteRe" @click="deleteRe(item.id)">删除</a>
@@ -174,7 +186,7 @@
 										{{item.title.substr(0,item.title.indexOf(searContent))}}
 										<span style="color:#F2342B">{{searContent}}</span>
 										{{item.title.substr(item.title.indexOf(searContent) + searContent.length)}}
-										{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}}
+										{{item.timeInterval?item.timeInterval.substr(0,4) + '年' + item.timeInterval.substr(5,1) + '月':'-'}}
 										<!-- 云南省建设工程主要材料市场价格变动情况{{item.createTime?item.createTime.substr(0,4) + '年' + item.createTime.substr(6,1) + '月':'-'}} -->
 									</a>
 								</span>
@@ -186,7 +198,7 @@
 										{{item.title.substr(item.title.indexOf(searContent) + searContent.length).slice(0,10)}}...
 									</a>
 								</span>
-								<span class="listItem listTime">{{item.createTime?item.createTime.split('T')[0]:''}}</span>
+								<span class="listItem listTime">{{item.createTimeStr?item.createTimeStr:''}}</span>
 								<span class="listItem listDo" v-if="item.type == 1"><a href="javascript:void(0)" @click="toDetail_system(item.id)">查看报告></a></span>	
 								<span class="listItem listDo" v-if="item.type == 2"><a href="javascript:void(0)" @click="toDetail(item.id)">查看报告></a></span>	
 							</li>
@@ -397,6 +409,15 @@ export default {
 			searchTip:{
 				display:'none'
 			},
+			// gridUlVis:{
+			// 	display:'none'
+			// },
+			lazyUlVis:{
+				display:''
+			},
+			lazyUlVis1:{
+				display:''
+			},
 			// pageVis:{
 			// 	display:'none'
 			// },
@@ -528,13 +549,17 @@ export default {
 		this.$api.get_reports(data1).then(v => {
 			// this.loading = false
 			if(v.data.count != null){
+				// this.gridUlVis.display = ''
+				this.lazyUlVis.display = 'none'
 				this.noImg.display = 'none'
 				this.systemReport = v.data.list
 				this.totalPage1 = v.data.count
 			}else{
 				this.noImg.display = 'block'
+				this.lazyUlVis.display = 'none'
 				this.systemReport = []
 				this.totalPage1 = 0
+				// this.gridUlVis.display = ''
 			}
 		})
 		// 获取自定义报告
@@ -542,10 +567,12 @@ export default {
 			// this.loading = false
 			if(v.data.count != null){
 				this.noImgCustom.display = 'none'
+				this.lazyUlVis1.display = 'none'
 				this.customReport = v.data.list
 				this.totalPage2 = v.data.count
 			}else{
 				this.noImgCustom.display = 'block'
+				this.lazyUlVis1.display = 'none'
 				this.customReport = []
 				this.totalPage2 = 0
 			}
@@ -1433,6 +1460,34 @@ export default {
 	flex-wrap wrap
 	justify-content flex-start
 
+.lazyUl
+	padding 20px 10px
+	box-sizing border-box
+	display flex
+	flex-direction row
+	flex-wrap wrap
+	justify-content flex-start
+
+.lazyLi
+	width 208px
+	height 240px
+	background url(../../../public/img/report/lazyImg2.png) no-repeat center
+	// background-color white
+	border-radius 8px
+	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+	margin-right 20px
+	margin-bottom 20px
+
+.lazyLi1
+	width 208px
+	height 240px
+	background url(../../../public/img/report/lazyImg3.png) no-repeat center
+	// background-color white
+	border-radius 8px
+	box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
+	margin-right 20px
+	margin-bottom 20px
+	
 .systemVis
 	display none
 
