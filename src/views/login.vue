@@ -8,7 +8,7 @@
                 <p class='cp mt'>
                     Copyright 2018-2019 版权所有 昆明行列科技有限公司
                 </p>
-                <p class='cp'>Ver 2.0.1</p>
+                <p class='cp'>Ver 2.1.0</p>
             </div>
             <div class='right'>
                 <h1>用户登录</h1>

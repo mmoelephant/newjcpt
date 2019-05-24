@@ -42,8 +42,11 @@ export default {
 		document.onkeydown = function(e) {
 			var keycode = document.all ? event.keyCode : e.which;
 			if (keycode == 13) {
-				that.$router.push('/ref')
-				return false;
+				if(this.$route.path=='/') {
+					that.$router.push('/ref')
+					return false;
+				}
+				
 			}
 		}
 	}

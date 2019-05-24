@@ -360,12 +360,13 @@ export default {
                 data.yearNumber = this.time.toString()
             }
             const ap = await this.$api.get_yn_time_list(data, this.timetype)
-            console.log(ap)
             let akeys = Object.keys(ap.data.data)
             if(akeys.length>0) {
                 this.tabledata.push({data:ap.data.data[akeys[0]]})
             }else {
                 this.tabledata = []
+                this.show_page()
+                this.loading = false
             }   
             data.area=this.chosed_area.area
             const res = await this.$api.get_area_time_list(data,this.timetype)
@@ -413,7 +414,7 @@ export default {
             keys.forEach(key => {
                 let par = {
                     pid:key,//选择的材料
-                    area:this.chosed_area.area
+                    area:this.chosed_city.id
                 } 
                 if(this.timetype == 0) {
                     const t_arr=this.formateTime()
@@ -427,6 +428,10 @@ export default {
                 let children=[]
                 this.$api.get_cate_time_list(par,this.timetype).then(r => {
                     let sonkeys = Object.keys(r.data.data)
+                    if(sonkeys.length==0) {
+                        this.show_page()
+                        this.loading = false
+                    } 
                     sonkeys.map(sk => {
                         children.push({data:r.data.data[sk]})
                     })
