@@ -55,7 +55,6 @@ export default {
     },
     methods:{
         upimg(e) {
-            console.log(e)
             const file = e.target.files[0]
             const reader = new FileReader();
             const _this = this

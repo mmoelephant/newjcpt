@@ -360,7 +360,6 @@ export default {
                 data.yearNumber = this.time.toString()
             }
             const ap = await this.$api.get_yn_time_list(data, this.timetype)
-            console.log(ap)
             let akeys = Object.keys(ap.data.data)
             if(akeys.length>0) {
                 this.tabledata.push({data:ap.data.data[akeys[0]]})
@@ -413,7 +412,7 @@ export default {
             keys.forEach(key => {
                 let par = {
                     pid:key,//选择的材料
-                    area:this.chosed_city.id
+                    area:this.chosed_area.area
                 } 
                 if(this.timetype == 0) {
                     const t_arr=this.formateTime()
@@ -783,7 +782,7 @@ export default {
                                 // data:tb,
                                 type:'line',
                                 name:item.data[0].name,
-                                yAxisIndex:1,
+                                // yAxisIndex:1,
                                 itemStyle:{
                             color:this.color[index]
                         }},
@@ -969,7 +968,6 @@ export default {
             let scroll = $('.ul').scrollLeft()
             let left = this.tablewidth - this.boxwidth -scroll
             const that = this
-            console.log(scroll,left, scroll-this.boxwidth)
             if(type == -1) {
                 if(scroll>this.boxwidth) {
                     $('.ul').animate({

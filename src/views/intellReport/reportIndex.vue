@@ -53,7 +53,7 @@
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
 						<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" layout="prev, pager, next" 
-						class="reportPage" @current-change="get_data1">
+						class="reportPage" @current-change="get_data1" v-show='bigType==1'>
 						</el-pagination>
 					</div>
 					<!-- 自定义报告(网格视图) -->
@@ -93,7 +93,7 @@
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
 						<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" 
-						layout="prev, pager, next" class="reportPage" @current-change="get_data2">
+						layout="prev, pager, next" class="reportPage" @current-change="get_data2" v-show='bigType==2'>
 						</el-pagination>
 					</div>
 				</div>
@@ -572,7 +572,6 @@ export default {
 			this.regions = res.data
 		})
 		this.$api.get_cate().then(res => {
-			console.log(res)
 			res.data.map( item=> {
 				item.childrenList.map(aa => {
 					this.material.push(aa)
@@ -624,7 +623,6 @@ export default {
 				title:this.searContent	
 			}
 			this.$api.get_reports(data17).then(v => {
-				console.log(v)
 				this.loading = false
 				if(v.data.count != null){
 					this.searchTip.display = 'block'
@@ -792,7 +790,6 @@ export default {
 				token:this.token
 			}
 			this.$api.get_reports_detail(data13).then(v =>{
-				console.log(v)
 				this.reTitle = v.data.data.title
 				this.detaiLazy1.display = 'none'
 				this.reportDetailList = v.data.data.mapList
@@ -813,7 +810,6 @@ export default {
 				token:this.token
 			}
 			this.$api.get_reports_detail(data14).then(v =>{
-				console.log(v)
 				this.reportDetailList1 = v.data.data.dataList
 				this.detaiLazy.display = 'none'
 				this.detailTitle = '云南省建设工程主要材料市场价格变动情况' + '(' + v.data.data.year.toString() + '年' + v.data.data.month.toString() + '月' + ')'
@@ -968,7 +964,6 @@ export default {
 			}
 			this.loading = true
 			this.$api.get_reports(data22).then(v => {
-				console.log(v)
 				this.loading = false
 				if(v.data.count != null){
 					this.noImgCustom.display = 'none'
@@ -1000,7 +995,6 @@ export default {
 			}
 			this.loading = true
 			this.$api.get_reports(data22).then(v => {
-				console.log(v)
 				this.loading = false
 				if(v.data.count != null){
 					this.noImgCustom.display = 'none'
@@ -1023,7 +1017,6 @@ export default {
 		},
 		openDialog(){
 			this.dialogFormVisible = true
-			console.log(this.ruleForm.type)
 		},
 		ruleFormName(){
 			let cate_list =[]

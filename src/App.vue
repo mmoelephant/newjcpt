@@ -112,12 +112,10 @@ export default {
 	watch: {
 		user:{
 			handler(val) {
-				console.log(val)
 			},
 			deep:true
 		},
 		route(val) {
-			console.log(val)
 		}
 	},
 	created() {
