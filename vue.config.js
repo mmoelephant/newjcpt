@@ -1,6 +1,6 @@
 module.exports = {
     // 选项...
-    publicPath:process.env.NODE_ENV === 'development'?'':'/distD',
+    publicPath:process.env.NODE_ENV === 'development'?'':'/',
     outputDir:'dist',
     assetsDir:'',
     indexPath:'index.html',

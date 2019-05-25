@@ -84,17 +84,17 @@ routes.push(...rout)
 let router = new Router({
   routes
 })
-// router.beforeEach((to, from, next) => {
-//   if(to.name != 'index' && to.name != 'login'&& to.name != 'help') {
-//     const token = sessionStorage.getItem('token')
-// 		const user = JSON.parse(sessionStorage.getItem('user'))
-//         if(token && token.length>0 && user && user.phone) {
-//           next()
-//         } else {
-//           next('/login')
-//         }
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if(to.name != 'index' && to.name != 'login'&& to.name != 'help') {
+    const token = sessionStorage.getItem('token')
+		const user = JSON.parse(sessionStorage.getItem('user'))
+        if(token && token.length>0 && user && user.phone) {
+          next()
+        } else {
+          next('/login')
+        }
+  } else {
+    next()
+  }
+})
 export default router

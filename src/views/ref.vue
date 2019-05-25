@@ -413,7 +413,7 @@ export default {
             keys.forEach(key => {
                 let par = {
                     pid:key,//选择的材料
-                    area:this.chosed_city.area
+                    area:this.chosed_city.id
                 } 
                 if(this.timetype == 0) {
                     const t_arr=this.formateTime()

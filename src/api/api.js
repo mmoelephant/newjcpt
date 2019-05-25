@@ -4,27 +4,27 @@ import qs from 'qs'
 // const baseURL = '/'
 // console.log(process.env.NODE_ENV === 'development' )
 const service = axios.create({ //hg
-		baseURL: process.env.NODE_ENV === 'development'?'/api':'',
+		baseURL: process.env.NODE_ENV === 'development'?'/api':'http://182.247.245.27:9220',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const service1 = axios.create({ //lw
-	baseURL: process.env.NODE_ENV === 'development'?'/lw':'',
+	baseURL: process.env.NODE_ENV === 'development'?'/lw':'http://182.247.245.27:9220',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const service2 = axios.create({ //xb
-	baseURL: process.env.NODE_ENV === 'development'?'/xb':'',
+	baseURL: process.env.NODE_ENV === 'development'?'/xb':'http://182.247.245.27:9220',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const service3 = axios.create({
-	baseURL: process.env.NODE_ENV === 'development'?'/api':'',
+	baseURL: process.env.NODE_ENV === 'development'?'/api':'http://182.247.245.27:9220',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const formser = axios.create({ //hg
-	baseURL: process.env.NODE_ENV === 'development'?'/api':'http://192.168.8.20:9440',
+	baseURL: process.env.NODE_ENV === 'development'?'/api':'http://182.247.245.27:9440',
 	withCredentials: false,
 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 })
