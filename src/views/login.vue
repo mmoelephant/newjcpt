@@ -8,7 +8,7 @@
                 <p class='cp mt'>
                     Copyright 2018-2019 版权所有 昆明行列科技有限公司
                 </p>
-                <p class='cp'>Ver 2.0.1</p>
+                <p class='cp'>Ver 2.1.0</p>
             </div>
             <div class='right'>
                 <h1>用户登录</h1>
@@ -97,7 +97,7 @@ export default {
                 if(this.name.length>0) {
                     return
                 } else {
-                    this.error1 = '请输入正确的手机号'
+                    this.error1 = '请输入正确的账户名'
                 }
                 
             } else {
@@ -141,10 +141,12 @@ export default {
             } else if(!this.password || this.password.length==0) {
                 this.error2 = '请输入正确的密码'
                 return false
-            } else if(!(/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/.test(this.name))) {
-                this.error1 = '手机号格式不正确'
-                return false
-            } else {
+            } 
+            // else if(!(/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/.test(this.name))) {
+            //     this.error1 = '手机号格式不正确'
+            //     return false
+            // } 
+            else {
                 return true
             }
         }

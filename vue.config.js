@@ -1,6 +1,6 @@
 module.exports = {
     // 选项...
-    publicPath:process.env.NODE_ENV === 'development'?'':'/home/distN',
+    publicPath:process.env.NODE_ENV === 'development'?'':'/distD',
     outputDir:'dist',
     assetsDir:'',
     indexPath:'index.html',
@@ -41,15 +41,6 @@ module.exports = {
                 changeOrigin: true,
                 secure: false
             }
-        }
-    },
-    pwa:{
-        iconPaths:{
-            favicon32:'favicon.ico',
-            favicon16:'favicon.ico',
-            appleTouchIcon:'favicon.ico',
-            maskIcon:'favicon.ico',
-            msTileImage:'favicon.ico'
         }
     }
 }
