@@ -2,10 +2,10 @@
 	<div style='position:relative' class='ttt'>
 		<div class='ul'> 
 			<div class='left'>
-				<p class='head'>{{type==0?'区域':'材料'}}</p>
+				<p class='head'>{{type==0?'地区':'材料'}}</p>
 				<el-checkbox-group v-model="checked">
 					<div class='info' v-for="(i,index) in newdata" :key="index">
-						<div class='n'>
+						<div :class='type==0&&index==0?"nb n":"n"'>
 							<div>							
 								<el-checkbox v-show='type==0' class='label' :label='i'>1</el-checkbox>
 								<el-checkbox v-show='type==1' class='label' :label='i'>1</el-checkbox>
@@ -33,7 +33,7 @@
 					<p v-for="(i,index) in time" :key="index">{{i}}</p>
 				</div>
 				<div class='info' v-for="(i,index) in newdata" :key="index">
-					<div class='n'>
+					<div :class='type==0&&index==0?"nb n":"n"'>
 						<p v-for='(num,a) in i.data' :key='a'>
 							<span v-show='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}</span>  
 							<span v-show='t_type=="zs"'>{{num.price ==0?"-":num.exponent+'' !='undefined'?Number(num.exponent).toFixed(2):'-'}}</span>  
@@ -180,8 +180,9 @@ export default {
 				display flex
 			i  
 				margin-right 15px
-		.info 
-			background #fff
+		
+		.info,  
+			background #fff 
 			.info  
 				padding-left 30px
 		.info:nth-child(1n)
@@ -245,6 +246,9 @@ export default {
 				background #F3F4FE
 				p
 					background #F3F4FE
+	.nb,.nb p
+			background #8AA3FF!important
+			color #fff
 	.head 
 		background #B0BDFF
 		color #fff

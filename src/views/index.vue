@@ -114,7 +114,7 @@ export default {
 		display flex
 		width 100% 
 		height 100% 
-		padding 120px 80px 0 0
+		padding 60px 80px 0 0
 		box-sizing border-box
 </style>
 

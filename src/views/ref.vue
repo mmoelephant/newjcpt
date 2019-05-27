@@ -66,7 +66,7 @@
                                 <p v-if='t==1'><span>"{{chosed_city.name}}"</span>各材料{{timetype==0?"月度":timetype==1?"季度":timetype==2?"年度":""}}数据
                                 </p>
                                 <ul>
-                                    <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"' v-if='t == 0'>价格</li>
+                                    <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"' v-show='t == 0'>价格</li>
                                     <li :class='chosed_type=="zs"? "ac" :""' @click='chosed_type="zs"'>指数</li>
                                     <li :class='chosed_type=="tb"? "ac" :""' @click='chosed_type="tb"'>同比</li>
                                     <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
