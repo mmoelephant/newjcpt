@@ -5,7 +5,7 @@
                 <div :class='t==0?"title acttitle":"title"'  @click='t=0'>
                     <div>
                         <p class='c'></p>
-                        <span>各地材料数据</span>
+                        <span>按材料查询</span>
                     </div>
                     
                     <i class='iconfont icon-shang-copy'></i>
@@ -17,7 +17,7 @@
                 <div :class='t==1?"title acttitle":"title"' @click='t =1'>
                     <div>
                         <p class='a'></p>                   
-                        <span>各地材料对比</span>
+                        <span>按地区查询</span>
                     </div>
                     <i class='iconfont icon-shang-copy'></i>
                 </div>
@@ -70,6 +70,17 @@
                                     <li :class='chosed_type=="tb"? "ac" :""' @click='chosed_type="tb"'>同比</li>
                                     <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
                                 </ul>
+                                <el-popover
+                                    class='sm'
+                                    v-show='chosed_type=="zs"'
+                                    placement="bottom-start"
+                                    width="200"
+                                    trigger="hover"
+                                    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                                    <div slot="reference">
+                                        指数说明 
+                                    <img src="../../public/img/wh.png" alt=""></div>
+                                </el-popover>
                             </div>
                             <div class='timer'>
                                 <span>时间</span>
@@ -257,7 +268,7 @@ export default {
     watch:{
         timetype(type) {
             if(type==0) {
-                this.time = this.monthoptions[0].value
+                this.time = this.monthoptions[1].value
                 
             } else if(type==1) {
                 this.time = this.seasonoptions[0].value
@@ -341,7 +352,7 @@ export default {
             const res = await this.$api.get_cate({})
             this.cateList = res.data
             this.chosed_cate = this.cateList[0]
-            this.time = this.monthoptions[0].value
+            this.time = this.monthoptions[1].value
         },
         async get_area_data() {// 获取区域的数据
             this.loading = true
@@ -788,7 +799,7 @@ export default {
                                 // data:tb,
                                 type:'line',
                                 name:item.data[0].name,
-                                yAxisIndex:1,
+                                // yAxisIndex:1,
                                 itemStyle:{
                             color:this.color[index]
                         }},
@@ -974,7 +985,6 @@ export default {
             let scroll = $('.ul').scrollLeft()
             let left = this.tablewidth - this.boxwidth -scroll
             const that = this
-            console.log(scroll,left, scroll-this.boxwidth)
             if(type == -1) {
                 if(scroll>this.boxwidth) {
                     $('.ul').animate({
@@ -1149,6 +1159,7 @@ export default {
             box-sizing border-box
             >div
                 display flex
+                align-items center
             p
                 font-size 20px
                 font-family MicrosoftYaHei-Bold
@@ -1182,6 +1193,7 @@ export default {
         height auto
         // margin-bottom 20px
         border-radius 8px
+        
     .reportBtns
         position absolute
         top 20px
@@ -1341,4 +1353,16 @@ export default {
     .ac,.ac:hover 
         background #7F94FF
         color #fff
+.sm 
+    color #FEFEFE
+    font-size 12px
+    margin-left 60px
+    div
+        font-size 12px !important
+        display flex
+        align-items center
+    img 
+        width 12px
+        height 12px
+        margin-left 5px
 </style>

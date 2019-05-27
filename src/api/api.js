@@ -4,7 +4,7 @@ import qs from 'qs'
 // const baseURL = '/'
 // console.log(process.env.NODE_ENV === 'development' )
 const service = axios.create({ //hg
-		baseURL: process.env.NODE_ENV === 'development'?'/api':'http://182.247.245.27:9440',
+		baseURL: process.env.NODE_ENV === 'development'?'/api':'http://182.247.245.27:9220',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
@@ -28,6 +28,11 @@ const formser = axios.create({ //hg
 	withCredentials: false,
 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 })
+// const formser = axios.create({ //hg
+// 	baseURL: '/api',
+// 	withCredentials: false,
+// 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+// })
 
 service.interceptors.response.use(
     response => {

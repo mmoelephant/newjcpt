@@ -42,11 +42,10 @@ export default {
 		document.onkeydown = function(e) {
 			var keycode = document.all ? event.keyCode : e.which;
 			if (keycode == 13) {
-				if(this.$route.path=='/') {
+				if(that.$route.name=='index') {
 					that.$router.push('/ref')
 					return false;
-				}
-				
+				}	
 			}
 		}
 	}

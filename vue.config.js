@@ -1,6 +1,6 @@
 module.exports = {
     // 选项...
-    publicPath:process.env.NODE_ENV === 'development'?'':'',
+    publicPath:process.env.NODE_ENV === 'development'?'':'/',
     outputDir:'dist',
     assetsDir:'',
     indexPath:'index.html',
@@ -21,35 +21,26 @@ module.exports = {
             //     secure: false
             // },
             '/api': { //辉哥
-                target: 'http://192.168.8.20:9440',
+                target: 'http://182.247.245.27:9440',
                 pathRewrite: { '^/api': '' },
                 ws: true,
                 changeOrigin: true,
                 secure: false
             },
             '/lw': { //老王
-                target: 'http://192.168.8.20:9220',
+                target: 'http://182.247.245.27:9220',
                 pathRewrite: { '^/lw': '' },
                 ws: true,
                 changeOrigin: true,
                 secure: false
             },
             '/xb': { //小白
-                target: 'http://192.168.8.20:9220',
+                target: 'http://182.247.245.27:9220',
                 pathRewrite: { '^/xb': '' },
                 ws: true,
                 changeOrigin: true,
                 secure: false
             }
-        }
-    },
-    pwa:{
-        iconPaths:{
-            favicon32:'favicon.ico',
-            favicon16:'favicon.ico',
-            appleTouchIcon:'favicon.ico',
-            maskIcon:'favicon.ico',
-            msTileImage:'favicon.ico'
         }
     }
 }

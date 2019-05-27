@@ -1,21 +1,33 @@
 <template>
     <div class='left'>
-        <p>监测地区总量</p>
-        <div class='num-box'>
-            <i class='l'></i>
-            <p class='fontb'>146</p>
-            <i class='r'></i>
+        <div style='display:flex;margin-bottom:40px'>
+            <div style='display:flex;flex-direction:column;align-items:center'>
+                <p>监测市</p>
+                <div class='num-box'>
+                    <i class='l'></i>
+                    <p class='fontb'>16</p>
+                    <i class='r'></i>
+                </div>
+            </div>
+            <div style='display:flex;flex-direction:column;align-items:center'>
+                <p>监测区县</p>
+                <div class='num-box'>
+                    <i class='l'></i>
+                    <p class='fontb'>137</p>
+                    <i class='r'></i>
+                </div>
+            </div>
         </div>
-        <p style='margin-top:46px'>
-            各材料指数涨跌
-        </p>
+        
+        <p>各材料指数涨跌<span style='font-size:12px'>(当前最新)</span></p>
+        <p style='color:#0DFDA0;font-size:12px'>数据更新时间：{{list[0].asmdate?list[0].asmdate.substr(0,10):0}}</p>
         <div class='cate'>
             <i class='k'></i>
             <ul :class="animate==true?'cate-list anim':'cate-list'">
                 <li v-for='(item,index) in list' :key='index'>
                     <div style='justify-content:space-between'>
                         <p>{{item.name}}</p>
-                        <p>{{item.price?Number(item.price).toFixed(2):''}}</p>
+                        <p>{{item.exponent?Number(item.exponent).toFixed(2):''}}</p>
                     </div>
                     <el-progress :percentage="item.huanbi?Math.abs(item.huanbi*100):0" :color="Number(item.huanbi)>0?'#FD3A0D':'#0DFDA0'" :text-inside="true" :stroke-width="4"
                         style='margin:10px auto'></el-progress>
@@ -162,10 +174,11 @@ export default {
             font-family MicrosoftYaHei-Bold
             font-weight bold
             color rgba(85,253,253,1)
-            margin-bottom 20px
-            margin-left -20px
+            margin-bottom 15px
+            // margin-left -20px
         .num-box
-            width px2vw(150)
+            // width px2vw(150)
+            padding 0 15px
             height px2vh(50)
             display flex
             justify-content space-between
