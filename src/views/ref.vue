@@ -77,7 +77,7 @@
                                     placement="bottom-start"
                                     width="200"
                                     trigger="hover"
-                                    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                                    content="暂无内容">
                                     <div slot="reference">
                                         指数说明 
                                     <img src="../../public/img/wh.png" alt=""></div>
@@ -211,30 +211,10 @@ export default {
             {
                 value:8,
                 label: '近8个季度'
-            },
-            {
-                value:12,
-                label: '近12个季度'
             }],
             yearoptions:[{//年度时间控件
                 value:2,
                 label: '近2年'
-            },
-            {
-                value:4,
-                label: '近4年'
-            },
-            {
-                value:6,
-                label: '近6年'
-            },
-            {
-                value:8,
-                label: '近8年'
-            },
-            {
-                value:10,
-                label: '近10年'
             }],
             time:'',//选取的时间
             chosed_type:'price',//表格内容展示筛选 price:价格 zs：指数 tb：同比 hb：环比

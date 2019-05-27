@@ -32,7 +32,7 @@
                     <el-progress :percentage="item.huanbi?Math.abs(item.huanbi*100):0" :color="Number(item.huanbi)>0?'#FD3A0D':'#0DFDA0'" :text-inside="true" :stroke-width="4"
                         style='margin:10px auto'></el-progress>
                     <div>
-                        <p class='p'>{{(item.huanbi*100).toFixed(4)}}%</p>
+                        <p class='p'>{{(item.huanbi*100).toFixed(2)}}%</p>
                         <img src='../../public/img/上.png' v-if='item.huanbi>0'/>
                         <img src='../../public/img/下.png' v-else/>
                     </div>
