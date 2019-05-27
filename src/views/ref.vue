@@ -13,7 +13,8 @@
                 </div>
                 <el-tree 
                     :data="cateList" :props="defaultProps" @node-click="handleNodeClick" :indent='30'
-                    v-show='t==0'></el-tree>
+                    v-show='t==0'>
+                </el-tree>
                 <div :class='t==1?"title acttitle":"title"' @click='t =1'>
                     <div>
                         <p class='a'></p>                   
@@ -175,7 +176,7 @@ export default {
                 // name:'钢材'
             },//选中的分类
             showcharts:false,//是否展示图
-            t:0,//选择表格展示类型 0：区域比较 1：材料比较
+            t:0,//选择表格展示类型 0：区域比较 1：材料比区域比较
             monthoptions:[{ //月度时间控件
                 value:3,
                 label: '近3个月'
