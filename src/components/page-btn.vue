@@ -17,7 +17,6 @@ export default {
     },
     watch:{
         disablepage(val) {
-            console.log(val)
         }
     },
     methods:{

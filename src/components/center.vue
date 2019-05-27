@@ -90,7 +90,6 @@ export default {
                     }
                 })
             })      
-            console.log(this.CoordMap)  
             this.$echarts.registerMap('yn', yn);
             this.chart =  this.$echarts.init(document.getElementsByClassName('map')[0]);
             // if(chart) chart.dispose()
