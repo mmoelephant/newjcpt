@@ -240,14 +240,15 @@ export default {
         init_line(data) {
             let x=[],tb=[],hb=[]
             data.map(item =>{
-                x.push(item.asmdate.split(' ')[0])
-                tb.push(item.tongbi)
-                hb.push(item.huanbi)
+                x.push(item.asmdate.substr(0,7))
+                tb.push(item.tongbi*100)
+                hb.push(item.huanbi*100)
             })
             const chart = this.$echarts.init(document.getElementById('line'))
             const op = {
                 tooltip : {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    formatter:'{b0}:{c0}同比%<br />{b1}:环比{c1}%'
                 },
                 grid:{
                     bottom:42,
@@ -303,6 +304,7 @@ export default {
                     },
                     axisLabel:{
                         show: true,
+                        formatter: '{value} %',
                         color: '#55D7FD', fontSize:10
                     },
                 }],

@@ -39,17 +39,54 @@ service.interceptors.response.use(
       return response
     },
     (error) => {
-      console.log(
-        'fetch',
-        error.config.url,
-        error.config.params,
-        'error. error:',
-        error
-      )
-      return Promise.reject(error)
+			alert('网络错误，请稍后重试')
+			return Promise.reject(error)
     }
 )
-
+service1.interceptors.response.use(
+	response => {
+		return response
+	},
+	(error) => {
+		alert('网络错误，请稍后重试')
+		return Promise.reject(error)
+	}
+)
+service2.interceptors.response.use(
+	response => {
+		return response
+	},
+	(error) => {
+		alert('网络错误，请稍后重试')
+		return Promise.reject(error)
+	}
+)
+service3.interceptors.response.use(
+	response => {
+		return response
+	},
+	(error) => {
+		alert('网络错误，请稍后重试')
+		return Promise.reject(error)
+	}
+)
+formser.interceptors.response.use(
+	response => {
+		return response
+	},
+	(error) => {
+		alert('网络错误，请稍后重试')
+		return Promise.reject(error)
+		// console.log(
+		// 	'fetch',
+		// 	error.config.url,
+		// 	error.config.params,
+		// 	'error. error:',
+		// 	error
+		// )
+		// return Promise.reject(error)
+	}
+)
 const api = {
 		//大屏接口
 		get_cate_level1() {
@@ -151,10 +188,6 @@ const api = {
 	add_report(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
 		return formser.post('/PageReportController/addReport', data)
-	},
-	delete_report(data){
-		if(data) data = qs.stringify(data, { allowDots: true })
-		return formser.post('/PageReportController/deleteReport', data)	
 	},
 	get_subscrib(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
