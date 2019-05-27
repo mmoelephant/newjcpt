@@ -400,15 +400,15 @@ export default {
 			bigType:0,
 			navigiOn:'全部报告',
 			// type切换网格视图或列表视图
-			type:0,
+			type:1,
 			token:this.$store.state.login.token,
 			searContent:'',
 			state2:'',
 			viewToggle:{
-				display:'block'
+				display:'none'
 			},
 			viewToggle1:{
-				display:'none'
+				display:'block'
 			},
 			allVis:{
 				display:''
