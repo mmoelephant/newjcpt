@@ -9,8 +9,14 @@
 							<div>							
 								<el-checkbox v-show='type==0' class='label' :label='i'>1</el-checkbox>
 								<el-checkbox v-show='type==1' class='label' :label='i'>1</el-checkbox>
-								<p v-show='type==0' @click='i.expand = !i.expand'>{{i.data[0].area_name?i.data[0].area_name.substr(0,2)+''+i.data[0].area_name.substr(-1,1):''}}</p>
+								<p :style='(i.data[0].area ==user.area||user.area=="53")&&!isnext&&index!=0?"color:#6C7DFF":""'
+									v-show='type==0' @click='i.expand = !i.expand'>{{i.data[0].area_name?i.data[0].area_name.substr(0,2)+''+i.data[0].area_name.substr(-1,1):''}}</p>
 								<p v-show='type==1' @click='i.expand = !i.expand' style='cursor:pointer'>{{i.data[0].name?i.data[0].name:''}}</p>
+							</div>
+							{{user.area}}
+							<div v-show='type==0&&!isnext&&(i.data[0].area ==user.area||user.area=="53")&&index!=0' @click='get_next_level(i)'>
+								<p style='color:#6C7DFF;font-size:12px;cursor:pointer'>查看更多</p>
+								<i class='iconfont icon-shang-copy'></i>
 							</div>
 							<i :class="i.expand?'iconfont icon-shang-copy rotate':'iconfont icon-shang-copy'" @click="chose_area(i)"  v-show='type==1'></i>
 						</div>
@@ -96,8 +102,19 @@ export default {
         timeType:{
           type:Number
         }
-    },
+		},
+		computed:{
+			user() {
+					return this.$store.state.login.userInfo
+			}
+		},
     watch:{
+			user:{
+				handler(val) {
+					console.log(val)
+				},
+				deep:true
+			},
       checked:{
         handler(val) {
           this.$emit('checkList',val)          
@@ -139,7 +156,7 @@ export default {
               return sourceCopy;
           }
           this.newdata=objDeepCopy(val)
-          this.checked = [this.newdata[0]]
+					this.checked = [this.newdata[0]]
         },
         deep:true
       }
@@ -148,7 +165,9 @@ export default {
       chose_area(item) {
         item.expand = !item.expand
       },
-      
+      get_next_level(i) {
+				this.$emit('get_next',i)
+			}
     }
 };
 </script>

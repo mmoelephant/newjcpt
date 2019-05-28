@@ -17,7 +17,7 @@
 					</div>
                 </div>
                 <div class='right'>
-                    <p @click='$router.push("/index")'>大屏展示</p>
+                    <p @click='$router.push("/index")'>返回首页</p>
                     <i></i>
                     <p class='blue' @mouseenter="show=true" @mouseleave="show=false">{{token&&token.length>0?'设置中心':'登录'}}</p>
 					<div class='set' v-show='show' @mouseenter="show=true" @mouseleave="show=false">

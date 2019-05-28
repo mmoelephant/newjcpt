@@ -44,7 +44,7 @@
                 <el-button @click='login' 
                     :class='!name || name.length ==0 || !password || password.length==0?"loginbtn disabled":"loginbtn abled"'>登录</el-button>
                 <div class='tool'>
-                    <!--p @click='$router.replace("/")'>&lt;返回首页</p-->
+                    <p @click='$router.replace("/")'>&lt;返回首页</p>
                     <!--p>帮助中心</p-->
                 </div>
             </div>

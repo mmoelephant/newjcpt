@@ -2,7 +2,7 @@
     <div class='left'>
         <div style='display:flex;margin-bottom:40px'>
             <div style='display:flex;flex-direction:column;align-items:center'>
-                <p>监测市</p>
+                <p>监测市级</p>
                 <div class='num-box'>
                     <i class='l'></i>
                     <p class='fontb'>16</p>
@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div style='display:flex;flex-direction:column;align-items:center'>
-                <p>监测区县</p>
+                <p>监测区、县级</p>
                 <div class='num-box'>
                     <i class='l'></i>
                     <p class='fontb'>137</p>
