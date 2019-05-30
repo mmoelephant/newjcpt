@@ -19,7 +19,7 @@
             </div>
         </div>
         
-        <p>各材料指数涨跌<span style='font-size:12px'>(当前最新)</span></p>
+        <p材料价格指数及环比涨跌<span style='font-size:12px'>(当前最新)</span></p>
         <p style='color:#0DFDA0;font-size:12px'>数据更新时间：{{list[0].asmdate?list[0].asmdate.substr(0,10):0}}</p>
         <div class='cate'>
             <i class='k'></i>

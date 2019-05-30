@@ -3,7 +3,7 @@
 		<div>
 			<div>
 				<img src='../../public/img/logob.png'/>
-				<p>云南省建筑工程材料及设备价格监测系统</p>
+				<p>云南省建设工程材料及设备价格监测系统</p>
 			</div>
 			<p>进入工作台 ENTER</p>
 		</div>

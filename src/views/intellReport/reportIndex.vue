@@ -344,7 +344,7 @@
 			<div class="lazyPic" :style="detaiLazy1"></div>
 		</el-dialog>
 
-		<el-dialog :visible.sync="detailDialog" width="1000px" >
+		<el-dialog :visible.sync="detailDialog" width="1000px">
 			<p class="reTitle">{{detailTitle}}</p>
 			<div class="dataItem">
 				<p class="graphName" v-if='noDataMsg !="查询成功"'>暂无数据</p>
@@ -504,7 +504,6 @@ export default {
 			detailTitle:'云南省建设工程主要材料市场价格变动情况',
 			reportDetailList:[],
 			reportDetailList1:[],
-			zhuList:[],
 			time1:'',
 			time2:'',
 			time3:'',
@@ -837,7 +836,6 @@ export default {
 						break;
 						case '建筑用砂':
 							m.munit = '立方米'
-							m.maName = '建筑砂浆'
 						break;
 						case '砌体材料':
 							m.munit = '吨'
