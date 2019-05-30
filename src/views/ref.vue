@@ -12,7 +12,7 @@
                     
                 </div>
                 <el-tree 
-                    :data="cateList" :props="defaultProps" @node-click="handleNodeClick" :indent='30'
+                    :data="cateList" :props="defaultProps" @node-click="handleNodeClick" :indent='30' :accordion='true'
                     v-show='t==0'>
                 </el-tree>
                 <div :class='t==1?"title acttitle":"title"' @click='t =1'>
@@ -29,7 +29,7 @@
                         :class='chosed_city ==a?"ac":""'>{{a.name}}</li>
                 </ul-->
                 <el-tree 
-                    :data="areaList" :props="defaultProps" @node-click="handleNodeClick" :indent='30'
+                    :data="areaList" :props="defaultProps" @node-click="handleNodeClick" :indent='30' :accordion='true'
                     v-show='t==1'>
                 </el-tree>
             </el-aside>
@@ -55,7 +55,7 @@
                                 年度数据
                             </p>
                         </div>
-                        <div class='switch' @click='show_c(showcharts)'>
+                        <div class='switch' @click='show_c(showcharts)' v-show='chosed_cate.level!=1'>
                             显示勾选{{t==0?'地区':'材料'}}对比图表
                         </div>
                     </div>                   
@@ -70,7 +70,7 @@
                                 <p v-if='t==1'><span>"{{chosed_city.name}}"</span>各材料{{timetype==0?"月度":timetype==1?"季度":timetype==2?"年度":""}}数据
                                 </p>
                                 <ul>
-                                    <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"' v-show='t == 0'>价格</li>
+                                    <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"' v-show='t==0&&chosed_cate.level!=1'>价格</li>
                                     <li :class='chosed_type=="zs"? "ac" :""' @click='chosed_type="zs"'>指数</li>
                                     <li :class='chosed_type=="tb"? "ac" :""' @click='chosed_type="tb"'>同比</li>
                                     <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
@@ -228,7 +228,7 @@ export default {
                 label: '近2年'
             }],
             time:'',//选取的时间
-            chosed_type:'price',//表格内容展示筛选 price:价格 zs：指数 tb：同比 hb：环比
+            chosed_type:'zs',//表格内容展示筛选 price:价格 zs：指数 tb：同比 hb：环比
             timetype:0,//时间类型 0：月度 1：季度 2：年度
             tabledata:[],//表格数据 
             chosed_area:{
@@ -319,6 +319,7 @@ export default {
         t(val) {
             this.chosed_city = {id:'53', name:'全省'}
             this.chosed_cate=this.cateList[0]
+            console.log(this.chosed_cate)
             if(val ==0) {
                 this.get_area_data()
             } else {
@@ -370,6 +371,7 @@ export default {
             const res = await this.$api.get_cate({})
             this.cateList = res.data
             this.chosed_cate = this.cateList[0]
+            console.log(this.chosed_cate)
             this.time = this.monthoptions[1].value
         },
         async get_area_data() {// 获取区域的数据
@@ -403,6 +405,9 @@ export default {
                 let keys = Object.keys(res.data.data)
                 let sort = ['530100000000','530300000000','532500000000','530400000000','532900000000','532300000000','530600000000','532600000000',
                             '530500000000','530800000000','530900000000','532800000000','533100000000','530700000000','533400000000','533300000000']
+                sort = sort.filter(item => {
+                    return keys.indexOf(item) !=-1
+                })
                 sort.forEach((key,i) => {
                     this.tabledata.push({data:res.data.data[key]})
                 })
@@ -527,6 +532,10 @@ export default {
             this.checked = []
             if(this.t ==0) { //获取区域
                 this.chosed_cate = data
+                console.log(this.chosed_cate)
+                if(this.chosed_cate.level==1) {
+                    this.chosed_type=='zs'
+                }
                 this.chosed_name = data.name
                 this.get_area_data()
             } else {
@@ -1143,6 +1152,7 @@ export default {
     position fixed
     z-index 99
     height 100%
+    overflow-y auto
     // padding 0 20px
     .cate-list 
         height auto

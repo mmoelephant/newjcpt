@@ -9,12 +9,12 @@
 							<div>							
 								<el-checkbox v-show='type==0' class='label' :label='i'>1</el-checkbox>
 								<el-checkbox v-show='type==1' class='label' :label='i'>1</el-checkbox>
-								<p :style='(i.data[0].area ==user.area||user.area=="53")&&!isnext&&index!=0?"color:#6C7DFF":""'
-									v-show='type==0' @click='i.expand = !i.expand'>{{i.data[0].area_name?i.data[0].area_name.substr(0,2)+''+i.data[0].area_name.substr(-1,1):''}}</p>
-								<p v-show='type==1' @click='i.expand = !i.expand' style='cursor:pointer'>{{i.data[0].name?i.data[0].name:''}}</p>
+								<p :style='(i.data&&i.data[0].area ==user.area||user.area=="53")&&!isnext&&index!=0?"color:#6C7DFF":""'
+									v-show='type==0' @click='i.expand = !i.expand'>{{i.data&&i.data[0].area_name?i.data[0].area_name.substr(0,2)+''+i.data[0].area_name.substr(-1,1):''}}</p>
+								<p v-show='type==1' @click='i.expand = !i.expand' style='cursor:pointer'>{{i.data&&i.data[0].name?i.data[0].name:''}}</p>
 							</div>
 							{{user.area}}
-							<div v-show='type==0&&!isnext&&(i.data[0].area ==user.area||user.area=="53")&&index!=0' @click='get_next_level(i)'>
+							<div v-show='type==0&&!isnext&&(i.data&&i.data[0].area ==user.area||user.area=="53")&&index!=0' @click='get_next_level(i)'>
 								<p style='color:#6C7DFF;font-size:12px;cursor:pointer'>查看更多</p>
 								<i class='iconfont icon-shang-copy'></i>
 							</div>
@@ -25,8 +25,8 @@
 								<div>
 									<el-checkbox v-show='type==0' class='label' :label='c'>1</el-checkbox>
 									<el-checkbox v-show='type==1' class='label' :label='c'>1</el-checkbox>
-									<p v-show='type==0' @click='i.expand = !i.expand'>{{c.data[0].area_name?c.data[0].area_name.substr(0,2)+''+c.data[0].area_name.substr(-1,1):''}}</p>
-									<p v-show='type==1' @click='i.expand = !i.expand' style='cursor:pointer'>{{c.data[0].name?c.data[0].name:''}}</p>
+									<p v-show='type==0' @click='i.expand = !i.expand'>{{c.data&&c.data[0].area_name?c.data[0].area_name.substr(0,2)+''+c.data[0].area_name.substr(-1,1):''}}</p>
+									<p v-show='type==1' @click='i.expand = !i.expand' style='cursor:pointer'>{{c.data&&c.data[0].name?c.data[0].name:''}}</p>
 
 								</div>
 							</div>
@@ -41,7 +41,7 @@
 				<div class='info' v-for="(i,index) in newdata" :key="index">
 					<div :class='type==0&&index==0?"nb n":"n"'>
 						<p v-for='(num,a) in i.data' :key='a'>
-							<span v-show='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}</span>  
+							<span v-show='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}元{{typeof num.munit == 'object'?'':'/'+num.munit}}</span>  
 							<span v-show='t_type=="zs"'>{{num.price ==0?"-":num.exponent+'' !='undefined'?Number(num.exponent).toFixed(2):'-'}}</span>  
 							<span v-show='t_type=="tb"'>{{num.price==0?"-":num.tongbi+''!='undefined'?(Number(num.tongbi)*100).toFixed(2)+'%':'-'}}</span>  
 							<span v-show='t_type=="hb"'>{{num.price==0?"-":num.huanbi+''!='undefined'?(Number(num.huanbi)*100).toFixed(2)+'%':'-'}}</span>  
@@ -147,15 +147,15 @@ export default {
               }
             })
           }
-          
-          var objDeepCopy = function (source) {// 深度拷贝数组对象
+					var objDeepCopy = function (source) {// 深度拷贝数组对象
               var sourceCopy = source instanceof Array ? [] : {};
               for (var item in source) {
-                  sourceCopy[item] = typeof source[item] === 'object' ? objDeepCopy(source[item]) : source[item];
+									sourceCopy[item] = typeof source[item] === 'object' ? objDeepCopy(source[item]) : source[item];
+									// console.log(source,2222)
               }
               return sourceCopy;
-          }
-          this.newdata=objDeepCopy(val)
+					}
+					this.newdata=objDeepCopy(val)
 					this.checked = [this.newdata[0]]
         },
         deep:true
