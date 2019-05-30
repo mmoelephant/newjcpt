@@ -41,10 +41,25 @@
 				<div class='info' v-for="(i,index) in newdata" :key="index">
 					<div :class='type==0&&index==0?"nb n":"n"'>
 						<p v-for='(num,a) in i.data' :key='a'>
-							<span v-show='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}元{{typeof num.munit == 'object'?'':'/'+num.munit}}</span>  
+							<span v-show='t_type=="price"'>{{num.price?Number(num.price).toFixed(2):'-'}}</span>  
 							<span v-show='t_type=="zs"'>{{num.price ==0?"-":num.exponent+'' !='undefined'?Number(num.exponent).toFixed(2):'-'}}</span>  
 							<span v-show='t_type=="tb"'>{{num.price==0?"-":num.tongbi+''!='undefined'?(Number(num.tongbi)*100).toFixed(2)+'%':'-'}}</span>  
 							<span v-show='t_type=="hb"'>{{num.price==0?"-":num.huanbi+''!='undefined'?(Number(num.huanbi)*100).toFixed(2)+'%':'-'}}</span>  
+							<!--img src="../../public/img/ru.png" alt="" 
+								v-show='num.price !=0 &&a!=0&&(t_type=="price"&&i.data[a-1]&&Number(i.data[a-1].price).toFixed(2)<Number(num.price).toFixed(2))||
+									(t_type=="hb"&&i.data[a-1]&&Number(i.data[a-1].huanbi).toFixed(2)<Number(num.huanbi).toFixed(2))||
+									(t_type=="tb"&&i.data[a-1]&&Number(i.data[a-1].tongbi).toFixed(2)<Number(num.tongbi).toFixed(2))||
+									(t_type=="zs"&&i.data[a-1]&&Number(i.data[a-1].exponent).toFixed(2)<Number(num.exponent).toFixed(2))'>
+							<img src="../../public/img/gd.png" alt="" 
+								v-show='num.price !=0 &&a!=0&&(t_type=="price"&&i.data[a-1]&&Number(i.data[a-1].price).toFixed(2)>Number(num.price).toFixed(2))||
+									(t_type=="hb"&&i.data[a-1]&&Number(i.data[a-1].huanbi).toFixed(2)>Number(num.huanbi).toFixed(2))||
+									(t_type=="tb"&&i.data[a-1]&&Number(i.data[a-1].tongbi).toFixed(2)>Number(num.tongbi).toFixed(2))||
+									(t_type=="zs"&&i.data[a-1]&&Number(i.data[a-1].exponent).toFixed(2)>Number(num.exponent).toFixed(2))'>							
+							<img src="../../public/img/bp.png" alt="" 
+								v-show='num.price !=0 &&a!=0&&(t_type=="price"&&i.data[a-1]&&Number(i.data[a-1].price).toFixed(2)==Number(num.price).toFixed(2))||
+									(t_type=="hb"&&i.data[a-1]&&Number(i.data[a-1].huanbi).toFixed(2)==Number(num.huanbi).toFixed(2))||
+									(t_type=="tb"&&i.data[a-1]&&Number(i.data[a-1].tongbi).toFixed(2)==Number(num.tongbi).toFixed(2))||
+									(t_type=="zs"&&i.data[a-1]&&Number(i.data[a-1].exponent).toFixed(2)==Number(num.exponent).toFixed(2))'-->							
 							<img src="../../public/img/ru.png" alt="" v-show='num.price !=0 &&((t_type=="price"||t_type=="hb")&&num.huanbi>0 || t_type=="zs"&&num.exponent>1000 || t_type=="tb"&&num.tongbi>0)'>
 							<img src="../../public/img/gd.png" alt="" v-show='num.price !=0 &&((t_type=="price"||t_type=="hb")&&num.huanbi<0 || t_type=="zs"&&num.exponent<1000 || t_type=="tb"&&num.tongbi<0)'>
 							<img src="../../public/img/bp.png" alt="" v-show='num.price !=0 &&((t_type=="price"||t_type=="hb")&&num.huanbi==0|| t_type=="zs"&&num.exponent==1000 || t_type=="tb"&&num.tongbi==0)'>
@@ -58,9 +73,9 @@
 								<span v-show='t_type=="zs"'>{{cs.price ==0?"-":cs.exponent+''!='undefined'?Number(cs.exponent).toFixed(2):'-'}}</span>  
 								<span v-show='t_type=="tb"'>{{cs.price==0?"-":cs.tongbi+''!='undefined'?(Number(cs.tongbi)*100).toFixed(2)+'%':'-'}}</span>  
 								<span v-show='t_type=="hb"'>{{cs.price==0?"-":cs.huanbi+''!='undefined'?(Number(cs.huanbi)*100).toFixed(2)+'%':'-'}}</span>  
-								<img src="../../public/img/ru.png" alt="" v-show='cs.price !=0 &&((t_type=="price"||t_type=="hb")&&cs.huanbi>0 || t_type=="zs"&&cs.exponent>1000 || t_type=="tb"&&cs.tongbi>0)'>
-								<img src="../../public/img/gd.png" alt="" v-show='cs.price !=0 &&((t_type=="price"||t_type=="hb")&&cs.huanbi<0 || t_type=="zs"&&cs.exponent<1000 || t_type=="tb"&&cs.tongbi<0)'>
-								<img src="../../public/img/bp.png" alt="" v-show='cs.price !=0 &&((t_type=="price"||t_type=="hb")&&cs.huanbi==0|| t_type=="zs"&&cs.exponent==1000 || t_type=="tb"&&cs.tongbi==0)'>
+								<img src="../../public/img/ru.png" alt="" v-show='cs.price !=0 &&Number(cs.price).toFixed(2)!=0&&((t_type=="price"||t_type=="hb")&&cs.huanbi>0 || t_type=="zs"&&cs.exponent>1000 || t_type=="tb"&&cs.tongbi>0)'>
+								<img src="../../public/img/gd.png" alt="" v-show='cs.price !=0 &&Number(cs.price).toFixed(2)!=0&&((t_type=="price"||t_type=="hb")&&cs.huanbi<0 || t_type=="zs"&&cs.exponent<1000 || t_type=="tb"&&cs.tongbi<0)'>
+								<img src="../../public/img/bp.png" alt="" v-show='cs.price !=0 &&Number(cs.price).toFixed(2)==0&&((t_type=="price"||t_type=="hb")&&cs.huanbi==0|| t_type=="zs"&&cs.exponent==1000 || t_type=="tb"&&cs.tongbi==0)'>
 							</p>
 						</div>
 						

@@ -248,7 +248,11 @@ export default {
             const op = {
                 tooltip : {
                     trigger: 'axis',
-                    formatter:'{b0}:{c0}同比%<br />{b1}:环比{c1}%'
+                    formatter: function (params, ticket, callback) {
+                        
+                        return params[0].name+':同比'+params[0].value.toFixed(2)+'%'+'<br/>'+params[1].name+':环比'+params[1].value.toFixed(2)+'%';
+                    }
+                    // formatter:'{b0}:Number({c0}).toFixed(2)同比%<br />{b1}:环比{c1}%'
                 },
                 grid:{
                     bottom:42,
@@ -363,7 +367,11 @@ export default {
             const chart = this.$echarts.init(document.getElementById('bar'))
             const op ={
                 tooltip : {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    formatter: function (par) {
+                        // return JSON.stringify(par[0].name)
+                        return par[0].name+':'+Number(par[0].value).toFixed(2)
+                    }
                 },
                 grid:{
                     bottom:42,

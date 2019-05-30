@@ -91,6 +91,7 @@
                                         指数说明 
                                     <img src="../../public/img/wh.png" alt=""></div>
                                 </el-popover>
+                                <div v-show='t==0&&chosed_type=="price"' style='font-size:12px;margin-left:20px'>（单位：元/{{dw}}）</div>
                             </div>
                             <div class='timer'>
                                 <span>时间</span>
@@ -244,7 +245,8 @@ export default {
             '#fe76cc','#f037c2','#18cb00','#2da5ea','#994eee'],
             boxwidth:0,
             tablewidth:0,
-            loading:false
+            loading:false,
+            dw:''//材料单位
         }
     },
     created() {       
@@ -411,6 +413,7 @@ export default {
                 sort.forEach((key,i) => {
                     this.tabledata.push({data:res.data.data[key]})
                 })
+                this.dw = this.tabledata[0].data[0].munit
                 if(this.showcharts) { //如果展示图表  渲染
                     if(this.change_charts=='bar') {
                         this.init()
@@ -474,6 +477,7 @@ export default {
                 })
                 this.tabledata.push({data:res.data.data[key],children:children,expand:false})
             })
+            this.dw = this.tabledata[0].data[0].munit
             if(this.showcharts) {
                 if(this.change_charts=='bar') {
                     this.init()
@@ -512,6 +516,7 @@ export default {
                 keys.forEach((key,i) => {
                     this.tabledata.push({data:res.data.data[key]})
                 })
+                this.dw = this.tabledata[0].data[0].munit
                 if(this.showcharts) { //如果展示图表  渲染
                     if(this.change_charts=='bar') {
                         this.init()
@@ -638,7 +643,15 @@ export default {
             }       
             const option = {
                 tooltip : {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    formatter: function (par) {
+                        // return JSON.stringify(par[0].name)
+                        let fucku = ''
+                        par.map(i =>{
+                            fucku+=i.seriesName+':'+Number(i.value).toFixed(2)+'<br/>'
+                        })
+                        return fucku
+                    }
                 },
                 legend: {
                     data:legend,
@@ -777,7 +790,15 @@ export default {
             }          
             const option = {
                 tooltip : {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    formatter: function (par) {
+                        // return JSON.stringify(par[0].name)
+                        let fucku = ''
+                        par.map(i =>{
+                            fucku+=i.seriesName+':'+Number(i.value).toFixed(2)+'<br/>'
+                        })
+                        return fucku
+                    }
                 },
                 legend: {
                     data:legend,
@@ -952,7 +973,15 @@ export default {
             }          
             const option = {
                 tooltip : {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    formatter: function (par) {
+                        // return JSON.stringify(par[0].name)
+                        let fucku = ''
+                        par.map(i =>{
+                            fucku+=i.seriesName+':'+Number(i.value).toFixed(2)+'<br/>'
+                        })
+                        return fucku
+                    }
                 },
                 legend: {
                     data:legend,
