@@ -48,8 +48,8 @@
 							<li class="lazyLi"></li><li class="lazyLi"></li>
 						</ul>
 						<div class="noData" :style="noImg">
-							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-							<p class="noDatap1">暂时没有找到</p>
+							<img src="../../../public/img/subscribe/noMessage.png" class="noDataImg">
+							<p class="noDatap1">暂时没有报告</p>
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
 						<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" layout="prev, pager, next" 
@@ -88,8 +88,8 @@
 							<li class="lazyLi1"></li><li class="lazyLi1"></li>
 						</ul>
 						<div class="noData" :style="noImgCustom">
-							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-							<p class="noDatap1">暂时没有找到</p>
+							<img src="../../../public/img/subscribe/noMessage.png" class="noDataImg">
+							<p class="noDatap1">暂时没有报告</p>
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
 						<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" 
@@ -126,8 +126,8 @@
 							</li>
 						</ul>
 						<div class="noData" :style="noImg">
-							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-							<p class="noDatap1">暂时没有找到</p>
+							<img src="../../../public/img/subscribe/noMessage.png" class="noDataImg">
+							<p class="noDatap1">暂时没有报告</p>
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
 						<el-pagination :page-size="pageSize1" :total="totalPage1" :pager-count="5" :current-page="pageNum1" :hide-on-single-page="true" 
@@ -174,8 +174,8 @@
 							</li>
 						</ul>
 						<div class="noData" :style="noImgCustom">
-							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-							<p class="noDatap1">暂时没有找到</p>
+							<img src="../../../public/img/subscribe/noMessage.png" class="noDataImg">
+							<p class="noDatap1">暂时没有报告</p>
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
 						<el-pagination :page-size="pageSize2" :total="totalPage2" :pager-count="5" :current-page="pageNum2" :hide-on-single-page="true" 
@@ -216,8 +216,8 @@
 							</li>
 						</ul>
 						<div class="noData" :style="noImgResult">
-							<img src="../../../public/img/subscribe/noFind.png" class="noDataImg">
-							<p class="noDatap1">暂时没有找到</p>
+							<img src="../../../public/img/subscribe/noMessage.png" class="noDataImg">
+							<p class="noDatap1">暂时没有报告</p>
 							<p class="noDatap2">不要着急，要不再试试~</p>
 						</div>
 						<el-pagination :page-size="pageSize3" :total="totalPage3" :pager-count="5" :current-page="pageNum3" :hide-on-single-page="true" 
@@ -504,6 +504,7 @@ export default {
 			detailTitle:'云南省建设工程主要材料市场价格变动情况',
 			reportDetailList:[],
 			reportDetailList1:[],
+			zhuList:[],
 			time1:'',
 			time2:'',
 			time3:'',
@@ -810,6 +811,93 @@ export default {
 				token:this.token
 			}
 			this.$api.get_reports_detail(data14).then(v =>{
+				v.data.data.dataList.map(item => {
+					item.mm.map(m => {
+					switch(m.maName){
+						case '钢筋':
+							m.munit = '吨'
+						break;
+						case '钢板':
+							m.munit = '吨'
+						break;
+						case '钢管':
+							m.munit = '吨'
+						break;
+						case '型钢':
+							m.munit = '吨'
+						break;
+						case '钢绞线':
+							m.munit = '千克'
+						break;
+						case '钢丝绳':
+							m.munit = '千克'
+						break;
+						case '水泥':
+							m.munit = '吨'
+						break;
+						case '建筑用砂':
+							m.munit = '立方米'
+							m.maName = '建筑砂浆'
+						break;
+						case '砌体材料':
+							m.munit = '吨'
+						break;
+						case '建筑用石':
+							m.munit = '立方米'
+						break;
+						case '轻骨料':
+							m.munit = '立方米'
+						break;
+						case '地基用材':
+							m.munit = '立方米'
+						break;
+						case '混凝土':
+							m.munit = '立方米'
+						break;
+						case '建筑砂浆':
+							m.munit = '立方米'
+						break;
+						case '电力电缆':
+							m.munit = '米'
+						break;
+						case '电气装备用电线电缆':
+							m.munit = '米'
+						break;
+						case '其他电气材料':
+							m.munit = '米'
+							m.maName = '其他电力材料'
+						break;
+						case '非金属管':
+							m.munit = '米'
+						break;
+						case '复合管':
+							m.munit = '米'
+						break;
+						case '金属管':
+							m.munit = '吨'
+						break;
+						case '防水卷材':
+							m.munit = '平方米'
+						break;
+						case '防水涂料':
+							m.munit = '千克'
+						break;
+						case '防水砂浆':
+							m.munit = '吨'
+						break;
+						case '特种琉璃':
+							m.munit = '平方米'
+							m.maName = '特种玻璃'
+						break;
+						case '混凝土管':
+							m.munit = '米'
+						break;
+						case '混凝土预制桩':
+							m.munit = '米'
+						break;
+					}
+					})					
+				})
 				this.reportDetailList1 = v.data.data.dataList
 				this.detaiLazy.display = 'none'
 				this.detailTitle = '云南省建设工程主要材料市场价格变动情况' + '(' + v.data.data.year.toString() + '年' + v.data.data.month.toString() + '月' + ')'
