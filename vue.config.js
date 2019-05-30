@@ -1,5 +1,5 @@
-const test = 'http://192.168.8.121'
-// const test = 'http://182.247.245.27'
+// const test = 'http://192.168.8.121'
+const test = 'http://182.247.245.27'
 module.exports = {
     // 选项...
     publicPath:process.env.NODE_ENV === 'development'?'':'/',

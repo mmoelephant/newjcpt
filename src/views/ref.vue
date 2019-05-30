@@ -534,7 +534,7 @@ export default {
                 this.chosed_cate = data
                 console.log(this.chosed_cate)
                 if(this.chosed_cate.level==1) {
-                    this.chosed_type=='zs'
+                    this.chosed_type='zs'
                 }
                 this.chosed_name = data.name
                 this.get_area_data()
