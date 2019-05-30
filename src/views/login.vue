@@ -8,7 +8,7 @@
                 <p class='cp mt'>
                     Copyright 2018-2019 版权所有 昆明行列科技有限公司
                 </p>
-                <p class='cp'>Ver 2.1.0</p>
+                <p class='cp'>Ver 2.1.1</p>
             </div>
             <div class='right'>
                 <h1>用户登录</h1>
@@ -44,7 +44,7 @@
                 <el-button @click='login' 
                     :class='!name || name.length ==0 || !password || password.length==0?"loginbtn disabled":"loginbtn abled"'>登录</el-button>
                 <div class='tool'>
-                    <!--p @click='$router.replace("/")'>&lt;返回首页</p-->
+                    <p @click='$router.replace("/")'>&lt;返回首页</p>
                     <!--p>帮助中心</p-->
                 </div>
             </div>

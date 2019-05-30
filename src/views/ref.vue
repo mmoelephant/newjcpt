@@ -12,7 +12,7 @@
                     
                 </div>
                 <el-tree 
-                    :data="cateList" :props="defaultProps" @node-click="handleNodeClick" :indent='30'
+                    :data="cateList" :props="defaultProps" @node-click="handleNodeClick" :indent='30' :accordion='true'
                     v-show='t==0'>
                 </el-tree>
                 <div :class='t==1?"title acttitle":"title"' @click='t =1'>
@@ -22,19 +22,23 @@
                     </div>
                     <i class='iconfont icon-shang-copy'></i>
                 </div>
-                <ul class='alist' 
+                <!--ul class='alist' 
                     v-show='t==1'>
                     <li v-for='a in areaList' :key='a.id' 
                         @click='handleNodeClick(a)'
                         :class='chosed_city ==a?"ac":""'>{{a.name}}</li>
-                </ul>
+                </ul-->
+                <el-tree 
+                    :data="areaList" :props="defaultProps" @node-click="handleNodeClick" :indent='30' :accordion='true'
+                    v-show='t==1'>
+                </el-tree>
             </el-aside>
             <el-container class='charts-main'>
                 <div class="reportBtns">
                     <div class='btnClass'>
                         <span class="dotClass"></span>
                         数据查询>
-                        <span>各地区材料数据</span>
+                        <span>{{t==0?'按材料查询':'按地区查询'}}</span>
                     </div>
                 </div>
                 <div class='tooltip'>
@@ -51,7 +55,7 @@
                                 年度数据
                             </p>
                         </div>
-                        <div class='switch' @click='show_c(showcharts)'>
+                        <div class='switch' @click='show_c(showcharts)' v-show='chosed_cate.level!=1'>
                             显示勾选{{t==0?'地区':'材料'}}对比图表
                         </div>
                     </div>                   
@@ -61,12 +65,12 @@
                         <div class='t'>
                             <div>
                                 <p v-if='t==0'>各地区<span>"{{chosed_cate.name}}"</span>{{timetype==0?"月度":timetype==1?"季度":timetype==2?"年度":""}}数据表
-                                    <span v-if='isnext' @click='back'>返回 ></span>
+                                    <span v-show='isnext' @click='back' style='font-size:12px'>返回 ></span>
                                 </p>
                                 <p v-if='t==1'><span>"{{chosed_city.name}}"</span>各材料{{timetype==0?"月度":timetype==1?"季度":timetype==2?"年度":""}}数据
                                 </p>
                                 <ul>
-                                    <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"' v-if='t == 0'>价格</li>
+                                    <li :class='chosed_type=="price"? "ac" :""' @click='chosed_type="price"' v-show='t==0&&chosed_cate.level!=1'>价格</li>
                                     <li :class='chosed_type=="zs"? "ac" :""' @click='chosed_type="zs"'>指数</li>
                                     <li :class='chosed_type=="tb"? "ac" :""' @click='chosed_type="tb"'>同比</li>
                                     <li :class='chosed_type=="hb"? "ac" :""' @click='chosed_type="hb"'>环比</li>
@@ -77,7 +81,12 @@
                                     placement="bottom-start"
                                     width="200"
                                     trigger="hover"
-                                    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                                    title='指数定义：'>
+                                    <p>
+                                        反映了市场材料价格变动情况的相对数。报告期指数=（当期价格/基期价格）×定基指数
+                                    </p>
+                                    <p>基准期：2018年1月</p>
+                                    <p>定基指数：1000</p>
                                     <div slot="reference">
                                         指数说明 
                                     <img src="../../public/img/wh.png" alt=""></div>
@@ -124,6 +133,7 @@
                         :timeType='timetype'
                         :t_type='chosed_type'
                         @checkList='checkList' 
+                        @get_next='get_next'
                         :isnext='isnext'></reftable>
                     <page-btn :disablepage="disablepage" @pagechange='pagechange' style='padding-top:20px;float:right'></page-btn>
                 </div>
@@ -168,12 +178,13 @@
 import $ from 'jquery'
 import reftable from '../components/ref-table'
 import pageBtn from '../components/page-btn'
+import areajson from '../../public/json/yn.json'
 export default {
     data() {
         return {
             t:0,//0 单材料多区域 1 多材料单区域
             cateList: [],//分类列表 左侧树状图
-            areaList:[{"id":"530100000000","name":"昆明","level":"2","pid":"53"},{"id":"530300000000","name":"曲靖","level":"2","pid":"53"},{"id":"530400000000","name":"玉溪","level":"2","pid":"53"},{"id":"530500000000","name":"保山","level":"2","pid":"53"},{"id":"530600000000","name":"昭通","level":"2","pid":"53"},{"id":"530700000000","name":"丽江","level":"2","pid":"53"},{"id":"530800000000","name":"普洱","level":"2","pid":"53"},{"id":"530900000000","name":"临沧","level":"2","pid":"53",},{"id":"532300000000","name":"楚雄","level":"2","pid":"53"},{"id":"532500000000","name":"红河","level":"2","pid":"53"},{"id":"532600000000","name":"文山","level":"2","pid":"53"},{"id":"532800000000","name":"西双版纳","level":"2","pid":"53"},{"id":"532900000000","name":"大理","level":"2","pid":"53"},{"id":"533100000000","name":"德宏","level":"2","pid":"53"},{"id":"533300000000","name":"怒江","level":"2","pid":"53"},{"id":"533400000000","name":"迪庆","level":"2","pid":"53"}],//区域列表，左侧树状图
+            areaList:areajson,//区域列表，左侧树状图
             defaultProps: {
                 children: 'childrenList',
                 label: 'name'
@@ -211,33 +222,13 @@ export default {
             {
                 value:8,
                 label: '近8个季度'
-            },
-            {
-                value:12,
-                label: '近12个季度'
             }],
             yearoptions:[{//年度时间控件
                 value:2,
                 label: '近2年'
-            },
-            {
-                value:4,
-                label: '近4年'
-            },
-            {
-                value:6,
-                label: '近6年'
-            },
-            {
-                value:8,
-                label: '近8年'
-            },
-            {
-                value:10,
-                label: '近10年'
             }],
             time:'',//选取的时间
-            chosed_type:'price',//表格内容展示筛选 price:价格 zs：指数 tb：同比 hb：环比
+            chosed_type:'zs',//表格内容展示筛选 price:价格 zs：指数 tb：同比 hb：环比
             timetype:0,//时间类型 0：月度 1：季度 2：年度
             tabledata:[],//表格数据 
             chosed_area:{
@@ -258,6 +249,32 @@ export default {
     },
     created() {       
         this.get_cate()
+        
+    },
+    computed:{
+        user() {
+            return this.$store.state.login.userInfo
+        }
+    },
+    watch:{
+        user:{
+            handler(val) {
+                this.areaList.filter(item => {
+                    if(val.area == '53') {
+                        return item
+                    } else {
+                        if(item.id == val.area) {
+                            return item
+                        } else {
+                            delete item.childrenList
+                            return item
+                        }
+                    } 
+                })
+                console.log(val,1231)
+            },
+            deep:true
+        }
     },
     mounted() {
         
@@ -302,6 +319,7 @@ export default {
         t(val) {
             this.chosed_city = {id:'53', name:'全省'}
             this.chosed_cate=this.cateList[0]
+            console.log(this.chosed_cate)
             if(val ==0) {
                 this.get_area_data()
             } else {
@@ -353,6 +371,7 @@ export default {
             const res = await this.$api.get_cate({})
             this.cateList = res.data
             this.chosed_cate = this.cateList[0]
+            console.log(this.chosed_cate)
             this.time = this.monthoptions[1].value
         },
         async get_area_data() {// 获取区域的数据
@@ -384,7 +403,12 @@ export default {
             const res = await this.$api.get_area_time_list(data,this.timetype)
             if(Object.keys(res.data.data).length>0) {
                 let keys = Object.keys(res.data.data)
-                keys.forEach(key => {
+                let sort = ['530100000000','530300000000','532500000000','530400000000','532900000000','532300000000','530600000000','532600000000',
+                            '530500000000','530800000000','530900000000','532800000000','533100000000','530700000000','533400000000','533300000000']
+                sort = sort.filter(item => {
+                    return keys.indexOf(item) !=-1
+                })
+                sort.forEach((key,i) => {
                     this.tabledata.push({data:res.data.data[key]})
                 })
                 if(this.showcharts) { //如果展示图表  渲染
@@ -464,10 +488,54 @@ export default {
                 this.loading = false
             })
         },
+        async get_next(i) {
+            this.loading = true
+            this.tabledata =[]
+            this.checked = []
+            this.tabledata.push(i)
+            let data = {
+                id:this.chosed_cate.id,//选择的材料
+                area:i.data[0].area
+            } 
+            if(this.timetype == 0) {
+                const t_arr=this.formateTime()
+                data.startDate = t_arr[0]
+                data.endDate=t_arr[1]
+            } else if(this.timetype == 1) {
+                data.quarterNumber = this.time.toString()
+            } else {
+                data.yearNumber = this.time.toString()
+            }
+            const res = await this.$api.get_area_time_list(data,this.timetype)
+            if(Object.keys(res.data.data).length>0) {
+                let keys = Object.keys(res.data.data)
+                keys.forEach((key,i) => {
+                    this.tabledata.push({data:res.data.data[key]})
+                })
+                if(this.showcharts) { //如果展示图表  渲染
+                    if(this.change_charts=='bar') {
+                        this.init()
+                    } else if(this.change_charts=='line') {
+                        this.init_line()
+                    } else {
+                        this.init_barline()
+                    }
+                }
+            }  
+            this.$nextTick(() =>{
+                this.show_page()
+                this.loading = false
+                this.isnext = true
+            })        
+        },
         handleNodeClick(data) { //选择材料
             this.checked = []
             if(this.t ==0) { //获取区域
                 this.chosed_cate = data
+                console.log(this.chosed_cate)
+                if(this.chosed_cate.level==1) {
+                    this.chosed_type=='zs'
+                }
                 this.chosed_name = data.name
                 this.get_area_data()
             } else {
@@ -1084,6 +1152,7 @@ export default {
     position fixed
     z-index 99
     height 100%
+    overflow-y auto
     // padding 0 20px
     .cate-list 
         height auto

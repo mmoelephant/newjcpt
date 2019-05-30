@@ -1,30 +1,32 @@
 import axios, { AxiosResponse } from 'axios'
 import qs from 'qs'
+// const test = 'http://192.168.8.20'
+const test = 'http://182.247.245.27'
 // const baseURL = '/api'
 // const baseURL = '/'
 // console.log(process.env.NODE_ENV === 'development' )
 const service = axios.create({ //hg
-		baseURL: process.env.NODE_ENV === 'development'?'/api':'http://182.247.245.27:9220',
+		baseURL: process.env.NODE_ENV === 'development'?'/api':test+':9220',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const service1 = axios.create({ //lw
-	baseURL: process.env.NODE_ENV === 'development'?'/lw':'http://182.247.245.27:9220',
+	baseURL: process.env.NODE_ENV === 'development'?'/lw':test+':9220',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const service2 = axios.create({ //xb
-	baseURL: process.env.NODE_ENV === 'development'?'/xb':'http://182.247.245.27:9220',
+	baseURL: process.env.NODE_ENV === 'development'?'/xb':test+':9220',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const service3 = axios.create({
-	baseURL: process.env.NODE_ENV === 'development'?'/api':'http://182.247.245.27:9220',
+	baseURL: process.env.NODE_ENV === 'development'?'/api':test+':9220',
     withCredentials: false,
     headers: { 'Content-Type': 'application/json;charset=UTF-8' }
 })
 const formser = axios.create({ //hg
-	baseURL: process.env.NODE_ENV === 'development'?'/api':'http://182.247.245.27:9440',
+	baseURL: process.env.NODE_ENV === 'development'?'/api':test+':9440',
 	withCredentials: false,
 	headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 })
@@ -136,8 +138,8 @@ const api = {
 				return service1.post('/PageMaterialController/getMaterialsInfoByProvinceAreaYear',data)
 			}
 		},
-    get_area(data) {
-		return service1.post('/PageAreaController/getAreaList', {pid:53})
+    get_area(data={pid:53}) {
+		return service1.post('/PageAreaController/getAreaList', data)
     },
     get_cate(data) {
 		return service1.post('/PageMaterialController/getMaterialsClass', {})
@@ -189,9 +191,9 @@ const api = {
 		if(data) data = qs.stringify(data, { allowDots: true })
 		return formser.post('/PageReportController/addReport', data)
 	},
-	delete_report(data) {
-		if(data) data = qs.stringify(data, { allowDots:true })
-		return formser.post('/PageReportController/deleteReport', data)
+	delete_report(data){
+		if(data) data = qs.stringify(data, { allowDots: true })
+		return formser.post('/PageReportController/deleteReport', data)	
 	},
 	get_subscrib(data) {
 		if(data) data = qs.stringify(data, { allowDots: true })
