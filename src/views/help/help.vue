@@ -108,7 +108,6 @@ export default {
 		width 100%
 		height 100%	
 		box-sizing border-box
-
 	.dataListClass:hover
 		background #D3D8F4
 	.dataList
@@ -143,7 +142,6 @@ export default {
 		color rgba(44,45,51,1)
 		text-align center
 		line-height 48px
-
 	.dataListTitle
 		width 100%
 		height 36px
@@ -191,4 +189,3 @@ export default {
 		div 
 			padding 30px
 </style>
-
