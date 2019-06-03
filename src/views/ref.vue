@@ -424,7 +424,6 @@ export default {
                     }
                 }
             }          
-
             this.$nextTick(() =>{
                 this.show_page()
                 this.loading = false
@@ -1174,7 +1173,6 @@ export default {
     .iconfont:before
         display inline-block
         transform rotate(90deg)
-
 .cate
     box-shadow 0px 8px 14px 0px rgba(33,58,233,0.05)
     border-radius 0 !important
@@ -1280,7 +1278,6 @@ export default {
                     color #fff
                 
                     
-
     >div
         width 100%
         background #fff
@@ -1437,7 +1434,6 @@ export default {
                 background #637CFB
                 .iconfont 
                     font-size 16px
-
 .alist
     height 28px
     line-height 28px   
