@@ -1,7 +1,5 @@
 [{"id":"530100000000","name":"昆明","level":"2","pid":"53",
-"childrenList":[{"id": "530101000000",
-    "level": 3,
-    "name": "市辖区"},
+"childrenList":[
     {"id": "530102000000",
     "level": 3,
     "name": "五华区"},
@@ -45,9 +43,7 @@
         "level": 3,
         "name": "安宁市"}]},
     {"id":"530300000000","name":"曲靖","level":"2","pid":"53",
-    "childrenList":[{"id": "530301000000",
-        "level": 3,
-        "name": "市辖区"},
+    "childrenList":[
         {"id": "530302000000",
         "level": 3,
         "name": "麒麟区"},
@@ -116,9 +112,7 @@
             "level": 3,
             "name": "河口瑶族自治县"}]},
     {"id":"530400000000","name":"玉溪","level":"2","pid":"53",
-        "childrenList":[{"id": "530401000000",
-            "level": 3,
-            "name": "市辖区"},
+        "childrenList":[
         {"id": "530402000000",
         "level": 3,
         "name": "红塔区"},
@@ -215,9 +209,7 @@
                 "level": 3,
                 "name": "禄丰县"}]},
     {"id":"530600000000","name":"昭通","level":"2","pid":"53",
-        "childrenList":[{"id": "530601000000",
-            "level": 3,
-            "name": "市辖区"},
+        "childrenList":[
             {"id": "530602000000",
                 "level": 3,
                 "name": "昭阳区"},
@@ -278,9 +270,7 @@
                 "name": "富宁县"}]
     },
     {"id":"530500000000","name":"保山","level":"2","pid":"53",
-        "childrenList":[{"id": "530501000000",
-            "level": 3,
-            "name": "市辖区"},
+        "childrenList":[
             {"id": "530502000000",
                 "level": 3,
                 "name": "隆阳区"},
@@ -297,9 +287,7 @@
                 "level": 3,
                 "name": "腾冲市"}]},
     {"id":"530800000000","name":"普洱","level":"2","pid":"53",
-        "childrenList":[{"id": "530801000000",
-            "level": 3,
-            "name": "市辖区"},
+        "childrenList":[
             {"id": "530802000000",
                 "level": 3,
                 "name": "思茅区"},
@@ -332,9 +320,7 @@
                 "level": 3,
                 "name": "西盟佤族自治县"}]},
     {"id":"530900000000","name":"临沧","level":"2","pid":"53",
-        "childrenList":[{"id": "530901000000",
-            "level": 3,
-            "name": "市辖区"},
+        "childrenList":[
             {"id": "530902000000",
                 "level": 3,
                 "name": "临翔区"},

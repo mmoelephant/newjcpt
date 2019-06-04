@@ -455,10 +455,10 @@ export default {
 				{id:3,name:'年度数据报告'},
 			],
 			seasons:[
-				{id:1,name:'第一季度'},
-				{id:2,name:'第二季度'},
-				{id:3,name:'第三季度'},
-				{id:4,name:'第四季度'},
+				{id:1,name:'第1季度'},
+				{id:2,name:'第2季度'},
+				// {id:3,name:'第三季度'},
+				// {id:4,name:'第四季度'},
 			],
 			material:[],
 			regions:[],
@@ -521,7 +521,7 @@ export default {
 				value: 'id',
 				label:'name',
 				children: 'childrenList'
-			}
+			},
 		}
 	},
 	created(){
