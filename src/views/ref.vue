@@ -251,7 +251,20 @@ export default {
     },
     created() {       
         this.get_cate()
-        
+        if(this.user) {
+            this.areaList.filter(item => {
+                if(this.user.area == '53') {
+                    return item
+                } else {
+                    if(item.id == this.user.area) {
+                        return item
+                    } else {
+                        delete item.childrenList
+                        return item
+                    }
+                } 
+            })
+        } 
     },
     computed:{
         user() {
@@ -299,6 +312,7 @@ export default {
             }
         },
         time(val) {
+            this.isnext = false
             if(this.t == 0) {
                 this.get_area_data()
             } else {

@@ -60,9 +60,9 @@
 									(t_type=="hb"&&i.data[a-1]&&Number(i.data[a-1].huanbi).toFixed(2)==Number(num.huanbi).toFixed(2))||
 									(t_type=="tb"&&i.data[a-1]&&Number(i.data[a-1].tongbi).toFixed(2)==Number(num.tongbi).toFixed(2))||
 									(t_type=="zs"&&i.data[a-1]&&Number(i.data[a-1].exponent).toFixed(2)==Number(num.exponent).toFixed(2))'-->							
-							<img src="../../public/img/ru.png" alt="" v-show='num.price !=0 &&((t_type=="price"||t_type=="hb")&&num.huanbi>0 || t_type=="zs"&&num.exponent>1000 || t_type=="tb"&&num.tongbi>0)'>
-							<img src="../../public/img/gd.png" alt="" v-show='num.price !=0 &&((t_type=="price"||t_type=="hb")&&num.huanbi<0 || t_type=="zs"&&num.exponent<1000 || t_type=="tb"&&num.tongbi<0)'>
-							<img src="../../public/img/bp.png" alt="" v-show='num.price !=0 &&((t_type=="price"||t_type=="hb")&&num.huanbi==0|| t_type=="zs"&&num.exponent==1000 || t_type=="tb"&&num.tongbi==0)'>
+							<img src="../../public/img/ru.png" alt="" v-show='num.price !=0 &&((t_type=="price"||t_type=="hb")&&num.huanbi>0 || t_type=="tb"&&num.tongbi>0)'>
+							<img src="../../public/img/gd.png" alt="" v-show='num.price !=0 &&((t_type=="price"||t_type=="hb")&&num.huanbi<0 || t_type=="tb"&&num.tongbi<0)'>
+							<img src="../../public/img/bp.png" alt="" v-show='num.price !=0 &&((t_type=="price"||t_type=="hb")&&num.huanbi==0|| t_type=="tb"&&num.tongbi==0)'>
 						</p>
 					</div>
 					
@@ -73,9 +73,9 @@
 								<span v-show='t_type=="zs"'>{{cs.price ==0?"-":cs.exponent+''!='undefined'?Number(cs.exponent).toFixed(2):'-'}}</span>  
 								<span v-show='t_type=="tb"'>{{cs.price==0?"-":cs.tongbi+''!='undefined'?(Number(cs.tongbi)*100).toFixed(2)+'%':'-'}}</span>  
 								<span v-show='t_type=="hb"'>{{cs.price==0?"-":cs.huanbi+''!='undefined'?(Number(cs.huanbi)*100).toFixed(2)+'%':'-'}}</span>  
-								<img src="../../public/img/ru.png" alt="" v-show='cs.price !=0 &&Number(cs.price).toFixed(2)!=0&&((t_type=="price"||t_type=="hb")&&cs.huanbi>0 || t_type=="zs"&&cs.exponent>1000 || t_type=="tb"&&cs.tongbi>0)'>
-								<img src="../../public/img/gd.png" alt="" v-show='cs.price !=0 &&Number(cs.price).toFixed(2)!=0&&((t_type=="price"||t_type=="hb")&&cs.huanbi<0 || t_type=="zs"&&cs.exponent<1000 || t_type=="tb"&&cs.tongbi<0)'>
-								<img src="../../public/img/bp.png" alt="" v-show='cs.price !=0 &&Number(cs.price).toFixed(2)==0&&((t_type=="price"||t_type=="hb")&&cs.huanbi==0|| t_type=="zs"&&cs.exponent==1000 || t_type=="tb"&&cs.tongbi==0)'>
+								<img src="../../public/img/ru.png" alt="" v-show='cs.price !=0 &&Number(cs.price).toFixed(2)!=0&&((t_type=="price"||t_type=="hb")&&cs.huanbi>0 || t_type=="tb"&&cs.tongbi>0)'>
+								<img src="../../public/img/gd.png" alt="" v-show='cs.price !=0 &&Number(cs.price).toFixed(2)!=0&&((t_type=="price"||t_type=="hb")&&cs.huanbi<0 || t_type=="tb"&&cs.tongbi<0)'>
+								<img src="../../public/img/bp.png" alt="" v-show='cs.price !=0 &&Number(cs.price).toFixed(2)==0&&((t_type=="price"||t_type=="hb")&&cs.huanbi==0|| t_type=="tb"&&cs.tongbi==0)'>
 							</p>
 						</div>
 						
@@ -148,13 +148,13 @@ export default {
                 const m = item.mdate?Number(item.mdate.substr(5,2)):Number(item.asmdate.substr(5,2))
                 const y = item.mdate?item.mdate.substr(0,4):item.asmdate.substr(0,4)
                 if(m ==1) {
-                  this.time.push(y+'年第一季度')
+                  this.time.push(y+'年第1季度')
                 } else if( m ==4) {
-                  this.time.push(y+'年第二季度')
+                  this.time.push(y+'年第2季度')
                 } else if( m ==7) {
-                  this.time.push(y+'年第三季度')
+                  this.time.push(y+'年第3季度')
                 } else {
-                  this.time.push(y+'年第四季度')
+                  this.time.push(y+'年第4季度')
                 }
               } else {
                 const y = item.mdate?item.mdate.substr(0,4):item.asmdate.substr(0,4)

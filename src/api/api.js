@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import qs from 'qs'
-const test = 'http://182.247.245.27'
+ const test = 'http://182.247.245.27'
+// const test = 'http://192.168.8.121'
 // const baseURL = '/api'
 // const baseURL = '/'
 // console.log(process.env.NODE_ENV === 'development' )

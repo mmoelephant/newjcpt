@@ -19,8 +19,8 @@
             </div>
         </div>
         
-        <p>材料价格指数及环比涨跌<span style='font-size:12px'>(当前最新)</span></p>
-        <p style='color:#0DFDA0;font-size:12px'>数据更新时间：{{list[0].asmdate?list[0].asmdate.substr(0,10):0}}</p>
+        <p>材料价格指数及环比涨跌<!--span style='font-size:12px'>(当前最新)</span--></p>
+        <p style='color:#0DFDA0;font-size:12px'>时间：2019-05<!--span>{{list[0].asmdate?list[0].asmdate.substr(0,10):0}}</span--></p>
         <div class='cate'>
             <i class='k'></i>
             <ul :class="animate==true?'cate-list anim':'cate-list'">
@@ -33,8 +33,9 @@
                         style='margin:10px auto'></el-progress>
                     <div>
                         <p class='p'>{{(item.huanbi*100).toFixed(2)}}%</p>
-                        <img src='../../public/img/上.png' v-if='item.huanbi>0'/>
-                        <img src='../../public/img/下.png' v-else/>
+                        <img src='../../public/img/上.png' v-show='(item.huanbi*100).toFixed(2)>0'/>
+                        <img src='../../public/img/下.png' v-show='(item.huanbi*100).toFixed(2)<0'/>
+                        <p v-show='(item.huanbi*100).toFixed(2)==0'>-</p>
                     </div>
                 </li>
             </ul>
