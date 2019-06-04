@@ -373,9 +373,7 @@
                 "level": 3,
                 "name": "陇川县"}]},
     {"id":"530700000000","name":"丽江","level":"2","pid":"53",
-        "childrenList":[{"id": "530701000000",
-            "level": 3,
-            "name": "市辖区"},
+        "childrenList":[
             {"id": "530702000000",
                 "level": 3,
                 "name": "古城区"},
