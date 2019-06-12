@@ -43,6 +43,9 @@ export default {
     computed:{
         cate() {
             return this.$store.state.bigscreen.cate_on
+        },
+        map() {
+            return this.$store.state.login.map
         }
     },
     watch:{
@@ -66,14 +69,22 @@ export default {
                 }
             },
             deep: true
-		},
+        },
+        map:{
+            handler(val) {
+                this.get_line_data()
+                this.get_bar_data()
+                this.get_pie_data()
+            },
+            deep:true
+        }
     },
     methods:{
         async get_line_data() {
             const data = {
                 id:this.cate.cid,
 				monthNumber:12,
-				area:"53"
+				area:this.$store.state.login.map.id
             }
             const res = await this.$api.get_bg_line(data)
 			let cate_list = this.$store.state.bigscreen.cate_list
@@ -103,7 +114,7 @@ export default {
         async get_pie_data() {
             const data = {
                 mid:this.cate.cid,
-				area:'53',
+				area:this.$store.state.login.map.id,
             }
             const res = await this.$api.get_bg_pie(data)
             let cate_list = this.$store.state.bigscreen.cate_list

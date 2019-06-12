@@ -2,7 +2,8 @@ export default {
     namespaced: true,
     state:{
         token:'',
-        userInfo:{}
+        userInfo:{},
+        map:{id:'53'}
     },
     mutations:{
         SET_TOKEN(state, data) {
@@ -10,6 +11,9 @@ export default {
         },
         SET_USER_INFO(state, data) {
             state.userInfo = data
+        },
+        SET_MAP(state, data) {
+            state.map = data
         }
     }
 }
