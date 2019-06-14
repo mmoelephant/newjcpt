@@ -43,7 +43,7 @@
     </div>
 </template>
 <script>
-import { setInterval } from 'timers';
+import { setInterval, clearInterval } from 'timers';
 import $ from 'jquery';
 export default {
     data() {
@@ -124,6 +124,20 @@ export default {
             animate:false,
         }
     },
+    computed:{
+        map() {
+            return this.$store.state.login.map
+        }
+    },
+    watch:{
+        map:{
+            handler(val) {
+                this.get_cate()
+                clearInterval(this.timer)
+            },
+            deep:true
+        }
+    },
     created() {       
         this.get_cate()
     },
@@ -138,7 +152,12 @@ export default {
             },1000)
         },
         async get_cate() {
-            const res = await this.$api.get_cate_level1()
+            let res
+            if(this.$store.state.login.map.id==53) {
+                res = await this.$api.get_cate_level1()
+            } else {
+                res = await this.$api.get_cate_level1({area:this.$store.state.login.map.id})
+            }
             this.list = res.data
             this.$store.commit('bigscreen/SET_CATE_ON', this.list[0])
             this.$store.commit('bigscreen/SET_CATE_LIST', this.list)

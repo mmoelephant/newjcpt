@@ -91,11 +91,14 @@ formser.interceptors.response.use(
 )
 const api = {
 		//大屏接口
-		get_cate_level1() {
-			return service1.post('/PageMaterialController/getMaterialsInfoByRecent',{})
+		get_cate_level1(data={}) {
+			return service1.post('/PageMaterialController/getMaterialsInfoByRecent',data)
 		},
 		get_bg_line(data) {
 			return service1.post('/PageMaterialController/getMaterialsInfoByAllCities',data)
+		},
+		get_area_line(data) {
+			return service1.post('/PageMaterialController/getMaterialsInfoByAllArea',data)
 		},
 		get_bg_pie(data) {
 			return service1.post('/PageMaterialController/getMaterialCount',data)
