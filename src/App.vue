@@ -124,15 +124,16 @@ export default {
 		const token = sessionStorage.getItem('token')
 		const user = JSON.parse(sessionStorage.getItem('user'))
         if(token && token.length>0 && user && user.phone) {
-            this.$store.commit('login/SET_TOKEN', token)
+			this.$store.commit('login/SET_TOKEN', token)
             this.$store.commit('login/SET_USER_INFO', user)
         } else {
             this.$store.commit('login/SET_TOKEN', '')
             this.$store.commit('login/SET_USER_INFO', '')
             sessionStorage.removeItem('token')
 			sessionStorage.removeItem('user')
-			
+			//在没有登录的情况下，去往除首页以外的其他页面都会先跳转到登录页面。
 			if(this.$route.path == '/') {
+
 			} else {
 				this.$router.push('/login')
 			}
@@ -148,7 +149,7 @@ export default {
 			(UA.indexOf("firefox")>0)?'firefox':    
 			(UA.indexOf("chrome")>0)?'chrome':    
 			window.opera?'opera':    
-			window.openDatabase?'safari':    
+			window.openDatabase?'safari':  
 			'unkonw';    
 		}catch(e){};    
 		try    
