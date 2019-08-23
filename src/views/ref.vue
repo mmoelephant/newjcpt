@@ -251,7 +251,20 @@ export default {
     },
     created() {       
         this.get_cate()
-        
+        if(this.user) {
+            this.areaList.filter(item => {
+                if(this.user.area == '53') {
+                    return item
+                } else {
+                    if(item.id == this.user.area) {
+                        return item
+                    } else {
+                        delete item.childrenList
+                        return item
+                    }
+                } 
+            })
+        } 
     },
     computed:{
         user() {
@@ -299,6 +312,7 @@ export default {
             }
         },
         time(val) {
+            this.isnext = false
             if(this.t == 0) {
                 this.get_area_data()
             } else {
@@ -321,6 +335,7 @@ export default {
         t(val) {
             this.chosed_city = {id:'53', name:'全省'}
             this.chosed_cate=this.cateList[0]
+            this.isnext = false
             console.log(this.chosed_cate)
             if(val ==0) {
                 this.get_area_data()
@@ -534,6 +549,7 @@ export default {
         },
         handleNodeClick(data) { //选择材料
             this.checked = []
+            this.isnext = false
             if(this.t ==0) { //获取区域
                 this.chosed_cate = data
                 console.log(this.chosed_cate)

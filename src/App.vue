@@ -208,7 +208,7 @@ export default {
 			console.log(res)
 			if(res.data.data) {
                 this.$store.commit('login/SET_USER_INFO', res.data.data)
-                sessionStorage.setItem('user', JSON.stringify(res.data))
+                sessionStorage.setItem('user', JSON.stringify(res.data.data))
                 this.$message({
                     message: '修改成功',
                     type: 'success'

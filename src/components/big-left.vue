@@ -19,8 +19,8 @@
             </div>
         </div>
         
-        <p>材料价格指数及环比涨跌<span style='font-size:12px'>(当前最新)</span></p>
-        <p style='color:#0DFDA0;font-size:12px'>数据更新时间：{{list[0].asmdate?list[0].asmdate.substr(0,10):0}}</p>
+        <p>材料价格指数及环比涨跌<!--span style='font-size:12px'>(当前最新)</span--></p>
+        <p style='color:#0DFDA0;font-size:12px'>时间：2019-05<!--span>{{list[0].asmdate?list[0].asmdate.substr(0,10):0}}</span--></p>
         <div class='cate'>
             <i class='k'></i>
             <ul :class="animate==true?'cate-list anim':'cate-list'">
@@ -33,8 +33,9 @@
                         style='margin:10px auto'></el-progress>
                     <div>
                         <p class='p'>{{(item.huanbi*100).toFixed(2)}}%</p>
-                        <img src='../../public/img/上.png' v-if='item.huanbi>0'/>
-                        <img src='../../public/img/下.png' v-else/>
+                        <img src='../../public/img/上.png' v-show='(item.huanbi*100).toFixed(2)>0'/>
+                        <img src='../../public/img/下.png' v-show='(item.huanbi*100).toFixed(2)<0'/>
+                        <p v-show='(item.huanbi*100).toFixed(2)==0'>-</p>
                     </div>
                 </li>
             </ul>
@@ -42,7 +43,7 @@
     </div>
 </template>
 <script>
-import { setInterval } from 'timers';
+import { setInterval, clearInterval } from 'timers';
 import $ from 'jquery';
 export default {
     data() {
@@ -123,6 +124,20 @@ export default {
             animate:false,
         }
     },
+    computed:{
+        map() {
+            return this.$store.state.login.map
+        }
+    },
+    watch:{
+        map:{
+            handler(val) {
+                this.get_cate()
+                clearInterval(this.timer)
+            },
+            deep:true
+        }
+    },
     created() {       
         this.get_cate()
     },
@@ -137,7 +152,12 @@ export default {
             },1000)
         },
         async get_cate() {
-            const res = await this.$api.get_cate_level1()
+            let res
+            if(this.$store.state.login.map.id==53) {
+                res = await this.$api.get_cate_level1()
+            } else {
+                res = await this.$api.get_cate_level1({area:this.$store.state.login.map.id})
+            }
             this.list = res.data
             this.$store.commit('bigscreen/SET_CATE_ON', this.list[0])
             this.$store.commit('bigscreen/SET_CATE_LIST', this.list)

@@ -33,16 +33,22 @@
 </template>
 <script>
 import $ from 'jquery'
+import areajson from '../../public/json/yn.json'
+
 export default {
     data() {
         return {
-            area:[{"id":"530100000000","name":"昆明","level":"2","pid":"53","geocode":"102.832891,24.880095"},{"id":"530300000000","name":"曲靖","level":"2","pid":"53","geocode":"103.796167,25.489999"},{"id":"530400000000","name":"玉溪","level":"2","pid":"53","geocode":"102.546543,24.352036"},{"id":"530500000000","name":"保山","level":"2","pid":"53","geocode":"99.161761,25.112046"},{"id":"530600000000","name":"昭通","level":"2","pid":"53","geocode":"103.717465,27.338257"},{"id":"530700000000","name":"丽江","level":"2","pid":"53","geocode":"100.227750,26.855047"},{"id":"530800000000","name":"普洱","level":"2","pid":"53","geocode":"100.966512,22.825065"},{"id":"530900000000","name":"临沧","level":"2","pid":"53","geocode":"100.079583,23.877573"},{"id":"532300000000","name":"楚雄","level":"2","pid":"53","geocode":"101.528068,25.045532"},{"id":"532500000000","name":"红河","level":"2","pid":"53","geocode":"103.374799,23.363130"},{"id":"532600000000","name":"文山","level":"2","pid":"53","geocode":"104.216248,23.400733"},{"id":"532800000000","name":"西双版纳","level":"2","pid":"53","geocode":"100.797777,22.007351"},{"id":"532900000000","name":"大理","level":"2","pid":"53","geocode":"100.267638,25.606486"},{"id":"533100000000","name":"德宏","level":"2","pid":"53","geocode":"98.584895,24.433353"},{"id":"533300000000","name":"怒江","level":"2","pid":"53","geocode":"98.853097,25.852547"},{"id":"533400000000","name":"迪庆","level":"2","pid":"53","geocode":"99.702234,27.818882"}],
+            all_area:areajson,
+            area:areajson,
             all:0
         }
     },
     computed:{
         cate() {
             return this.$store.state.bigscreen.cate_on
+        },
+        map() {
+            return this.$store.state.login.map
         }
     },
     watch:{
@@ -66,44 +72,71 @@ export default {
                 }
             },
             deep: true
-		},
+        },
+        map:{
+            handler(val) {
+                if(val.id=='53') {
+                    this.area = this.all_area
+                } else { 
+                    this.all_area.map(item => {
+                        if(item.id == val.id) {
+                            this.area = item.childrenList
+                        }
+                    })
+                }
+            },
+            deep:true
+        }
     },
     methods:{
         async get_line_data() {
-            const data = {
+            let data = {
                 id:this.cate.cid,
 				monthNumber:12,
-				area:"53"
             }
-            const res = await this.$api.get_bg_line(data)
+            let res
+            if(this.$store.state.login.map.id==53) {
+                res = await this.$api.get_bg_line(data)
+            } else {
+                data.area = this.$store.state.login.map.id
+                res = await this.$api.get_area_line(data)
+            }
 			let cate_list = this.$store.state.bigscreen.cate_list
 			cate_list.forEach(item => {
 				if(item.cid == this.cate.cid) {
-					item.lineData = res.data.data
+					item.lineData = res.data?res.data.data:[]
 				}
             })
-            this.init_line(res.data.data)
+            this.init_line(res.data?res.data.data:[])
 			this.$store.commit('bigscreen/SET_CATE_LIST', cate_list)
         },
         async get_bar_data() {
-            const data = {
+            let data = {
                 id:this.cate.cid,
                 monthNumber:1,
             }
-            const res = await this.$api.get_bg_line(data)
+            let res
+            if(this.$store.state.login.map.id==53) {
+                res = await this.$api.get_bg_line(data)
+            } else {
+                data.area = this.$store.state.login.map.id
+                res = await this.$api.get_area_line(data)
+            }
 			let cate_list = this.$store.state.bigscreen.cate_list
 			cate_list.forEach(item => {
 				if(item.cid == this.cate.cid) {
-					item.barData = res.data.data
+					item.barData = res.data?res.data.data:[]
 				}
             })
-            this.init_bar(res.data.data)
+            this.init_bar(res.data?res.data.data:[])
 			this.$store.commit('bigscreen/SET_CATE_LIST', cate_list)
         },
         async get_pie_data() {
-            const data = {
+            let data = {
                 mid:this.cate.cid,
-				area:'53',
+            }
+            if(this.$store.state.login.map.id!='53') {
+                data.area = this.$store.state.login.map.id
             }
             const res = await this.$api.get_bg_pie(data)
             let cate_list = this.$store.state.bigscreen.cate_list
@@ -119,6 +152,12 @@ export default {
 			this.$store.commit('bigscreen/SET_CATE_LIST', cate_list)
         },
         init_pie(data) {
+            let name=''
+            this.all_area.map(item => {
+                if(item.id == data.km.area) {
+                    name = item.name
+                }
+            })
             // const all = data.other.count + data.km.count
             // console.log(all,'123132132')
             const chart = this.$echarts.init(document.getElementById('pie'))
@@ -127,7 +166,7 @@ export default {
                 series: [{
                     // 设置成相对的百分比
                     center: ['25%', '50%'],
-                    name:'昆明',
+                    name:name,
                     type:'pie',
                     radius: ['50%', '60%'],
                     avoidLabelOverlap: false,
@@ -151,7 +190,7 @@ export default {
                     },
                     data:[{ 
                         value:data.km.count,
-                        name:'昆明',
+                        name:name,
                         itemStyle: {
                             normal: {
                                 color: '#25ff8c',
@@ -161,7 +200,7 @@ export default {
                         },
                         label:{
                             formatter: [
-                                '{a|昆明}',
+                                '{a|'+name+'}',
                                 '{b|'+data.km.count+'}'
                             ].join('\n'),
 
@@ -239,11 +278,16 @@ export default {
         },
         init_line(data) {
             let x=[],tb=[],hb=[]
-            data.map(item =>{
-                x.push(item.asmdate.substr(0,7))
-                tb.push(item.tongbi*100)
-                hb.push(item.huanbi*100)
-            })
+            if(data) {
+                data.map(item =>{
+                    x.push(item.asmdate.substr(0,7))
+                    tb.push(item.tongbi*100)
+                    hb.push(item.huanbi*100)
+                })
+            } else {
+
+            }
+            
             const chart = this.$echarts.init(document.getElementById('line'))
             const op = {
                 tooltip : {
@@ -255,8 +299,8 @@ export default {
                     // formatter:'{b0}:Number({c0}).toFixed(2)同比%<br />{b1}:环比{c1}%'
                 },
                 grid:{
-                    bottom:42,
-                    left:55,
+                    bottom:22,
+                    left:85,
                     top:10
                 },
                 calculable : true,
@@ -355,15 +399,23 @@ export default {
         },
         init_bar(data) {
             let x = [],y=[]
-            data.filter(item => {
-                this.area.forEach(a => {
-                    if(a.id==item.area) {
-                        item.city = a.name
+            if(data) {
+                data.filter(item => {
+                    this.area.forEach(a => {
+                        if(a.id==item.area) {
+                            item.city = a.name
+                        }
+                    })
+                    if(item.city&&item.city.length>4) {
+                        item.city= item.city.substr(0,4)
                     }
+                    x.push(item.city)
+                    y.push(item.exponent)
                 })
-                x.push(item.city)
-                y.push(item.exponent)
-            })
+            } else {
+
+            }
+            
             const chart = this.$echarts.init(document.getElementById('bar'))
             const op ={
                 tooltip : {
@@ -374,8 +426,8 @@ export default {
                     }
                 },
                 grid:{
-                    bottom:42,
-                    left:55,
+                    bottom:72,
+                    left:85,
                     top:10
                 },
                 calculable : true,
@@ -403,7 +455,7 @@ export default {
                 {
                     type : 'value',
                     min: function(value) {
-                        return Math.floor(value.min);
+                        return Math.floor(value.min)-100;
                     },
                     minInterval: 0,
                     /*显示y轴段数*/
@@ -535,10 +587,10 @@ export default {
                 font-weight 400
     #pie
         width 100%
-        height px2vh(170)
+        height 70%
     #line,#bar
         width 100%
-        height px2vh(170)
+        height 70%
         // position relative
         // left -50px
 </style>

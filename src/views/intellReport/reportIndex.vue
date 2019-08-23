@@ -278,10 +278,10 @@
 					<span v-else>
 						<span v-if="item.title.indexOf('月') == 6">{{item.title?item.title.substr(0,7):'-'}}</span>
 						<span v-else>{{item.title?item.title.substr(0,8):'-'}}</span> 云南省 {{item.maName}}价格</span>
-					{{item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}} 元/吨 
-					指数{{item.mmYn[index].exponent?item.mmYn[index].exponent.toFixed(2):''}}点 
-					环比下降{{item.mmYn[index].hb?(Number(item.mmYn[index].hb.toFixed(5)) * 100).toFixed(2):'-'}}%，
-					同比下降{{item.mmYn[index].tb?(Number(item.mmYn[index].tb.toFixed(5)) * 100).toFixed(2):'-'}}%。
+					{{item.mmYn[index]&&item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}} 元/吨 
+					指数{{item.mmYn[index]&&item.mmYn[index].exponent?item.mmYn[index].exponent.toFixed(2):''}}点 
+					环比下降{{item.mmYn[index]&&item.mmYn[index].hb?(Number(item.mmYn[index].hb.toFixed(5)) * 100).toFixed(2):'-'}}%，
+					同比下降{{item.mmYn[index]&&item.mmYn[index].tb?(Number(item.mmYn[index].tb.toFixed(5)) * 100).toFixed(2):'-'}}%。
 				</p>
 				<table class="tableBox" border="1" v-if='item.mm !="暂无数据"'>
 					<thead>
@@ -329,12 +329,12 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<td>{{item.mmYn[index].areaName}}</td>
-							<td>{{item.mmYn[index].tbPrice?item.mmYn[index].tbPrice.toFixed(2):'-'}}</td>
-							<td>{{item.mmYn[index].hbPrice?item.mmYn[index].hbPrice.toFixed(2):'-'}}</td>
-							<td>{{item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}}</td>
-							<td>{{item.mmYn[index].tb?(Number(item.mmYn[index].tb.toFixed(5)) * 100).toFixed(2):'-'}}%</td>
-							<td>{{item.mmYn[index].hb?(Number(item.mmYn[index].hb.toFixed(5)) * 100).toFixed(2):"-"}}%</td>
+							<td>{{item.mmYn[index]?item.mmYn[index].areaName:'-'}}</td>
+							<td>{{item.mmYn[index]&&item.mmYn[index].tbPrice?item.mmYn[index].tbPrice.toFixed(2):'-'}}</td>
+							<td>{{item.mmYn[index]&&item.mmYn[index].hbPrice?item.mmYn[index].hbPrice.toFixed(2):'-'}}</td>
+							<td>{{item.mmYn[index]&&item.mmYn[index].price?item.mmYn[index].price.toFixed(2):'-'}}</td>
+							<td>{{item.mmYn[index]&&item.mmYn[index].tb?(Number(item.mmYn[index].tb.toFixed(5)) * 100).toFixed(2):'-'}}%</td>
+							<td>{{item.mmYn[index]&&item.mmYn[index].hb?(Number(item.mmYn[index].hb.toFixed(5)) * 100).toFixed(2):"-"}}%</td>
 						</tr>
 					</tfoot>
 				</table>
@@ -455,10 +455,10 @@ export default {
 				{id:3,name:'年度数据报告'},
 			],
 			seasons:[
-				{id:1,name:'第一季度'},
-				{id:2,name:'第二季度'},
-				{id:3,name:'第三季度'},
-				{id:4,name:'第四季度'},
+				{id:1,name:'第1季度'},
+				{id:2,name:'第2季度'},
+				// {id:3,name:'第三季度'},
+				// {id:4,name:'第四季度'},
 			],
 			material:[],
 			regions:[],
@@ -521,7 +521,7 @@ export default {
 				value: 'id',
 				label:'name',
 				children: 'childrenList'
-			}
+			},
 		}
 	},
 	created(){
